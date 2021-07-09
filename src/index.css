@@ -1,0 +1,70 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Poppins", sans-serif;
+}
+.section_padding {
+  padding: 5em 0;
+}
+p {
+  font-size: 18px;
+}
+.navbar {
+  background: #101010e5;
+}
+
+.banner-head .banner-heading {
+  font-size: 52px;
+  font-weight: 400;
+  margin-bottom: 25px;
+}
+.hero-banner,
+.testimonials-section,
+.testimonals-carousel {
+  background-color: #101010e5;
+}
+.hero-banner h1,
+.hero-banner h4 {
+  color: #fff;
+}
+.theme-button {
+  background: #fff;
+  padding: 15px 35px;
+  transition: all 0.4s;
+  color: #000;
+}
+.theme-button:hover {
+  background: #eee;
+  color: #000;
+  transform: translateY(-4px);
+}
+
+.hero-banner img {
+  border-radius: 8px;
+}
+.feature-bg-2,
+.feature-bg {
+  padding: 3em 0;
+}
+.feature-bg {
+  background-color: #f5f5f5;
+}
+
+.testimonial-text {
+  color: #fff;
+  font-size: 34px;
+  font-weight: 600;
+}
+.testimonial-details img {
+  max-width: 280px;
+}
+.testimonial-details-text h5,
+.testimonial-details-text h6 {
+  color: #fff;
+}
+.testimonial-details img {
+  display: initial !important;
+}

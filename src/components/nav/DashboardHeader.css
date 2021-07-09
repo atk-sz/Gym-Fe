@@ -1,0 +1,14 @@
+.modalClasses {
+  margin-right: 20px;
+}
+.modalClasses svg {
+  font-size: 30px;
+  padding: 5px;
+  border-radius: 50%;
+}
+.modalClasses svg:hover {
+  background: #bebebe;
+}
+.ant-dropdown-menu-item {
+  padding: 10px 35px !important;
+}
