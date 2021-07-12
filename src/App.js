@@ -18,6 +18,7 @@ import {
   Register,
   RegisterComplete,
   UserDashboard,
+  Registration
 } from "./views";
 
 const App = () => {
@@ -82,6 +83,7 @@ const App = () => {
           component={ForgotPassword}
           layout={MainLayout}
         />
+        <AppRoute exact path="/gym/registration/:token" component={Registration} layout={MainLayout} />
 
         {/*UserRoutes*/}
         <UserRoute

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { auth } from "../../firebase";
 import { toast } from "react-toastify";
+import { sendRegistrationLink } from '../../api/registration'
 import { useSelector } from "react-redux";
 
 const Register = ({ history }) => {
   const [email, setEmail] = useState("");
+  const [disable, setDisable] = useState(false);
   const { user } = useSelector((state) => ({ ...state }));
 
   useEffect(() => {
@@ -19,49 +20,44 @@ const Register = ({ history }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const config = {
-      url: process.env.REACT_APP_REGISTER_REDIRECT_URL,
-      handleCodeInApp: true,
-    };
-
-    await auth.sendSignInLinkToEmail(email, config);
-    toast.success(
-      `Email is sent to ${email}, Click the link to complete your registration`
-    );
-
-    // Save email to local storage
-    window.localStorage.setItem("emailForRegistration", email);
-
-    // Clear email state
-    setEmail("");
-  };
-
-  const registerForm = () => {
-    return (
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={handleEmailChange}
-          placeholder="Your email"
-          autoFocus
-        />
-        <br />
-
-        <button type="submit" className="btn btn-raised">
-          Register
-        </button>
-      </form>
-    );
+    setDisable(true)
+    sendRegistrationLink(email)
+      .then(res => {
+        toast.success(res.data)
+        setEmail("");
+        history.push("/")
+      })
+      .catch(err => {
+        setDisable(false)
+        console.log(err)
+        toast.error(err.response ? err.response.data : 'Some error has occurred please try later')
+      })
   };
 
   return (
     <div className="container p-5">
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          <h4>Register</h4>
-          {registerForm()}
+          <h4>Enter your email</h4>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Your email"
+              required
+              autoFocus
+              disabled={disable}
+              aria-describedby="registrationHelp"
+            />
+            <div id="registrationHelp" className="form-text">A registration link will be sent to this email id</div>
+            <br />
+
+            <button disabled={disable} type="submit" className="btn btn-dark float-end">
+              Send
+            </button>
+          </form>
         </div>
       </div>
     </div>

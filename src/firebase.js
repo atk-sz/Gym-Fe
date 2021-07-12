@@ -4,12 +4,12 @@ import "firebase/storage"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCPm3GxHHYes05GQuFYxLBWqAgAczFuIC0",
-  authDomain: "project-m-13c88.firebaseapp.com",
-  projectId: "project-m-13c88",
-  storageBucket: "project-m-13c88.appspot.com",
-  messagingSenderId: "318315367189",
-  appId: "1:318315367189:web:2d4044e59fd3edff6c371c",
+  apiKey: "AIzaSyD0r6pgwUG0j2ZvT73zpnXz2z7kDka5_ak",
+  authDomain: "develop-d5c12.firebaseapp.com",
+  projectId: "develop-d5c12",
+  storageBucket: "develop-d5c12.appspot.com",
+  messagingSenderId: "340041598165",
+  appId: "1:340041598165:web:6a753bd56a1e3ea2ebce5c",
 };
 
 // Initialize Firebase
