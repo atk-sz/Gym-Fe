@@ -6,7 +6,7 @@ import {
   HeroBanner,
   TestimonialsCarousel,
 } from "../components";
-import FaqSection from "../components/Home/FaqSection";
+import FaqSection from "../components/home/FaqSection";
 
 const Home = () => {
   return (

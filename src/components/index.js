@@ -5,7 +5,7 @@ export { default as AdminRoute } from "./routes/AdminRoute";
 export { default as Footer } from "./footer/Footer";
 
 // Home components
-export { default as HeroBanner } from "./Home/HeroBanner";
-export { default as ClientsSection } from "./Home/ClientsSection";
-export { default as FeaturesSection } from "./Home/FeaturesSection";
-export { default as TestimonialsCarousel } from "./Home/TestimonialsCarousel";
+export { default as HeroBanner } from "./home/HeroBanner";
+export { default as ClientsSection } from "./home/ClientsSection";
+export { default as FeaturesSection } from "./home/FeaturesSection";
+export { default as TestimonialsCarousel } from "./home/TestimonialsCarousel";
