@@ -36,9 +36,10 @@ const Registration = () => {
                 setLoading(false)
             })
             .catch(error => {
+                console.log(error);
                 setLoading(false)
                 toast.error(error.response ? error.response.data : 'Some error occured please try again later');
-                console.log(error);
+                history.push('/')
             })
     }, [token])
 

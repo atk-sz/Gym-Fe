@@ -5,6 +5,7 @@ export { default as AdminRoute } from "./routes/AdminRoute";
 export { default as Footer } from "./footer/Footer";
 
 export { default as RegistrationForm } from "./forms/RegistrationForm";
+export { default as SuperNav } from "./nav/SuperNav";
 
 // Home components
 export { default as HeroBanner } from "./home/HeroBanner";

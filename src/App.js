@@ -18,8 +18,11 @@ import {
   Register,
   RegisterComplete,
   UserDashboard,
-  Registration
+  Registration,
+  SuperAdminDashboard,
+  PendingRequests
 } from "./views";
+import SuperAdminRoute from "./components/routes/SupperAdmin";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -92,6 +95,9 @@ const App = () => {
           component={UserDashboard}
           layout={DashboardLayout}
         />
+        {/* super-admin routes */}
+        <SuperAdminRoute exact path="/super-admin/dashboard" component={SuperAdminDashboard} />
+        <SuperAdminRoute exact path="/super-admin/pending/gyms" component={PendingRequests} />
       </Switch>
     </Suspense>
   );

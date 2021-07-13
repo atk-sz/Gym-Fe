@@ -5,7 +5,7 @@ import { Button } from "antd";
 import { MailOutlined, GoogleOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { createOrUpdateUser } from "../../api/auth";
+import { checkToLogin } from "../../api/auth";
 
 const Login = ({ history }) => {
   const dispatch = useDispatch();
@@ -30,14 +30,13 @@ const Login = ({ history }) => {
   const roleBasedRedirect = (res) => {
     // Intended (Re-direct back to page from where login was requested)
     const intended = history.location.state;
-
     if (intended) {
       history.push(intended.from);
     } else {
       if (res.data.role === "admin")
         history.push('/admin/dashboard');
-      else if (res.data.role === "teacher")
-        history.push('/teacher/dashboard')
+      else if (res.data.role === "super-admin")
+        history.push('/super-admin/dashboard')
       else
         history.push('/user/dashboard');
     }
@@ -56,7 +55,7 @@ const Login = ({ history }) => {
       const { user } = result;
       const idTokenResult = await user.getIdTokenResult();
 
-      createOrUpdateUser(idTokenResult.token)
+      checkToLogin(idTokenResult.token)
         .then((res) => {
           dispatch({
             type: "LOGGED_IN_USER",
@@ -70,7 +69,11 @@ const Login = ({ history }) => {
           });
           roleBasedRedirect(res);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          toast.error(err.response ? err.response.data : 'Some error occured please try later');
+          console.log(err);
+          setLoading(false);
+        });
     } catch (error) {
       toast.error(error.message);
       console.log(error);
@@ -85,7 +88,7 @@ const Login = ({ history }) => {
         const { user } = result;
         const idTokenResult = await user.getIdTokenResult();
 
-        createOrUpdateUser(idTokenResult.token)
+        checkToLogin(idTokenResult.token)
           .then((res) => {
             dispatch({
               type: "LOGGED_IN_USER",
@@ -99,7 +102,11 @@ const Login = ({ history }) => {
             });
             roleBasedRedirect(res);
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            toast.error(err.response ? err.response.data : 'Some error occured please try later');
+            console.log(err);
+            setLoading(false);
+          });
       })
       .catch((error) => {
         console.log(error);

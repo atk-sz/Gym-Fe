@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const createOrUpdateUser = async (authtoken) => {
+export const checkToLogin = async (authtoken) => {
   return await axios.post(
-    `${process.env.REACT_APP_BACKEND_API}/createOrUpdateUser`,
+    `${process.env.REACT_APP_BACKEND_API}/check/user-member`,
     {},
     {
       headers: {
@@ -39,6 +39,18 @@ export const currentTeacher = async (authtoken) => {
 export const currentAdmin = async (authtoken) => {
   return await axios.post(
     `${process.env.REACT_APP_BACKEND_API}/currentAdmin`,
+    {},
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
+export const currentSuperAdmin = async (authtoken) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/currentSuperAdmin`,
     {},
     {
       headers: {

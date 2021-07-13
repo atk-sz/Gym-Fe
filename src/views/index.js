@@ -13,3 +13,7 @@ export { default as UserDashboard } from "./user/UserDashboard";
 
 // admin views
 export { default as AdminDashboard } from "./admin/AdminDashboard";
+
+// super-admin views
+export { default as SuperAdminDashboard } from "./super-admin/Dashboard";
+export { default as PendingRequests } from "./super-admin/Pending";
