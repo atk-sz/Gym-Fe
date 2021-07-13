@@ -39,7 +39,7 @@ const Login = ({ history }) => {
       else if (res.data.role === "teacher")
         history.push('/teacher/dashboard')
       else
-        history.push('/')
+        history.push('/user/dashboard');
     }
   };
 
