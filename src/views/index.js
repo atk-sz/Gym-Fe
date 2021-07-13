@@ -16,4 +16,5 @@ export { default as AdminDashboard } from "./admin/AdminDashboard";
 
 // super-admin views
 export { default as SuperAdminDashboard } from "./super-admin/Dashboard";
-export { default as PendingRequests } from "./super-admin/Pending";
+export { default as PendingRequests } from "./super-admin/PendingRequests";
+export { default as PendingRequest } from "./super-admin/PendingRequest";

@@ -12,7 +12,7 @@ const SuperNav = () => {
         </li>
 
         <li className="nav-item">
-          <Link to="/super-admin/pending/gyms" className="nav-link">
+          <Link to="/super-admin/pending-requests" className="nav-link">
             Pending
           </Link>
         </li>

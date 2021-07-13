@@ -18,8 +18,8 @@ const PendingRequests = () => {
     const loadPendingReqs = () => {
         getPendingReqs(user.token)
             .then((res) => {
-                console.log(res.data)
-                // setLoading(false);
+                setRequests(res.data)
+                setLoading(false);
             })
             .catch((err) => {
                 // setLoading(false);
@@ -41,9 +41,9 @@ const PendingRequests = () => {
                                     (requests && requests.length) ? requests.map((each, i) => {
                                         return (
                                             <div key={i} className="card" style={{ width: "18rem" }}>
-                                                <img className="card-img-top" src={each.photos[0]} alt={each.shop_name} />
+                                                <img className="card-img-top" src={each.logo} alt={each.shop_name} />
                                                 <div className="card-body">
-                                                    <h5 className="card-title">{each.shop_name}</h5>
+                                                    <h5 className="card-title">{each.name}</h5>
                                                     <p className="card-text">{each.phone}</p>
                                                     <button onClick={() => history.push(`/pending/request/${each._id}/details`)} className="btn btn-primary">View details</button>
                                                 </div>

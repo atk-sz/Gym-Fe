@@ -20,7 +20,8 @@ import {
   UserDashboard,
   Registration,
   SuperAdminDashboard,
-  PendingRequests
+  PendingRequests,
+  PendingRequest
 } from "./views";
 import SuperAdminRoute from "./components/routes/SupperAdmin";
 
@@ -97,7 +98,8 @@ const App = () => {
         />
         {/* super-admin routes */}
         <SuperAdminRoute exact path="/super-admin/dashboard" component={SuperAdminDashboard} />
-        <SuperAdminRoute exact path="/super-admin/pending/gyms" component={PendingRequests} />
+        <SuperAdminRoute exact path="/super-admin/pending-requests" component={PendingRequests} />
+        <SuperAdminRoute exact path="/pending/request/:id/details" component={PendingRequest} />
       </Switch>
     </Suspense>
   );
