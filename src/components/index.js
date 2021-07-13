@@ -6,6 +6,7 @@ export { default as Footer } from "./footer/Footer";
 
 export { default as RegistrationForm } from "./forms/RegistrationForm";
 export { default as SuperNav } from "./nav/SuperNav";
+export { default as AdminNav } from "./nav/AdminNav";
 
 // Home components
 export { default as HeroBanner } from "./home/HeroBanner";

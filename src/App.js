@@ -21,9 +21,12 @@ import {
   Registration,
   SuperAdminDashboard,
   PendingRequests,
-  PendingRequest
+  PendingRequest,
+  AdminDashboard,
+  Attendance
 } from "./views";
 import SuperAdminRoute from "./components/routes/SupperAdmin";
+import { AdminRoute } from "./components";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -94,6 +97,15 @@ const App = () => {
           exact
           path="/user/dashboard"
           component={UserDashboard}
+          layout={DashboardLayout}
+        />
+        {/* admin routes */}
+        <AdminRoute exact path="/admin/dashboard"
+          component={AdminDashboard}
+          layout={DashboardLayout}
+        />
+        <AdminRoute exact path="/admin/attendance"
+          component={Attendance}
           layout={DashboardLayout}
         />
         {/* super-admin routes */}

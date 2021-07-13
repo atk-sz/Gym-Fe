@@ -6,10 +6,10 @@ const SuperAdminDashboard = () => {
 
     useEffect(() => {
         setLoading(false)
-    },[])
+    }, [])
 
     return (
-        <div className="container-fluid sipueradmin-dashboard-div">
+        <div className="container-fluid superadmin-dashboard-div">
             <div className="row">
                 <div className="col-md-2">
                     <SuperNav />
