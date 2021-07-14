@@ -16,7 +16,7 @@ const AdminDashboard = () => {
           {
             loading ? <h1>..loading</h1> : (
               <>
-                <h1>Super admin dahboard</h1>
+                <h1>admin dahboard</h1>
               </>
             )
           }

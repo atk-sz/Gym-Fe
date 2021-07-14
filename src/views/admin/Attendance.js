@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { AdminNav } from '../../components';
+import { toast } from 'react-toastify';
+import { createOrDisplayAttendance } from '../../api/attendance';
+import { AddMemberForm, AdminNav } from '../../components';
 
 const Attendance = () => {
     const { user } = useSelector(state => ({ ...state }))
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        createOrDisplayAttendance(user.token, new Date())
+            .then(res => {
+                console.log(res.data)
+                setLoading(false);
+            })
+            .catch((err) => {
+                // setLoading(false);
+                toast.error(err.response ? err.response.data : 'Some error occured please try later');
+                console.log(err);
+            });
+    }, [])
 
     return (
         <div className="container-fluid admin-dashboard-div">
@@ -17,6 +32,10 @@ const Attendance = () => {
                         loading ? <h1>..loading</h1> : (
                             <>
                                 <h1>Attendance</h1>
+                                <div>
+
+                                </div>
+                                <AddMemberForm />
                             </>
                         )
                     }
