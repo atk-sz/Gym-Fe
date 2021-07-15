@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { createOrDisplayAttendance, markAbsent, markPresent } from '../../api/attendance';
-import { AddMemberForm, AdminNav } from '../../components';
+import { AdminNav } from '../../components';
 
 const Attendance = () => {
     const { user } = useSelector(state => ({ ...state }))
@@ -92,7 +92,6 @@ const Attendance = () => {
                                         ) : ''
                                     }
                                 </div>
-                                {/* <AddMemberForm /> */}
                             </>
                         )
                     }

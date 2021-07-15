@@ -14,6 +14,7 @@ export { default as UserDashboard } from "./user/UserDashboard";
 // admin views
 export { default as AdminDashboard } from "./admin/AdminDashboard";
 export { default as Attendance } from "./admin/Attendance";
+export { default as AddMember } from "./admin/AddMember";
 
 // super-admin views
 export { default as SuperAdminDashboard } from "./super-admin/Dashboard";

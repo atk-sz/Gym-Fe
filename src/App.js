@@ -23,7 +23,8 @@ import {
   PendingRequests,
   PendingRequest,
   AdminDashboard,
-  Attendance
+  Attendance,
+  AddMember
 } from "./views";
 import SuperAdminRoute from "./components/routes/SupperAdmin";
 import { AdminRoute } from "./components";
@@ -106,6 +107,10 @@ const App = () => {
         />
         <AdminRoute exact path="/admin/attendance"
           component={Attendance}
+          layout={DashboardLayout}
+        />
+        <AdminRoute exact path="/gym/add/member"
+          component={AddMember}
           layout={DashboardLayout}
         />
         {/* super-admin routes */}
