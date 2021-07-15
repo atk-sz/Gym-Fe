@@ -7,9 +7,11 @@ import { AddMemberForm, AdminNav } from '../../components';
 const Attendance = () => {
     const { user } = useSelector(state => ({ ...state }))
     const [loading, setLoading] = useState(true)
+    const startDate = new Date().setHours(0, 0, 0, 0)
+    const startToday = new Date(startDate)
 
     useEffect(() => {
-        createOrDisplayAttendance(user.token, new Date())
+        createOrDisplayAttendance(user.token, new Date(), startToday)
             .then(res => {
                 console.log(res.data)
                 setLoading(false);
