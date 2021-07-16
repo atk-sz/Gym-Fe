@@ -10,7 +10,7 @@ export { default as SuperNav } from "./nav/SuperNav";
 export { default as AdminNav } from "./nav/AdminNav";
 
 // Home components
-export { default as HeroBanner } from "./home/HeroBanner";
-export { default as ClientsSection } from "./home/ClientsSection";
-export { default as FeaturesSection } from "./home/FeaturesSection";
-export { default as TestimonialsCarousel } from "./home/TestimonialsCarousel";
+export { default as HeroBanner } from "./home12/HeroBanner";
+export { default as ClientsSection } from "./home12/ClientsSection";
+export { default as FeaturesSection } from "./home12/FeaturesSection";
+export { default as TestimonialsCarousel } from "./home12/TestimonialsCarousel";
