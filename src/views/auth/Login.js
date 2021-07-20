@@ -9,7 +9,7 @@ import { checkToLogin } from "../../api/auth";
 
 const Login = ({ history }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("dpac9525@gmail.com");
+  const [email, setEmail] = useState("gym@super-admin.com");
   const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => ({ ...state }));
