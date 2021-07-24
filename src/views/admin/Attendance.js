@@ -26,6 +26,11 @@ const Attendance = () => {
             absent.map(each => {
                 members.push({ user: each, attendance: false })
             })
+            members.sort((a, b) => {
+                if (a.user.fname.toLowerCase() === b.user.fname.toLowerCase())
+                    return a.user.lname.localeCompare(b.user.lname)
+                return a.user.fname.localeCompare(b.user.fname)
+            })
             resolve(members)
         })
     }
@@ -83,7 +88,7 @@ const Attendance = () => {
                                     {
                                         members.length ? (members.map((each, i) => (
                                             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="member-attendance">
-                                                <h5>{each.user.name}</h5>
+                                                <h5>{each.user.fname} {each.user.lname}</h5>
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input" type="checkbox" checked={each.attendance} onChange={handleToggle.bind(i)} />
                                                 </div>
