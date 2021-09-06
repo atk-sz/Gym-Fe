@@ -1,0 +1,26 @@
+footer {
+  background: #010101e5;
+  color: #fff;
+}
+footer h6 {
+  color: #fff;
+}
+.social-links {
+  padding-left: 0%;
+}
+.social-links a {
+  height: 30px;
+  width: 30px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+.social-links a svg {
+  color: #000;
+}
+.social-links a:hover {
+  background-color: rgb(199, 199, 199);
+}

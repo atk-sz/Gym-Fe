@@ -1,0 +1,18 @@
+.ant-layout-sider {
+  background-color: #fff !important;
+}
+.ant-menu-dark {
+  background-color: #fff !important;
+}
+.ant-layout.site-layout {
+  min-height: 100vh;
+}
+.ant-layout-header {
+  background-color: #fff !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ant-layout-has-sider .navbar {
+  padding: 0 !important;
+}
