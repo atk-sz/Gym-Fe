@@ -8,8 +8,9 @@ import {
 } from "../../api/attendance";
 import { Container, Row, Col, Card, Table, Badge } from "react-bootstrap";
 import { weeklyStats, getAllGymMembers } from "../../api/gym";
-import { LineChart } from "../../components";
+import { Calendar, LineChart } from "../../components";
 import { Link } from "react-router-dom";
+import AreaChart from "../../components/admin/AreaChart";
 
 const AdminDashboard = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -91,21 +92,53 @@ const AdminDashboard = ({ history }) => {
         <Col md="12">
           <Card>
             <Card.Body>
-              <Row className="align-items-start">
-                <Col md="6">
+              <Row className="align-items-start justify-content-between">
+                <Col md="4">
+                  <Link to="/gym/add/member" className="add-button-section">
+                    <Card className="bg-info text-center p-5">
+                      <h3 className="text-white">Add a new member</h3>
+                    </Card>
+                  </Link>
+                  <div className="inhouse-count-section mt-4">
+                    <Card
+                      className=" text-center p-4"
+                      style={{ backgroundColor: "#2B2BF7" }}
+                    >
+                      <h3 className="text-white">Current In House:</h3>
+                      <h2 className="text-white">67</h2>
+                    </Card>
+                  </div>
+                </Col>
+                <Col md="8">
                   {loading ? (
                     <h4>..loading</h4>
                   ) : (
-                    <div className="admin-dashboard">
-                      <h4>
-                        {presentCount} / {memberCount}
-                      </h4>
-                      <LineChart chartData={chartData} />
-                    </div>
+                    <Card className="admin-dashboard">
+                      <Card.Body>
+                        {/* <h4>
+                          {presentCount} / {memberCount}
+                        </h4> */}
+                        <LineChart chartData={chartData} />
+                      </Card.Body>
+                    </Card>
                   )}
                 </Col>
-                <Col md="6">
-                  <Card>
+                <Col md="8">
+                  <Card className="mt-4">
+                    <Card.Body>
+                      <AreaChart />
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md="4">
+                  <Card className="mt-4">
+                    <Card.Body>
+                      <Calendar />
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md="12">
+                  <Card className="mt-4">
                     <Card.Body>
                       <div className="d-flex justify-content-between align-items-center">
                         <h5>Member Details</h5>

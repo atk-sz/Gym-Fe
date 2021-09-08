@@ -9,7 +9,7 @@ const CalenderOfEvents = () => {
   return (
     <div className="container-fluid admin-calender-of-events">
       <div className="row">
-        <div className="col-md-12 text-center">
+        <div className="col-md-8 text-center">
           {loading ? <h1>..loading</h1> : <Calendar />}
         </div>
       </div>

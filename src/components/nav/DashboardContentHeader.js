@@ -34,7 +34,6 @@ const DashboardContentHeader = () => {
     }
   };
 
-  console.log(members);
   return (
     <div className="dashboard-top-head">
       <Container>

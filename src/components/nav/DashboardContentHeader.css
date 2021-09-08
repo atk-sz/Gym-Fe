@@ -1,5 +1,10 @@
 .dashboard-top-head {
-  background-color: #5e72e4;
+  background-color: #2b2bf7de;
   padding: 4em 0 8em 0;
   margin-bottom: -6em;
+}
+.dashboard-head-item-card .content {
+  font-size: 24px;
+  font-weight: 600;
+  color: rgb(119 106 106);
 }
