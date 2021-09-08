@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { addMember, getCountriesAndCities } from "../../api/gym";
 import { projectStorage } from "../../firebase";
 import { Upload } from "antd";
-import ImgCrop from "antd-img-crop";
+// import ImgCrop from "antd-img-crop";
 
 const AddMemberForm = () => {
   const initialVals = {
@@ -104,6 +104,7 @@ const AddMemberForm = () => {
   };
 
   const handleImageSelect = async (e) => {
+    console.log(e.target)
     if (e.target.files) {
       setImage(e.target.files);
     } else {
@@ -236,16 +237,16 @@ const AddMemberForm = () => {
               <label htmlFor="photos" className="form-label">
                 Upload Profile Image
               </label>
-              {/* <input
-              type="file"
-              id="photos"
-              name="photos"
-              accept="image/*"
-              className="form-control mb-3"
-              onChange={handleImageSelect}
-              required
-            /> */}
-              <Upload
+              <input
+                type="file"
+                id="photos"
+                name="photos"
+                accept="image/*"
+                className="form-control mb-3"
+                onChange={handleImageSelect}
+                required
+              />
+              {/* <Upload
                 listType="picture-card"
                 fileList={image}
                 name="photos"
@@ -255,7 +256,7 @@ const AddMemberForm = () => {
                 multiple
               >
                 + Upload
-              </Upload>
+              </Upload> */}
             </div>
           </div>
           <div className="row">
