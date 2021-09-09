@@ -98,9 +98,9 @@ const AllMembers = () => {
                 <thead>
                   <tr>
                     <th>Card Id</th>
-                    <th onClick={sortByName}>Name <BsArrowUpDown cursor /></th>
-                    <th onClick={sortByJoin}>Join <BsArrowUpDown cursor /></th>
-                    <th onClick={sortByActive}>Active <BsArrowUpDown /></th>
+                    <th style={{cursor:'default'}} onClick={sortByName}>Name <BsArrowUpDown /></th>
+                    <th style={{cursor:'default'}} onClick={sortByJoin}>Join <BsArrowUpDown /></th>
+                    <th style={{cursor:'default'}} onClick={sortByActive}>Active <BsArrowUpDown /></th>
                     <th>View</th>
                   </tr>
                 </thead>
