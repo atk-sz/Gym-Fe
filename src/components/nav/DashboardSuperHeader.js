@@ -21,7 +21,6 @@ const DashboardSupertHeader = () => {
     }
   };
 
-  console.log(members);
   return (
     <div className="dashboard-top-head">
       <Container>
