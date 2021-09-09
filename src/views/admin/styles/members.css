@@ -38,3 +38,9 @@
 .attendance a {
   color: #000;
 }
+.all-member-of-gym-div .member-active-green {
+  background-color: greenyellow;
+}
+.all-member-of-gym-div .member-expire-red {
+  background-color: rgb(255, 47, 47);
+}

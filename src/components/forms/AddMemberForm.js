@@ -104,7 +104,6 @@ const AddMemberForm = () => {
   };
 
   const handleImageSelect = async (e) => {
-    console.log(e.target)
     if (e.target.files) {
       setImage(e.target.files);
     } else {
