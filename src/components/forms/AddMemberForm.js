@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addMember, getCountriesAndCities } from "../../api/gym";
 import { projectStorage } from "../../firebase";
 import { Upload } from "antd";
+import Webcam from "react-webcam";
 import { validateHouseId } from "../../api/member";
+import { CameraOutlined } from '@ant-design/icons'
 // import ImgCrop from "antd-img-crop";
 
 const AddMemberForm = () => {
@@ -27,6 +29,7 @@ const AddMemberForm = () => {
     },
   };
   const today = new Date();
+  const webRef = useRef()
   const { user } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState(initialVals);
@@ -36,6 +39,7 @@ const AddMemberForm = () => {
   const [image, setImage] = useState();
   const [validHouseID, setValidHouseID] = useState(true);
   const [load, setLoad] = useState(false);
+  const [capturing, setCapturing] = useState(false);
   const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
 
   useEffect(() => {
@@ -178,25 +182,41 @@ const AddMemberForm = () => {
     setLoad(true)
   }
 
+  const handleCapture = e => {
+    e.preventDefault()
+    values.profile = webRef.current.getScreenshot()
+    setCapturing(false)
+    // console.log(webRef.current)
+  }
+
+  const handleCloseCamera = e => {
+    e.preventDefault()
+    setCapturing(false)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (validHouseID) {
-        dateToday.setDate(dateToday.getDate() + 1);
-        if (new Date(values.join) - dateToday <= 0)
-          toast.error("Joining date cannot be today or before");
-        else {
-          if (new Date(values.join) - new Date(values.expire) > 0)
-            toast.error("Joining date cannot be after expire");
+        if (values.profile.trim()) {
+          dateToday.setDate(dateToday.getDate() + 1);
+          if (new Date(values.join) - dateToday <= 0)
+            toast.error("Joining date cannot be today or before");
           else {
-            setLoading(true);
-            if (image) values.profile = await uploadImage();
-            const res = await addMember(values, user.token);
-            toast.success(res.data);
-            setValues(initialVals);
-            setLoading(false);
+            if (new Date(values.join) - new Date(values.expire) > 0)
+              toast.error("Joining date cannot be after expire");
+            else {
+              setLoading(true);
+              // if (image)  = await uploadImage();
+              // if (image) values.profile = await uploadImage();
+              const res = await addMember(values, user.token);
+              toast.success(res.data);
+              setValues(initialVals);
+              setLoading(false);
+            }
           }
-        }
+        } else
+          toast.error('Take an iamge')
       } else
         toast.error('Invalid House ID')
     } catch (error) {
@@ -280,8 +300,9 @@ const AddMemberForm = () => {
               />
             </div>
           </div>
-          <div className="row justify-content-center">
-            <div className="col-md-4">
+
+          <div style={{ marginBottom: '30px' }} className="row justify-content-center">
+            <div className="col-md-6">
               <label htmlFor="lname" class="form-label">
                 House ID
               </label>
@@ -297,19 +318,42 @@ const AddMemberForm = () => {
                 onFocus={handleLoad}
               />
             </div>
-            <div className="col-md-6">
-              <label htmlFor="photos" className="form-label">
-                Upload Profile Image*
-              </label>
-              <input
-                type="file"
-                id="photos"
-                name="photos"
-                accept="image/*"
-                className="form-control mb-3"
-                onChange={handleImageSelect}
-                required
-              />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="col-md-6">
+              {/* <div className="upload-member-image">
+                  <label htmlFor="photos" className="form-label">
+                    Upload Profile Image*
+                  </label>
+                  <input
+                    type="file"
+                    id="photos"
+                    name="photos"
+                    accept="image/*"
+                    className="form-control mb-3"
+                    onChange={handleImageSelect}
+                    required
+                  />
+                </div>
+                <p className='center'>Or</p> */}
+              <div style={{ cursor: 'pointer' }} className="capture-member-image">
+                <CameraOutlined onClick={e => setCapturing(true)} style={{ fontSize: '40px' }} />
+                <h6>Capture</h6>
+                {
+                  capturing && (<div style={{ position: 'relative' }} >
+                    <button onClick={handleCloseCamera}>X</button>
+                    <button onClick={handleCapture}>C</button>
+                  </div>)
+                }
+              </div>
+              <div style={{ width: '100px', height: '80px' }} className="web-cam-div">
+                {
+                  capturing && (<div style={{ position: 'relative' }} >
+                    <Webcam ref={webRef} width={100} height={80} />
+                  </div>)
+                }
+                {
+                  values.profile.trim() && !capturing && (<img src={values.profile} alt="profile" />)
+                }
+              </div>
               {/* <Upload
                 listType="picture-card"
                 fileList={image}
