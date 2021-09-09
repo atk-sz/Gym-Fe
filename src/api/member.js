@@ -42,3 +42,12 @@ export const memberDetails = async (authtoken, mid) => {
     },
   });
 };
+
+export const validateHouseId = async (hid, authtoken) => {
+  return await axios.post(`${process.env.REACT_APP_BACKEND_API}/member/validate-house`,
+    { hid }, {
+    headers: {
+      authtoken,
+    }
+  });
+};

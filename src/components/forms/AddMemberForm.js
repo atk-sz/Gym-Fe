@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { addMember, getCountriesAndCities } from "../../api/gym";
 import { projectStorage } from "../../firebase";
 import { Upload } from "antd";
+import { validateHouseId } from "../../api/member";
 // import ImgCrop from "antd-img-crop";
 
 const AddMemberForm = () => {
@@ -16,6 +17,7 @@ const AddMemberForm = () => {
     DOB: "",
     join: "",
     expire: "",
+    house_id: "",
     address: {
       first_line: "",
       second_line: "",
@@ -32,6 +34,8 @@ const AddMemberForm = () => {
   const [cities, setCities] = useState([]);
   const [loadingCities, setLoadingCities] = useState(true);
   const [image, setImage] = useState();
+  const [validHouseID, setValidHouseID] = useState(true);
+  const [load, setLoad] = useState(false);
   const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
 
   useEffect(() => {
@@ -42,6 +46,11 @@ const AddMemberForm = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast.error(
+          err.response
+            ? err.response.data
+            : "Some error occured please try later"
+        );
       });
   }, []);
 
@@ -83,6 +92,11 @@ const AddMemberForm = () => {
         setLoadingCities(false);
       } catch (error) {
         console.log(error);
+        toast.error(
+          error.response
+            ? error.response.data
+            : "Some error occured please try later"
+        );
       }
     } else {
       handleCountryChange("");
@@ -97,6 +111,11 @@ const AddMemberForm = () => {
         handleCityChange(e.target.value);
       } catch (error) {
         console.log(error);
+        toast.error(
+          error.response
+            ? error.response.data
+            : "Some error occured please try later"
+        );
       }
     } else {
       handleCityChange("");
@@ -132,24 +151,54 @@ const AddMemberForm = () => {
     });
   };
 
+  const validateHouseID = e => {
+    setLoad(true)
+    if (e.target.value.trim()) {
+      validateHouseId(e.target.value.trim(), user.token)
+        .then(res => {
+          setValidHouseID(res.data)
+          setLoad(false)
+        })
+        .catch(err => {
+          console.log(err)
+          toast.error(
+            err.response
+              ? err.response.data
+              : "Some error occured please try later"
+          );
+        })
+      // setLoad(true)
+    } else {
+      setLoad(false)
+      setValidHouseID(true)
+    }
+  }
+
+  const handleLoad = e => {
+    setLoad(true)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dateToday.setDate(dateToday.getDate() + 1);
-      if (new Date(values.join) - dateToday <= 0)
-        toast.error("Joining date cannot be today or before");
-      else {
-        if (new Date(values.join) - new Date(values.expire) > 0)
-          toast.error("Joining date cannot be after expire");
+      if (validHouseID) {
+        dateToday.setDate(dateToday.getDate() + 1);
+        if (new Date(values.join) - dateToday <= 0)
+          toast.error("Joining date cannot be today or before");
         else {
-          setLoading(true);
-          if (image) values.profile = await uploadImage();
-          const res = await addMember(values, user.token);
-          toast.success(res.data);
-          setValues(initialVals);
-          setLoading(false);
+          if (new Date(values.join) - new Date(values.expire) > 0)
+            toast.error("Joining date cannot be after expire");
+          else {
+            setLoading(true);
+            if (image) values.profile = await uploadImage();
+            const res = await addMember(values, user.token);
+            toast.success(res.data);
+            setValues(initialVals);
+            setLoading(false);
+          }
         }
-      }
+      } else
+        toast.error('Invalid House ID')
     } catch (error) {
       setLoading(false);
       toast.error(
@@ -170,7 +219,7 @@ const AddMemberForm = () => {
           <div className="row">
             <div className="col-md-6">
               <label htmlFor="fname" class="form-label">
-                First Name
+                First Name*
               </label>
               <input
                 type="text"
@@ -185,7 +234,7 @@ const AddMemberForm = () => {
             </div>
             <div className="col-md-6">
               <label htmlFor="lname" class="form-label">
-                Last Name
+                Last Name*
               </label>
               <input
                 type="text"
@@ -202,7 +251,7 @@ const AddMemberForm = () => {
           <div className="row">
             <div className="col-md-6">
               <label htmlFor="phone" className="form-label">
-                Phone
+                Phone*
               </label>
               <input
                 type="number"
@@ -217,7 +266,7 @@ const AddMemberForm = () => {
             </div>
             <div className="col-md-6">
               <label htmlFor="email" class="form-label">
-                Email address
+                Email address*
               </label>
               <input
                 type="email"
@@ -232,9 +281,25 @@ const AddMemberForm = () => {
             </div>
           </div>
           <div className="row justify-content-center">
-            <div className="col-md-6 text-center">
+            <div className="col-md-4">
+              <label htmlFor="lname" class="form-label">
+                House ID
+              </label>
+              <input
+                type="text"
+                name="house_id"
+                value={values.house_id}
+                placeholder="2012QHUSE8MQFRUDS"
+                className="form-control mb-3"
+                id="house_id"
+                onChange={handleChange}
+                onBlur={validateHouseID}
+                onFocus={handleLoad}
+              />
+            </div>
+            <div className="col-md-6">
               <label htmlFor="photos" className="form-label">
-                Upload Profile Image
+                Upload Profile Image*
               </label>
               <input
                 type="file"
@@ -261,7 +326,7 @@ const AddMemberForm = () => {
           <div className="row">
             <div className="col-md-4">
               <label className="form-date-label" htmlFor="DOB-member">
-                Date Of Birth
+                Date Of Birth*
               </label>
               <input
                 type="date"
@@ -275,7 +340,7 @@ const AddMemberForm = () => {
             </div>
             <div className="col-md-4">
               <label className="form-date-label" htmlFor="join-member">
-                Joining
+                Joining*
               </label>
               <input
                 type="date"
@@ -289,7 +354,7 @@ const AddMemberForm = () => {
             </div>
             <div className="col-md-4">
               <label className="form-date-label" htmlFor="expire-member">
-                Valid Till
+                Valid Till*
               </label>
               <input
                 type="date"
@@ -305,7 +370,7 @@ const AddMemberForm = () => {
           <div className="row">
             <div className="col-md-12">
               <label htmlFor="first_line" className="form-label">
-                Address
+                Address*
               </label>
               <input
                 type="text"
@@ -335,7 +400,7 @@ const AddMemberForm = () => {
           </div>
           <div className="row">
             <div className="col-md-4">
-              <label className="form-label">Country</label>
+              <label className="form-label">Country*</label>
               {countries && (
                 <select
                   onChange={handleCountrySelect}
@@ -353,7 +418,7 @@ const AddMemberForm = () => {
               )}
             </div>
             <div className="col-md-4">
-              <label className="form-label">State</label>
+              <label className="form-label">State*</label>
               {cities && (
                 <select
                   className="form-select mb-3"
@@ -373,7 +438,7 @@ const AddMemberForm = () => {
             </div>
             <div className="col-md-4">
               <label htmlFor="pincode" className="form-label">
-                Pincode
+                Pincode*
               </label>
               <input
                 type="Number"
@@ -387,7 +452,7 @@ const AddMemberForm = () => {
               />
             </div>
           </div>
-          <button type="submit" className="btn btn-primary btn-block w-100">
+          <button disabled={load} type="submit" className="btn btn-primary btn-block w-100">
             Submit
           </button>
         </form>
