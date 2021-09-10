@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import LoadingToRedirect from "../LoadingToRedirect";
-import { currentSuperAdmin } from "../../api/auth";
+import { currentAdminOrManager } from "../../api/auth";
 
-const SuperAdminRoute = ({
+const AdminManagerRoute = ({
   component: Component,
   layout: Layout,
   ...restProps
@@ -14,7 +14,7 @@ const SuperAdminRoute = ({
 
   useEffect(() => {
     if (user && user.token) {
-      currentSuperAdmin(user.token)
+      currentAdminOrManager(user.token)
         .then((result) => {
           setOk(true);
         })
@@ -43,4 +43,4 @@ const SuperAdminRoute = ({
   );
 };
 
-export default SuperAdminRoute;
+export default AdminManagerRoute;

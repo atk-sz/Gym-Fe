@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { registerGymAndUser, validateRegistrationLink } from '../../api/registration';
@@ -16,6 +16,7 @@ const Registration = () => {
         images: [],
         docs: [],
     }
+    const { user } = useSelector(state => state)
     const { token } = useParams()
     const dispatch = useDispatch()
     const history = useHistory()

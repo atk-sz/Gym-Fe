@@ -19,6 +19,15 @@ const Header = () => {
     history.push("/login");
   };
 
+  const goToDahboard = () => {
+    if (user.role === "admin" || user.role === "manager")
+      history.push('/admin/dashboard');
+    else if (user.role === "super-admin")
+      history.push('/super-admin/dashboard')
+    else
+      history.push('/user/dashboard');
+  }
+
   return (
     <nav id="header" className="navbar navbar-expand-md shadow">
       <div className="container">
@@ -42,27 +51,43 @@ const Header = () => {
         <div className="collapse navbar-collapse" id="navmenu">
           <ul className="navbar-nav ms-auto">
             {user ? (
-              <div class="nav-item btn-group">
+              <div className="nav-item btn-group">
                 <button
                   type="button"
-                  class="btn dropdown-toggle"
+                  className="btn btn-light dropdown-toggle"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   {user.name}
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
+                <ul className="dropdown-menu dropdown-menu-end">
                   <li>
-                    <Link
-                      to="/"
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      goToDahboard();
+                    }}
+                      className='btn btn-light'>
+                      Dashboard
+                    </button>
+                  </li>
+                  <li>
+                    <button
                       onClick={(e) => {
                         e.preventDefault();
                         handleLogout();
                       }}
-                      className="nav-link"
-                    >
+                      className='btn btn-light'>
+                      {/* <Link
+                        to="/"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleLogout();
+                        }}
+                        className="nav-link"
+                      > */}
                       Logout
-                    </Link>
+                      {/* </Link> */}
+                    </button>
                   </li>
                 </ul>
               </div>

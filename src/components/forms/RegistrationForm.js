@@ -27,19 +27,19 @@ const RegistrationForm = ({
         <form className='registration-form' onSubmit={handleSubmit}>
             <div className="mb-3">
                 <label htmlFor="username" className="form-label">Your Name</label>
-                <input type="text" name='username' value={username} className="form-control" id="username" onChange={e => setUsername(e.target.value)} />
+                <input type="text" name='username' value={username} className="form-control" id="username" onChange={e => setUsername(e.target.value)} required />
             </div>
             <div className="mb-3">
                 <label htmlFor="name" className="form-label">Gym Name</label>
-                <input type="text" name='name' value={values.name} className="form-control" id="name" onChange={handleChange} />
+                <input type="text" name='name' value={values.name} className="form-control" id="name" onChange={handleChange} required />
             </div>
             <div className="mb-3">
                 <label htmlFor="logo" className="form-label">Upload Logo</label>
-                <input type="file" id='logo' name="logo" accept="image/*" onChange={handleLogoSelect} />
+                <input type="file" id='logo' name="logo" accept="image/*" onChange={handleLogoSelect} required />
             </div>
             <div className="mb-3">
                 <label htmlFor="phone" className="form-label">Phone</label>
-                <input type="Number" name="phone" className="form-control" id="phone" onChange={handleChange} value={values.phone} />
+                <input type="Number" name="phone" className="form-control" id="phone" onChange={handleChange} value={values.phone} required />
             </div>
             <div className="mb-3">
                 <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
@@ -50,11 +50,11 @@ const RegistrationForm = ({
             </div>
             <div className="mb-3">
                 <label htmlFor="PAN_upload" className="form-label">Upload PAN</label>
-                <input type="file" id='PAN_upload' name="PAN_upload" accept="application/pdf" onChange={handleDocsSelect} multiple />
+                <input type="file" id='PAN_upload' name="PAN_upload" accept="application/pdf" onChange={handleDocsSelect} multiple required />
             </div>
             <div className="mb-3">
                 <label htmlFor="photos" className="form-label">Upload Images of your store</label>
-                <input type="file" id='photos' name="photos" accept="image/*" onChange={handleImagesSelect} multiple />
+                <input type="file" id='photos' name="photos" accept="image/*" onChange={handleImagesSelect} multiple required />
             </div>
             <div className="mb-3">
                 <label htmlFor="exampleInputPassword1" className="form-label">Password</label>

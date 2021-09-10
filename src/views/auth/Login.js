@@ -9,7 +9,7 @@ import { checkToLogin } from "../../api/auth";
 
 const Login = ({ history }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("gym@super-admin.com");
+  const [email, setEmail] = useState("kdaly@baamboys.com/s.sharpe909@gmail.com");
   const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => ({ ...state }));
@@ -33,7 +33,7 @@ const Login = ({ history }) => {
     if (intended) {
       history.push(intended.from);
     } else {
-      if (res.data.role === "admin")
+      if (res.data.role === "admin" || res.data.role === "manager")
         history.push('/admin/dashboard');
       else if (res.data.role === "super-admin")
         history.push('/super-admin/dashboard')
@@ -149,13 +149,13 @@ const Login = ({ history }) => {
           className="mb-3"
           block
           shape="round"
-          icon={<MailOutlined />}
+          // icon={<MailOutlined />}
           size="large"
           disabled={!email || password.length < 6}
         >
-          Login with Email/Password
+          Login
         </Button>
-        <Button
+        {/* <Button
           onClick={handleGoogleLogin}
           type="danger"
           className="mb-3"
@@ -165,7 +165,7 @@ const Login = ({ history }) => {
           size="large"
         >
           Login with Google
-        </Button>
+        </Button> */}
         <Link to="/forgot/password" className="float-right">
           Forgot password
         </Link>

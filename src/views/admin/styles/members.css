@@ -1,0 +1,46 @@
+.member-detail-div .card .card-body,
+.all-member-of-gym-div .card .card-body {
+  padding: 2em 2em;
+}
+.all-member-of-gym-div table {
+  border: 1px solid #eee;
+}
+.all-member-of-gym-div table tr {
+  border-bottom: 1px solid #eee;
+}
+.all-member-of-gym-div table thead {
+  background-color: #eee;
+}
+.all-member-of-gym-div table th {
+  border: 0;
+}
+.member-details {
+  align-items: start;
+}
+.member-details-area {
+  border: 1px solid;
+  border-radius: 2%;
+  padding: 15px;
+}
+.details-text-member {
+  display: flex;
+  margin-bottom: 10px;
+}
+.details-text-member .left-title {
+  width: 50%;
+}
+.details-text-member .details-info {
+  width: 50%;
+}
+.details-text-member .left-title .icon {
+  margin-right: 4px;
+}
+.attendance a {
+  color: #000;
+}
+.all-member-of-gym-div .member-active-green {
+  background-color: greenyellow;
+}
+.all-member-of-gym-div .member-expire-red {
+  background-color: rgb(255, 47, 47);
+}

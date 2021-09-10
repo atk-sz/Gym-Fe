@@ -16,6 +16,12 @@ const SuperNav = () => {
             Pending
           </Link>
         </li>
+
+        <li className="nav-item">
+          <Link to="/" className="nav-link">
+            Home
+          </Link>
+        </li>
 {/* 
         <li className="nav-item">
           <Link to="/user/password" className="nav-link">

@@ -24,16 +24,16 @@ const DashboardHeader = (props) => {
       <div className="container">
         <div className="collapse navbar-collapse " id="navmenu">
           <ul className="navbar-nav ms-auto align-items-center">
-            <div class="nav-item btn-group">
+            <div className="nav-item btn-group">
               <button
                 type="button"
-                class="btn dropdown-toggle"
+                className="btn dropdown-toggle"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
                 {user.name}
               </button>
-              <ul class="dropdown-menu dropdown-menu-end">
+              <ul className="dropdown-menu dropdown-menu-end">
                 <li>
                   <Link
                     to="/"

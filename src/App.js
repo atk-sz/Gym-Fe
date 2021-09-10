@@ -11,6 +11,7 @@ import AppRoute from "./components/routes/AppRoute";
 import UserRoute from "./components/routes/UserRoute";
 import MainLayout from "./layouts/MainLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
+
 import {
   ForgotPassword,
   Home,
@@ -24,10 +25,15 @@ import {
   PendingRequest,
   AdminDashboard,
   Attendance,
-  AddMember
+  AddMember,
+  MemberDetails,
+  AllMembers,
+  CalenderEvents,
+  GymStatistics,
+  AddManager,
 } from "./views";
-import SuperAdminRoute from "./components/routes/SupperAdmin";
-import { AdminRoute } from "./components";
+import { AdminRoute, AdminManagerRoute, SuperAdminRoute } from "./components";
+import GymStatAndMessage from "./views/super-admin/GymStatAndMessage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -91,7 +97,12 @@ const App = () => {
           component={ForgotPassword}
           layout={MainLayout}
         />
-        <AppRoute exact path="/gym/registration/:token" component={Registration} layout={MainLayout} />
+        <AppRoute
+          exact
+          path="/gym/registration/:token"
+          component={Registration}
+          layout={MainLayout}
+        />
 
         {/*UserRoutes*/}
         <UserRoute
@@ -101,22 +112,79 @@ const App = () => {
           layout={DashboardLayout}
         />
         {/* admin routes */}
-        <AdminRoute exact path="/admin/dashboard"
+        <AdminManagerRoute
+          exact
+          path="/admin/dashboard"
           component={AdminDashboard}
           layout={DashboardLayout}
         />
-        <AdminRoute exact path="/admin/attendance"
+        <AdminManagerRoute
+          exact
+          path="/admin/attendance"
           component={Attendance}
           layout={DashboardLayout}
         />
-        <AdminRoute exact path="/gym/add/member"
+        <AdminManagerRoute
+          exact
+          path="/gym/add/member"
           component={AddMember}
           layout={DashboardLayout}
         />
+        <AdminManagerRoute
+          exact
+          path="/gym/member/:mid"
+          component={MemberDetails}
+          layout={DashboardLayout}
+        />
+        <AdminManagerRoute
+          exact
+          path="/gym/members/all"
+          component={AllMembers}
+          layout={DashboardLayout}
+        />
+        <AdminManagerRoute
+          exact
+          path="/gym/calender-of-events"
+          component={CalenderEvents}
+          layout={DashboardLayout}
+        />
+        <AdminRoute
+          exact
+          path="/gym/add/manager"
+          component={AddManager}
+          layout={DashboardLayout}
+        />
         {/* super-admin routes */}
-        <SuperAdminRoute exact path="/super-admin/dashboard" component={SuperAdminDashboard} />
-        <SuperAdminRoute exact path="/super-admin/pending-requests" component={PendingRequests} />
-        <SuperAdminRoute exact path="/pending/request/:id/details" component={PendingRequest} />
+        <SuperAdminRoute
+          exact
+          path="/super-admin/dashboard"
+          layout={DashboardLayout}
+          component={SuperAdminDashboard}
+        />
+        <SuperAdminRoute
+          exact
+          path="/super-admin/pending-requests"
+          layout={DashboardLayout}
+          component={PendingRequests}
+        />
+        <SuperAdminRoute
+          exact
+          path="/pending/request/:id/details"
+          layout={DashboardLayout}
+          component={PendingRequest}
+        />
+        <SuperAdminRoute
+          exact
+          path="/gym/:gym_id/statistics"
+          layout={DashboardLayout}
+          component={GymStatistics}
+        />
+        <SuperAdminRoute
+          exact
+          path="/gym/:gym_id/statistics/message"
+          layout={DashboardLayout}
+          component={GymStatAndMessage}
+        />
       </Switch>
     </Suspense>
   );
