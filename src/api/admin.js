@@ -11,3 +11,18 @@ export const addManager = async (authtoken, manager) => {
     }
   );
 };
+
+export const adminSendMailToMember = async (authtoken, message, email) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/admin/send/mail`,
+    {
+      message,
+      email,
+    },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};

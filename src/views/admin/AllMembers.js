@@ -7,6 +7,14 @@ import { Card, Table } from "react-bootstrap";
 import { BsArrowUpDown } from "react-icons/bs";
 import * as AiIcons from "react-icons/ai";
 import "./styles/members.css";
+import { Input } from 'antd';
+import { adminSendMailToMember } from "../../api/admin";
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+
+
+const antIcon = <LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />
+const { TextArea } = Input;
 
 const AllMembers = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -15,6 +23,10 @@ const AllMembers = () => {
   const [nameSort, setNameSort] = useState(true);
   const [joinSort, setJoinSort] = useState(true);
   const [activeSort, setActiveSort] = useState(true);
+  const [messageMember, setMessageMember] = useState({});
+  const [showMessageBox, setShowMessageBox] = useState(false);
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     loadMembers();
@@ -61,7 +73,7 @@ const AllMembers = () => {
         member.fullName = `${each.fname} ${each.lname}`
         return member
       })
-      console.log(updatedMember)
+      // console.log(updatedMember)
       resolve(updatedMember)
     })
   }
@@ -87,6 +99,33 @@ const AllMembers = () => {
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
   }
 
+  const handleSendMessage = member => {
+    setMessageMember(member)
+    setShowMessageBox(true)
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    setSending(true)
+    adminSendMailToMember(user.token, message, messageMember.email)
+      .then(res => {
+        toast.success(res.data)
+        setShowMessageBox(false)
+        setMessageMember({})
+        setMessage('')
+        setSending(false)
+      })
+      .catch(err => {
+        toast.error(
+          err.response
+            ? err.response.data
+            : "Some error occured please try later"
+        );
+        console.log(err)
+        setSending(false)
+      })
+  }
+
   return (
     <div className="container-fluid all-member-of-gym-div">
       <div className="row">
@@ -98,10 +137,11 @@ const AllMembers = () => {
                 <thead>
                   <tr>
                     <th>Card Id</th>
-                    <th style={{cursor:'default'}} onClick={sortByName}>Name <BsArrowUpDown /></th>
-                    <th style={{cursor:'default'}} onClick={sortByJoin}>Join <BsArrowUpDown /></th>
-                    <th style={{cursor:'default'}} onClick={sortByActive}>Active <BsArrowUpDown /></th>
+                    <th style={{ cursor: 'default' }} onClick={sortByName}>Name <BsArrowUpDown /></th>
+                    <th style={{ cursor: 'default' }} onClick={sortByJoin}>Join <BsArrowUpDown /></th>
+                    <th style={{ cursor: 'default' }} onClick={sortByActive}>Active <BsArrowUpDown /></th>
                     <th>View</th>
+                    <th>Message</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -121,6 +161,9 @@ const AllMembers = () => {
                             <AiIcons.AiOutlineEye />
                           </Link>
                         </td>
+                        <td style={{ cursor: 'pointer' }} onClick={e => { handleSendMessage(each) }} >
+                          <AiIcons.AiOutlineMessage />
+                        </td>
                       </tr>
                     ))
                   ) : (
@@ -132,6 +175,18 @@ const AllMembers = () => {
           </Card>
         </div>
       </div>
+      {
+        showMessageBox && (<div className="admin-send-message-box-div">
+          <div className="admin-send-message-box">
+            <button className="close" onClick={e => setShowMessageBox(false)}>X</button>
+            <h3>{messageMember.fullName}</h3>
+            <form onSubmit={handleSubmit}>
+              <textarea required disabled={sending} value={message} onChange={e => { setMessage(e.target.value) }} cols="30" rows="5"></textarea>
+              <button disabled={sending} className="btn btn-primary">{sending ? (<Spin indicator={antIcon} />) : 'Send'}</button>
+            </form>
+          </div>
+        </div>)
+      }
     </div>
   );
 };
