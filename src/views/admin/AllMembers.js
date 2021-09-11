@@ -132,7 +132,7 @@ const AllMembers = () => {
         <div className="col-md-12">
           <Card>
             <Card.Body>
-              <h4>Member Details</h4>
+              <h4>All Members</h4>
               <Table>
                 <thead>
                   <tr>

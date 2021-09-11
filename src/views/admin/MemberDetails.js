@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { memberDetails } from "../../api/member";
 import { BarCode } from "../../components";
@@ -87,6 +87,15 @@ const MemberDetails = () => {
                         <div className="details-label-text">Card Id</div>
                       </div>
                       <div className="details-info">{member.card_id}</div>
+                    </div>
+                    <div className="details-text-member">
+                      <div className="left-title">
+                        <div className="details-label-text">House Id</div>
+                      </div>
+                      <div className="member-detail-house-id">
+                        {member.house_id}
+                        <div><Link to={`/admin/house/${member.house_id}/members`}>View all</Link></div>
+                      </div>
                     </div>
                     <div className="details-text-member">
                       <div className="left-title">
