@@ -26,7 +26,7 @@ const SuperAdminDashboard = () => {
         );
       });
   }, []);
-  console.log(user);
+
   return (
     <div className="container-fluid superadmin-dashboard-div">
       <div className="row">
