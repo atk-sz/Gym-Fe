@@ -67,7 +67,7 @@ export const getGymStats = async (authtoken, gym_id) => {
 
 export const superAdminSendMailToMember = async (authtoken, message, email) => {
   return await axios.post(
-    `${process.env.REACT_APP_BACKEND_API}/super-admin/send/main`,
+    `${process.env.REACT_APP_BACKEND_API}/super-admin/send/mail`,
     {
       message,
       email,

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getAllGymMembers } from "../../api/gym";
 import { Card, Table } from "react-bootstrap";
 import { BsArrowUpDown } from "react-icons/bs";
 import * as AiIcons from "react-icons/ai";
+import { useParams } from "react-router";
 import "./styles/members.css";
 import { Input } from "antd";
-import { adminSendMailToMember } from "../../api/admin";
+import { adminSendMailToMember, getHouseMembers } from "../../api/admin";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -17,7 +17,8 @@ const antIcon = (
 );
 const { TextArea } = Input;
 
-const AllMembers = () => {
+const HouseMembers = () => {
+  const { hid } = useParams();
   const { user } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
@@ -28,6 +29,7 @@ const AllMembers = () => {
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     loadMembers();
@@ -85,7 +87,8 @@ const AllMembers = () => {
 
   const loadMembers = async () => {
     try {
-      const res = await getAllGymMembers(user.token);
+      const res = await getHouseMembers(user.token, hid);
+      setCount(res.data.length);
       const updatedMembers = await updateAllMembers(res.data);
       setMembers(updatedMembers);
       setLoading(false);
@@ -139,7 +142,7 @@ const AllMembers = () => {
         <div className="col-md-12">
           <Card>
             <Card.Body>
-              <h4>All Members</h4>
+              <h4>House Member: {count}</h4>
               <Table>
                 <thead>
                   <tr>
@@ -233,4 +236,4 @@ const AllMembers = () => {
   );
 };
 
-export default AllMembers;
+export default HouseMembers;

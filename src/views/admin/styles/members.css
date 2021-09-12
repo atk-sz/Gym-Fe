@@ -38,3 +38,30 @@
 .attendance a {
   color: #000;
 }
+.all-member-of-gym-div .member-active-green {
+  background-color: greenyellow;
+}
+.all-member-of-gym-div .member-expire-red {
+  background-color: rgb(255, 47, 47);
+}
+.admin-send-message-box-div {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.397);
+  width: 100vw;
+  height: 100vh;
+}
+.admin-send-message-box-div .admin-send-message-box {
+  background-color: rgb(172, 154, 154);
+  position: relative;
+}
+.admin-send-message-box-div .admin-send-message-box .close{
+  position: absolute;
+  right: 0;
+  top: 0;
+}
