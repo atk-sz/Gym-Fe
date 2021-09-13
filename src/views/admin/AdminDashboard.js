@@ -6,27 +6,38 @@ import {
   getMemberCount,
   getPresentCount,
 } from "../../api/attendance";
+import { getHouseMembers } from "../../api/admin";
 import { Container, Row, Col, Card, Table, Badge } from "react-bootstrap";
-import { weeklyStats, getAllGymMembers } from "../../api/gym";
+import {
+  weeklyStats,
+  getAllGymMembers,
+  getGymDetails,
+  updateGymLogo,
+} from "../../api/gym";
 import { Calendar, LineChart } from "../../components";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AreaChart from "../../components/admin/AreaChart";
+import { projectStorage } from "../../firebase";
 
 const AdminDashboard = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
+  const { hid } = useParams();
   const [loading, setLoading] = useState(true);
   const [aID, setAID] = useState("");
   const [gID, setGID] = useState("");
   const [presentCount, setPresentCount] = useState(0);
   const [memberCount, setMemberCount] = useState(0);
+  const [count, setCount] = useState(0);
   const [members, setMembers] = useState([]);
   const [statsRange, setStatsRange] = useState("weekly");
   const [chartData, setChartData] = useState({});
+  const [gym, setGym] = useState({});
   const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
 
   useEffect(() => {
     loadDashboard();
     loadAllMembers();
+    loadGymDetails();
   }, []);
 
   const loadDashboard = async () => {
@@ -35,6 +46,17 @@ const AdminDashboard = ({ history }) => {
       setAID(res.data._id);
       setGID(res.data.gym);
       loadPresentCount(res.data._id, res.data.gym);
+    } catch (err) {
+      toast.error(
+        err.response ? err.response.data : "Some error occured please try later"
+      );
+      console.log(err);
+    }
+  };
+  const loadGymDetails = async () => {
+    try {
+      const gymDetails = await getGymDetails(user.token);
+      setGym(gymDetails.data);
     } catch (err) {
       toast.error(
         err.response ? err.response.data : "Some error occured please try later"
@@ -82,8 +104,42 @@ const AdminDashboard = ({ history }) => {
     try {
       const res = await getAllGymMembers(user.token);
       setMembers(res.data);
+      const response = await getHouseMembers(user.token, hid);
+      setCount(response.data.length);
     } catch (error) {
       console.log(error);
+    }
+  };
+  const uploadImage = (image) => {
+    return new Promise((resolve, reject) => {
+      try {
+        let storageRef = projectStorage.ref(
+          "/Gym/" + gym.email + "/logo/" + image.name
+        );
+        storageRef.put(image).on(
+          "state_changed",
+          null,
+          (err) => console.log(err),
+          async () => {
+            resolve(await storageRef.getDownloadURL());
+          }
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  const handleLogoSelect = async (e) => {
+    if (e.target.files[0]) {
+      try {
+        const newLogoURL = await uploadImage(e.target.files[0]);
+        const res = await updateGymLogo(user.token, gym._id, newLogoURL);
+        loadGymDetails();
+        toast.success("Logo updated successfully");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   return (
@@ -105,7 +161,7 @@ const AdminDashboard = ({ history }) => {
                       style={{ backgroundColor: "#2B2BF7" }}
                     >
                       <h3 className="text-white">Current In House:</h3>
-                      <h2 className="text-white">67</h2>
+                      <h2 className="text-white">{count}</h2>
                     </Card>
                   </div>
                 </Col>
@@ -137,7 +193,37 @@ const AdminDashboard = ({ history }) => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col md="12">
+                <Col md="4">
+                  <Card className="dashboard-head-item-card dashboard-logo mt-4">
+                    <Card.Body>
+                      <div className="head">
+                        <img
+                          style={{ maxWidth: "10vw", maxHeight: "10vh" }}
+                          src={gym.logo}
+                          alt={gym.name}
+                        />
+                      </div>
+                      <div className="content">
+                        <p>{gym.name}</p>
+                        <div className="mb-3">
+                          <label htmlFor="logo" className="form-label">
+                            Upload Logo
+                          </label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            id="logo"
+                            name="logo"
+                            accept="image/*"
+                            onChange={handleLogoSelect}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md="8">
                   <Card className="mt-4">
                     <Card.Body>
                       <div className="d-flex justify-content-between align-items-center">
