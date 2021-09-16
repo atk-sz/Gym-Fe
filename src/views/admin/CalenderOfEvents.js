@@ -1,16 +1,19 @@
 import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { Calendar } from "../../components";
+// import { Calendar } from "../../components";
+import { Card } from "react-bootstrap";
+import EventCalender from "../../components/admin/EventCalender";
 
 const CalenderOfEvents = () => {
-  const [loading, setLoading] = useState(false);
-
   return (
     <div className="container-fluid admin-calender-of-events">
       <div className="row">
-        <div className="col-md-8 text-center">
-          {loading ? <h1>..loading</h1> : <Calendar />}
+        <div className="col-md-12 text-center">
+          <Card>
+            <Card.Body>
+              <EventCalender />
+            </Card.Body>
+            {/* <Calendar /> */}
+          </Card>
         </div>
       </div>
     </div>

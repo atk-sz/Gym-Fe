@@ -25,7 +25,6 @@ import {
   PendingRequest,
   AdminDashboard,
   Attendance,
-  AddMember,
   MemberDetails,
   AllMembers,
   CalenderEvents,
@@ -78,6 +77,7 @@ const App = () => {
       <ToastContainer />
       <Switch>
         {/* approutes */}
+
         <AppRoute exact path="/" component={Home} layout={MainLayout} />
         <AppRoute exact path="/login" component={Login} layout={MainLayout} />
         <AppRoute
@@ -123,12 +123,6 @@ const App = () => {
           exact
           path="/admin/attendance"
           component={Attendance}
-          layout={DashboardLayout}
-        />
-        <AdminManagerRoute
-          exact
-          path="/gym/add/member"
-          component={AddMember}
           layout={DashboardLayout}
         />
         <AdminManagerRoute

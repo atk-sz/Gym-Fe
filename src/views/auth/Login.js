@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import { auth, googleAuthProvider } from "../../firebase";
 import { toast } from "react-toastify";
 import { Button } from "antd";
-import { MailOutlined, GoogleOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { checkToLogin } from "../../api/auth";
 
 const Login = ({ history }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("kdaly@baamboys.com/s.sharpe909@gmail.com");
+  const [email, setEmail] = useState(
+    "kdaly@baamboys.com/s.sharpe909@gmail.com"
+  );
   const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => ({ ...state }));
@@ -34,11 +35,10 @@ const Login = ({ history }) => {
       history.push(intended.from);
     } else {
       if (res.data.role === "admin" || res.data.role === "manager")
-        history.push('/admin/dashboard');
+        history.push("/admin/dashboard");
       else if (res.data.role === "super-admin")
-        history.push('/super-admin/dashboard')
-      else
-        history.push('/user/dashboard');
+        history.push("/super-admin/dashboard");
+      else history.push("/user/dashboard");
     }
   };
 
@@ -70,7 +70,11 @@ const Login = ({ history }) => {
           roleBasedRedirect(res);
         })
         .catch((err) => {
-          toast.error(err.response ? err.response.data : 'Some error occured please try later');
+          toast.error(
+            err.response
+              ? err.response.data
+              : "Some error occured please try later"
+          );
           console.log(err);
           setLoading(false);
         });
@@ -103,7 +107,11 @@ const Login = ({ history }) => {
             roleBasedRedirect(res);
           })
           .catch((err) => {
-            toast.error(err.response ? err.response.data : 'Some error occured please try later');
+            toast.error(
+              err.response
+                ? err.response.data
+                : "Some error occured please try later"
+            );
             console.log(err);
             setLoading(false);
           });
@@ -174,7 +182,7 @@ const Login = ({ history }) => {
   };
 
   return (
-    <div style={{ marginTop: '48px' }} className="container p-5">
+    <div style={{ marginTop: "48px" }} className="container p-5">
       <div className="row">
         <div className="col-md-6 offset-md-3">
           {loading ? <h4>Loading...</h4> : <h4>Login</h4>}

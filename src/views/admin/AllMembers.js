@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getAllGymMembers } from "../../api/gym";
-import { Card, Table } from "react-bootstrap";
+import { Card, Table, Badge } from "react-bootstrap";
 import { BsArrowUpDown } from "react-icons/bs";
 import * as AiIcons from "react-icons/ai";
 import "./styles/members.css";
@@ -11,11 +11,13 @@ import { Input } from "antd";
 import { adminSendMailToMember } from "../../api/admin";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
+import { AddMemberForm } from "../../components";
 
 const antIcon = (
   <LoadingOutlined style={{ fontSize: 24, color: "white" }} spin />
 );
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 const AllMembers = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -28,10 +30,17 @@ const AllMembers = () => {
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [filter, setFilter] = useState("");
+  const [searchResults, setSearchResults] = useState(members);
 
   useEffect(() => {
     loadMembers();
-  }, []);
+    const results = searchResults.filter((member) =>
+      member.card_id.includes(filter)
+    );
+    setSearchResults(results);
+  }, [filter]);
 
   const sortByName = () => {
     let membersUpdate = members;
@@ -44,7 +53,7 @@ const AllMembers = () => {
       membersUpdate.sort((a, b) =>
         a.fname > b.fname ? 1 : b.fname > a.fname ? -1 : 0
       );
-    setMembers(membersUpdate);
+    setSearchResults(membersUpdate);
     setNameSort(!nameSort);
   };
 
@@ -53,7 +62,7 @@ const AllMembers = () => {
     if (joinSort) {
       membersUpdate.sort((a, b) => new Date(b.join) - new Date(a.join));
     } else membersUpdate.sort((a, b) => new Date(a.join) - new Date(b.join));
-    setMembers(membersUpdate);
+    setSearchResults(membersUpdate);
     setJoinSort(!joinSort);
   };
 
@@ -67,27 +76,15 @@ const AllMembers = () => {
       membersUpdate.sort((a, b) =>
         a.active === b.active ? 0 : a.active ? 1 : -1
       );
-    setMembers(membersUpdate);
+    setSearchResults(membersUpdate);
     setActiveSort(!activeSort);
-  };
-
-  const updateAllMembers = (members) => {
-    return new Promise((resolve, reject) => {
-      const updatedMember = members.map((each) => {
-        let member = each;
-        member.fullName = `${each.fname} ${each.lname}`;
-        return member;
-      });
-      // console.log(updatedMember)
-      resolve(updatedMember);
-    });
   };
 
   const loadMembers = async () => {
     try {
       const res = await getAllGymMembers(user.token);
-      const updatedMembers = await updateAllMembers(res.data);
-      setMembers(updatedMembers);
+      setMembers(res.data);
+      setSearchResults(res.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -98,6 +95,10 @@ const AllMembers = () => {
       );
       console.log(error);
     }
+  };
+  const handleChange = (event) => {
+    event.preventDefault();
+    setFilter(event.target.value);
   };
 
   const displayDate = (date) => {
@@ -139,7 +140,41 @@ const AllMembers = () => {
         <div className="col-md-12">
           <Card>
             <Card.Body>
-              <h4>All Members</h4>
+              <div className="d-flex justify-content-between">
+                <div>
+                  <h4>All Members</h4>
+                </div>
+                <div>
+                  <input
+                    style={{
+                      display: "inline",
+                      width: "auto",
+                      marginRight: "15px",
+                    }}
+                    className="form-control"
+                    type="text"
+                    placeholder="Search by Card Id"
+                    value={filter}
+                    onChange={handleChange}
+                  />
+                  <Badge
+                    style={{ background: "#000", cursor: "pointer" }}
+                    onClick={() => setVisible(true)}
+                  >
+                    Add Member
+                  </Badge>
+                  <Modal
+                    title="Add Member"
+                    centered
+                    visible={visible}
+                    footer={null}
+                    onCancel={() => setVisible(false)}
+                    width={1000}
+                  >
+                    <AddMemberForm />
+                  </Modal>
+                </div>
+              </div>
               <Table>
                 <thead>
                   <tr>
@@ -160,11 +195,11 @@ const AllMembers = () => {
                 <tbody>
                   {loading ? (
                     <h1 className="text-center">loading</h1>
-                  ) : members && members.length ? (
-                    members.map((each, i) => (
+                  ) : searchResults && searchResults.length ? (
+                    searchResults.map((each, i) => (
                       <tr key={i}>
                         <td>{each.card_id}</td>
-                        <td>{each.fullName}</td>
+                        <td>{`${each.fname} ${each.lname}`}</td>
                         <td>{displayDate(new Date(each.join))}</td>
                         <td>
                           <div
@@ -210,7 +245,7 @@ const AllMembers = () => {
             <button className="close" onClick={(e) => setShowMessageBox(false)}>
               X
             </button>
-            <h3>{messageMember.fullName}</h3>
+            <h3>{messageMember.fname}</h3>
             <form onSubmit={handleSubmit}>
               <textarea
                 required

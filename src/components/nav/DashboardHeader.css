@@ -12,3 +12,14 @@
 .ant-dropdown-menu-item {
   padding: 10px 35px !important;
 }
+
+#header button {
+  flex: 0 0 !important;
+}
+#header .ant-menu-item {
+  display: flex;
+  align-items: center;
+}
+.logo-area {
+  margin-right: 50px;
+}

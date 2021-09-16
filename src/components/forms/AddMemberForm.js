@@ -6,7 +6,7 @@ import { projectStorage } from "../../firebase";
 import { Upload } from "antd";
 import Webcam from "react-webcam";
 import { validateHouseId } from "../../api/member";
-import { CameraOutlined } from '@ant-design/icons'
+import { CameraOutlined } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 
 const AddMemberForm = () => {
@@ -29,7 +29,7 @@ const AddMemberForm = () => {
     },
   };
   const today = new Date();
-  const webRef = useRef()
+  const webRef = useRef();
   const { user } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(true);
   const [values, setValues] = useState(initialVals);
@@ -155,44 +155,44 @@ const AddMemberForm = () => {
     });
   };
 
-  const validateHouseID = e => {
-    setLoad(true)
+  const validateHouseID = (e) => {
+    setLoad(true);
     if (e.target.value.trim()) {
       validateHouseId(e.target.value.trim(), user.token)
-        .then(res => {
-          setValidHouseID(res.data)
-          setLoad(false)
+        .then((res) => {
+          setValidHouseID(res.data);
+          setLoad(false);
         })
-        .catch(err => {
-          console.log(err)
+        .catch((err) => {
+          console.log(err);
           toast.error(
             err.response
               ? err.response.data
               : "Some error occured please try later"
           );
-        })
+        });
       // setLoad(true)
     } else {
-      setLoad(false)
-      setValidHouseID(true)
+      setLoad(false);
+      setValidHouseID(true);
     }
-  }
+  };
 
-  const handleLoad = e => {
-    setLoad(true)
-  }
+  const handleLoad = (e) => {
+    setLoad(true);
+  };
 
-  const handleCapture = e => {
-    e.preventDefault()
-    values.profile = webRef.current.getScreenshot()
-    setCapturing(false)
+  const handleCapture = (e) => {
+    e.preventDefault();
+    values.profile = webRef.current.getScreenshot();
+    setCapturing(false);
     // console.log(webRef.current)
-  }
+  };
 
-  const handleCloseCamera = e => {
-    e.preventDefault()
-    setCapturing(false)
-  }
+  const handleCloseCamera = (e) => {
+    e.preventDefault();
+    setCapturing(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,10 +215,8 @@ const AddMemberForm = () => {
               setLoading(false);
             }
           }
-        } else
-          toast.error('Take an iamge')
-      } else
-        toast.error('Invalid House ID')
+        } else toast.error("Take an iamge");
+      } else toast.error("Invalid House ID");
     } catch (error) {
       setLoading(false);
       toast.error(
@@ -301,7 +299,10 @@ const AddMemberForm = () => {
             </div>
           </div>
 
-          <div style={{ marginBottom: '30px' }} className="row justify-content-center">
+          <div
+            style={{ marginBottom: "30px" }}
+            className="row justify-content-center"
+          >
             <div className="col-md-6">
               <label htmlFor="lname" class="form-label">
                 House ID
@@ -318,7 +319,14 @@ const AddMemberForm = () => {
                 onFocus={handleLoad}
               />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="col-md-6">
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              className="col-md-6"
+            >
               {/* <div className="upload-member-image">
                   <label htmlFor="photos" className="form-label">
                     Upload Profile Image*
@@ -334,25 +342,34 @@ const AddMemberForm = () => {
                   />
                 </div>
                 <p className='center'>Or</p> */}
-              <div style={{ cursor: 'pointer' }} className="capture-member-image">
-                <CameraOutlined onClick={e => setCapturing(true)} style={{ fontSize: '40px' }} />
+              <div
+                style={{ cursor: "pointer" }}
+                className="capture-member-image"
+              >
+                <CameraOutlined
+                  onClick={(e) => setCapturing(true)}
+                  style={{ fontSize: "40px" }}
+                />
                 <h6>Capture</h6>
-                {
-                  capturing && (<div style={{ position: 'relative' }} >
+                {capturing && (
+                  <div style={{ position: "relative" }}>
                     <button onClick={handleCloseCamera}>X</button>
                     <button onClick={handleCapture}>C</button>
-                  </div>)
-                }
+                  </div>
+                )}
               </div>
-              <div style={{ width: '100px', height: '80px' }} className="web-cam-div">
-                {
-                  capturing && (<div style={{ position: 'relative' }} >
+              <div
+                style={{ width: "100px", height: "80px" }}
+                className="web-cam-div"
+              >
+                {capturing && (
+                  <div style={{ position: "relative" }}>
                     <Webcam ref={webRef} width={100} height={80} />
-                  </div>)
-                }
-                {
-                  values.profile.trim() && !capturing && (<img src={values.profile} alt="profile" />)
-                }
+                  </div>
+                )}
+                {values.profile.trim() && !capturing && (
+                  <img src={values.profile} alt="profile" />
+                )}
               </div>
               {/* <Upload
                 listType="picture-card"
@@ -496,7 +513,11 @@ const AddMemberForm = () => {
               />
             </div>
           </div>
-          <button disabled={load} type="submit" className="btn btn-primary btn-block w-100">
+          <button
+            disabled={load}
+            type="submit"
+            className="btn btn-primary btn-block w-100"
+          >
             Submit
           </button>
         </form>
