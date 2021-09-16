@@ -188,7 +188,6 @@ const AllMembers = () => {
                     <th style={{ cursor: "default" }} onClick={sortByActive}>
                       Active <BsArrowUpDown />
                     </th>
-                    <th>View</th>
                     <th>Message</th>
                   </tr>
                 </thead>
@@ -199,7 +198,14 @@ const AllMembers = () => {
                     searchResults.map((each, i) => (
                       <tr key={i}>
                         <td>{each.card_id}</td>
-                        <td>{`${each.fname} ${each.lname}`}</td>
+                        <td>
+                          <Link
+                            to={`/gym/member/${each._id}`}
+                            style={{ color: "#000" }}
+                          >
+                            <td>{`${each.fname} ${each.lname}`}</td>
+                          </Link>
+                        </td>
                         <td>{displayDate(new Date(each.join))}</td>
                         <td>
                           <div
@@ -214,11 +220,6 @@ const AllMembers = () => {
                               margin: "auto",
                             }}
                           ></div>
-                        </td>
-                        <td>
-                          <Link to={`/gym/member/${each._id}`}>
-                            <AiIcons.AiOutlineEye />
-                          </Link>
                         </td>
                         <td
                           style={{ cursor: "pointer" }}
