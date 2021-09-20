@@ -1,0 +1,23 @@
+.login-register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.login-register .form-area input {
+  background: #e4e9f2;
+}
+.form-footer a {
+  color: rgb(120 120 120);
+}
+.form-footer button {
+  border-radius: 5px;
+}
+.login-register .form-head {
+  margin-bottom: 80px;
+}

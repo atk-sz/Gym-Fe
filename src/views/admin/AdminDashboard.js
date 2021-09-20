@@ -15,6 +15,8 @@ import { Link, useParams } from "react-router-dom";
 import AreaChart from "../../components/admin/AreaChart";
 import { projectStorage } from "../../firebase";
 import { Modal } from "antd";
+import { css } from "@emotion/react";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const AdminDashboard = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -147,7 +149,12 @@ const AdminDashboard = ({ history }) => {
           <Card>
             <Card.Body>
               {loading ? (
-                <h4>..loading</h4>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "300px", width: "100%" }}
+                >
+                  <ScaleLoader />
+                </div>
               ) : (
                 <Row className="align-items-start justify-content-between">
                   <Col md="4">

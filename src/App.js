@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "antd/dist/antd.css";
@@ -6,15 +6,16 @@ import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { currentUser } from "./api/auth";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Switch } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import AppRoute from "./components/routes/AppRoute";
 import UserRoute from "./components/routes/UserRoute";
 import MainLayout from "./layouts/MainLayout";
+import { css } from "@emotion/react";
+import RingLoader from "react-spinners/RingLoader";
 import DashboardLayout from "./layouts/DashboardLayout";
 
 import {
   ForgotPassword,
-  Home,
   Login,
   Register,
   RegisterComplete,
@@ -37,10 +38,14 @@ import GymStatAndMessage from "./views/super-admin/GymStatAndMessage";
 
 const App = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   // to check firebase auth state
 
   useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const idTokenResult = await user.getIdTokenResult();
@@ -63,6 +68,9 @@ const App = () => {
 
     // cleanup
     return () => unsubscribe();
+    setTimeout(function () {
+      setLoading(false);
+    }, 3000);
   }, [dispatch]);
 
   return (
@@ -75,118 +83,130 @@ const App = () => {
       }
     >
       <ToastContainer />
-      <Switch>
-        {/* approutes */}
+      {loading ? (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "100vh", width: "100%" }}
+        >
+          <RingLoader />
+        </div>
+      ) : (
+        <Switch>
+          {/* approutes */}
 
-        <AppRoute exact path="/" component={Home} layout={MainLayout} />
-        <AppRoute exact path="/login" component={Login} layout={MainLayout} />
-        <AppRoute
-          exact
-          path="/register"
-          component={Register}
-          layout={MainLayout}
-        />
-        <AppRoute
-          exact
-          path="/register/complete"
-          component={RegisterComplete}
-          layout={MainLayout}
-        />
-        <AppRoute
-          exact
-          path="/forgot/password"
-          component={ForgotPassword}
-          layout={MainLayout}
-        />
-        <AppRoute
-          exact
-          path="/gym/registration/:token"
-          component={Registration}
-          layout={MainLayout}
-        />
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
 
-        {/*UserRoutes*/}
-        <UserRoute
-          exact
-          path="/user/dashboard"
-          component={UserDashboard}
-          layout={DashboardLayout}
-        />
-        {/* admin routes */}
-        <AdminManagerRoute
-          exact
-          path="/admin/dashboard"
-          component={AdminDashboard}
-          layout={DashboardLayout}
-        />
-        <AdminManagerRoute
-          exact
-          path="/admin/attendance"
-          component={Attendance}
-          layout={DashboardLayout}
-        />
-        <AdminManagerRoute
-          exact
-          path="/gym/member/:mid"
-          component={MemberDetails}
-          layout={DashboardLayout}
-        />
-        <AdminManagerRoute
-          exact
-          path="/gym/members/all"
-          component={AllMembers}
-          layout={DashboardLayout}
-        />
-        <AdminManagerRoute
-          exact
-          path="/gym/calender-of-events"
-          component={CalenderEvents}
-          layout={DashboardLayout}
-        />
-        <AdminRoute
-          exact
-          path="/gym/add/manager"
-          component={AddManager}
-          layout={DashboardLayout}
-        />
-        <AdminManagerRoute
-          exact
-          path="/admin/house/:hid/members"
-          component={HouseMembers}
-          layout={DashboardLayout}
-        />
-        {/* super-admin routes */}
-        <SuperAdminRoute
-          exact
-          path="/super-admin/dashboard"
-          layout={DashboardLayout}
-          component={SuperAdminDashboard}
-        />
-        <SuperAdminRoute
-          exact
-          path="/super-admin/pending-requests"
-          layout={DashboardLayout}
-          component={PendingRequests}
-        />
-        <SuperAdminRoute
-          exact
-          path="/pending/request/:id/details"
-          layout={DashboardLayout}
-          component={PendingRequest}
-        />
-        <SuperAdminRoute
-          exact
-          path="/gym/:gym_id/statistics"
-          layout={DashboardLayout}
-          component={GymStatistics}
-        />
-        <SuperAdminRoute
-          exact
-          path="/gym/:gym_id/statistics/message"
-          layout={DashboardLayout}
-          component={GymStatAndMessage}
-        />
-      </Switch>
+          <AppRoute exact path="/login" component={Login} layout={MainLayout} />
+          <AppRoute
+            exact
+            path="/register"
+            component={Register}
+            layout={MainLayout}
+          />
+          <AppRoute
+            exact
+            path="/register/complete"
+            component={RegisterComplete}
+            layout={MainLayout}
+          />
+          <AppRoute
+            exact
+            path="/forgot/password"
+            component={ForgotPassword}
+            layout={MainLayout}
+          />
+          <AppRoute
+            exact
+            path="/gym/registration/:token"
+            component={Registration}
+            layout={MainLayout}
+          />
+
+          {/*UserRoutes*/}
+          <UserRoute
+            exact
+            path="/user/dashboard"
+            component={UserDashboard}
+            layout={DashboardLayout}
+          />
+          {/* admin routes */}
+          <AdminManagerRoute
+            exact
+            path="/admin/dashboard"
+            component={AdminDashboard}
+            layout={DashboardLayout}
+          />
+          <AdminManagerRoute
+            exact
+            path="/admin/attendance"
+            component={Attendance}
+            layout={DashboardLayout}
+          />
+          <AdminManagerRoute
+            exact
+            path="/gym/member/:mid"
+            component={MemberDetails}
+            layout={DashboardLayout}
+          />
+          <AdminManagerRoute
+            exact
+            path="/gym/members/all"
+            component={AllMembers}
+            layout={DashboardLayout}
+          />
+          <AdminManagerRoute
+            exact
+            path="/gym/calender-of-events"
+            component={CalenderEvents}
+            layout={DashboardLayout}
+          />
+          <AdminRoute
+            exact
+            path="/gym/add/manager"
+            component={AddManager}
+            layout={DashboardLayout}
+          />
+          <AdminManagerRoute
+            exact
+            path="/admin/house/:hid/members"
+            component={HouseMembers}
+            layout={DashboardLayout}
+          />
+          {/* super-admin routes */}
+          <SuperAdminRoute
+            exact
+            path="/super-admin/dashboard"
+            layout={DashboardLayout}
+            component={SuperAdminDashboard}
+          />
+          <SuperAdminRoute
+            exact
+            path="/super-admin/pending-requests"
+            layout={DashboardLayout}
+            component={PendingRequests}
+          />
+          <SuperAdminRoute
+            exact
+            path="/pending/request/:id/details"
+            layout={DashboardLayout}
+            component={PendingRequest}
+          />
+          <SuperAdminRoute
+            exact
+            path="/gym/:gym_id/statistics"
+            layout={DashboardLayout}
+            component={GymStatistics}
+          />
+          <SuperAdminRoute
+            exact
+            path="/gym/:gym_id/statistics/message"
+            layout={DashboardLayout}
+            component={GymStatAndMessage}
+          />
+        </Switch>
+      )}
     </Suspense>
   );
 };

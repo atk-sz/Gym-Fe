@@ -7,7 +7,8 @@ import { Card, Table, Badge } from "react-bootstrap";
 import { BsArrowUpDown } from "react-icons/bs";
 import * as AiIcons from "react-icons/ai";
 import "./styles/members.css";
-import { Input } from "antd";
+import { css } from "@emotion/react";
+import ScaleLoader from "react-spinners/ScaleLoader";
 import { adminSendMailToMember } from "../../api/admin";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -145,18 +146,6 @@ const AllMembers = () => {
                   <h4>All Members</h4>
                 </div>
                 <div>
-                  <input
-                    style={{
-                      display: "inline",
-                      width: "auto",
-                      marginRight: "15px",
-                    }}
-                    className="form-control"
-                    type="text"
-                    placeholder="Search by Card Id"
-                    value={filter}
-                    onChange={handleChange}
-                  />
                   <Badge
                     style={{ background: "#000", cursor: "pointer" }}
                     onClick={() => setVisible(true)}
@@ -173,6 +162,18 @@ const AllMembers = () => {
                   >
                     <AddMemberForm />
                   </Modal>
+                  <input
+                    style={{
+                      display: "inline",
+                      width: "auto",
+                      marginLeft: "15px",
+                    }}
+                    className="form-control"
+                    type="text"
+                    placeholder="Search by Card Id"
+                    value={filter}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
               <Table>
@@ -193,7 +194,12 @@ const AllMembers = () => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <h1 className="text-center">loading</h1>
+                    <div
+                      className="d-flex justify-content-center align-items-center"
+                      style={{ minHeight: "200px", width: "100%" }}
+                    >
+                      <ScaleLoader />
+                    </div>
                   ) : searchResults && searchResults.length ? (
                     searchResults.map((each, i) => (
                       <tr key={i}>

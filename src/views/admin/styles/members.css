@@ -18,9 +18,8 @@
   align-items: start;
 }
 .member-details-area {
-  border: 1px solid;
-  border-radius: 2%;
   padding: 15px;
+  font-size: 18px;
 }
 .details-text-member {
   display: flex;
@@ -60,7 +59,7 @@
   background-color: rgb(172, 154, 154);
   position: relative;
 }
-.admin-send-message-box-div .admin-send-message-box .close{
+.admin-send-message-box-div .admin-send-message-box .close {
   position: absolute;
   right: 0;
   top: 0;

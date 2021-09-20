@@ -7,6 +7,8 @@ import { memberDetails } from "../../api/member";
 import { BarCode } from "../../components";
 import "./styles/members.css";
 import { Card, Row, Col, Container, Image } from "react-bootstrap";
+import { css } from "@emotion/react";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const MemberDetails = () => {
   const { mid } = useParams();
@@ -62,11 +64,16 @@ const MemberDetails = () => {
   return (
     <Container className="member-detail-div">
       <Row justifyContent="center">
-        <Col md="8">
+        <Col md="12">
           <Card>
             <Card.Body>
               {loading ? (
-                <h4>loading</h4>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "200px", width: "100%" }}
+                >
+                  <ScaleLoader />
+                </div>
               ) : (
                 <Row className="member-details">
                   <Col md={6} className="profile-barcode">
@@ -74,83 +81,109 @@ const MemberDetails = () => {
                     <BarCode card_id={member.card_id} />
                   </Col>
                   <Col md={6} className="member-details-area">
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Name</div>
-                      </div>
-                      <div className="details-info">
-                        {member.fname} {member.lname}
-                      </div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Card Id</div>
-                      </div>
-                      <div className="details-info">{member.card_id}</div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">House Id</div>
-                      </div>
-                      <div className="member-detail-house-id">
-                        {member.house_id}
-                        <div>
-                          <Link to={`/admin/house/${member.house_id}/members`}>
-                            View all
-                          </Link>
+                    <Card className="shadow-sm">
+                      <Card.Body>
+                        <div className="details-text-member">
+                          <h2>
+                            {member.fname} {member.lname}
+                          </h2>
                         </div>
-                      </div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Email</div>
-                      </div>
-                      <div className="details-info">{member.email}</div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Phone No</div>
-                      </div>
-                      <div className="details-info">{member.phone}</div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Address</div>
-                      </div>
-                      <div className="details-info">
-                        <div>{member.address.first_line}</div>
-                        <div>{member.address.second_line}</div>
-                        <div>
-                          {member.address.city} - {member.address.pincode}
+                        <div className="details-text-member">
+                          <h4>{member.card_id}</h4>
                         </div>
-                      </div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Age</div>
-                      </div>
-                      <div className="details-info">
-                        {timeSince(member.DOB)}
-                      </div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Member Since</div>
-                      </div>
-                      <div className="details-info">
-                        {timeSince(member.join)}
-                      </div>
-                    </div>
-                    <div className="details-text-member">
-                      <div className="left-title">
-                        <div className="details-label-text">Valid Till</div>
-                      </div>
-                      <div className="details-info">
-                        {`${new Date(member.expire).getDate()}/${new Date(
-                          member.expire
-                        ).getMonth()}/${new Date(member.expire).getFullYear()}`}
-                      </div>
-                    </div>
+                        <hr />
+                        <div className="info-category mt-5">
+                          <p>
+                            <small className="text-secondary">
+                              Personal Details
+                            </small>
+                          </p>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">Age</div>
+                          </div>
+                          <div className="details-info">
+                            {timeSince(member.DOB)}
+                          </div>
+                        </div>
+                        <div className="info-category mt-5">
+                          <p>
+                            <small className="text-secondary">
+                              Membership Details
+                            </small>
+                          </p>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">House Id</div>
+                          </div>
+                          <div className="member-detail-house-id">
+                            {member.house_id}
+                            <div>
+                              <Link
+                                to={`/admin/house/${member.house_id}/members`}
+                              >
+                                View all
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">
+                              Member Since
+                            </div>
+                          </div>
+                          <div className="details-info">
+                            {timeSince(member.join)}
+                          </div>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">Valid Till</div>
+                          </div>
+                          <div className="details-info">
+                            {`${new Date(member.expire).getDate()}/${new Date(
+                              member.expire
+                            ).getMonth()}/${new Date(
+                              member.expire
+                            ).getFullYear()}`}
+                          </div>
+                        </div>
+                        <div className="info-category mt-5">
+                          <p>
+                            <small className="text-secondary">
+                              Contact Details
+                            </small>
+                          </p>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">Email</div>
+                          </div>
+                          <div className="details-info">{member.email}</div>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">Phone No</div>
+                          </div>
+                          <div className="details-info">{member.phone}</div>
+                        </div>
+                        <div className="details-text-member">
+                          <div className="left-title">
+                            <div className="details-label-text">Address</div>
+                          </div>
+                          <div className="details-info">
+                            <div>{member.address.first_line}</div>
+                            <div>{member.address.second_line}</div>
+                            <div>
+                              {member.address.city} - {member.address.pincode}
+                            </div>
+                          </div>
+                        </div>
+                      </Card.Body>
+                    </Card>
                   </Col>
                 </Row>
               )}
