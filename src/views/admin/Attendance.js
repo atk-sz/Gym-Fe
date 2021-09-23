@@ -7,6 +7,8 @@ import {
   createOrDisplayAttendance,
   getLogs,
   markAbsent,
+  markCheckout,
+  markCheckoutBack,
   markPresent,
 } from "../../api/attendance";
 import "./styles/members.css";
@@ -23,14 +25,14 @@ const Attendance = () => {
   const [logs, setLogs] = useState([]);
   const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
 
-  const filterMember = ({ present, absent }) => {
+  const filterMember = ({ absent, log }) => {
     return new Promise((resolve, reject) => {
       let members = [];
-      present.map((each) => {
-        members.push({ user: each, attendance: true });
+      log.map((each) => {
+        members.push({ user: each.member, checkin: true, checkout: each.checkout ? true : false });
       });
       absent.map((each) => {
-        members.push({ user: each, attendance: false });
+        members.push({ user: each, checkin: false, checkout: false });
       });
       members.sort((a, b) => {
         if (a.user.fname.toLowerCase() === b.user.fname.toLowerCase())
@@ -49,7 +51,7 @@ const Attendance = () => {
         setMembers(resultMems);
         setLoading(false);
         setGid(res.data.gym);
-        loadLogs(user.token, res.data.gym);
+        loadLogs(res.data.log);
       })
       .catch((err) => {
         // setLoading(false);
@@ -62,34 +64,23 @@ const Attendance = () => {
       });
   }, []);
 
-  const loadLogs = (token, gym_id) => {
-    getLogs(token, gym_id)
-      .then(async (res) => {
-        const sortedLogs = res.data.sort(
-          (a, b) => new Date(b.checkin) - new Date(a.checkin)
-        );
-        setLogs(sortedLogs);
-        setLoadingLogs(true);
-        setLoadingLogs(false);
-      })
-      .catch((err) => {
-        setLoadingLogs(false);
-        toast.error(
-          err.response300
-            ? err.response.data
-            : "Some error occured please try later"
-        );
-        console.log(err);
-      });
-  };
+  const loadLogs = logs => {
+    setLoadingLogs(true)
+    const sortedLogs = logs.sort(
+      (a, b) => new Date(b.checkin) - new Date(a.checkin)
+    );
+    setLogs(sortedLogs)
+    setLoadingLogs(false)
+  }
 
-  async function handleToggle(e) {
+  async function handleCheckinToggle(e) {
     try {
       const updatedMembers = members.map((item, i) => {
         if (this === i) {
           const updatedItem = {
             ...item,
-            attendance: e.target.checked,
+            checkin: e.target.checked,
+            checkout: !e.target.checked ? false : item.checkout
           };
           return updatedItem;
         }
@@ -97,11 +88,11 @@ const Attendance = () => {
       });
 
       if (e.target.checked) {
-        await markPresent(aid, members[this].user._id, user.token);
-        loadLogs(user.token, gid);
+        const res = await markPresent(aid, members[this].user._id, user.token);
+        loadLogs(res.data)
       } else {
-        await markAbsent(aid, members[this].user._id, user.token);
-        loadLogs(user.token, gid);
+        const res = await markAbsent(aid, members[this].user._id, user.token);
+        loadLogs(res.data)
       }
       setMembers(updatedMembers);
     } catch (error) {
@@ -109,11 +100,35 @@ const Attendance = () => {
     }
   }
 
-  const displayDateAndTime = (date) => {
+  async function handleCheckoutToggle(e) {
+    try {
+      const updatedMembers = members.map((item, i) => {
+        if (this === i) {
+          const updatedItem = {
+            ...item,
+            checkout: e.target.checked,
+          };
+          return updatedItem;
+        }
+        return item;
+      });
+
+      if (e.target.checked) {
+        const res = await markCheckout(aid, members[this].user._id, user.token);
+        loadLogs(res.data)
+      } else {
+        const res = await markCheckoutBack(aid, members[this].user._id, user.token);
+        loadLogs(res.data)
+      }
+      setMembers(updatedMembers);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const displayTime = (date) => {
     const dateAndTime = new Date(date);
-    return `${dateAndTime.getHours()} : ${dateAndTime.getMinutes()} , ${dateAndTime.getDate()}-${
-      dateAndTime.getMonth() + 1
-    }-${dateAndTime.getFullYear()}`;
+    return `${dateAndTime.getHours()} : ${dateAndTime.getMinutes()}`;
   };
 
   return (
@@ -135,7 +150,10 @@ const Attendance = () => {
                     <h6>Member's Name</h6>
                   </div>
                   <div>
-                    <h6>Mark Attedence</h6>
+                    <h6>Check In</h6>
+                  </div>
+                  <div>
+                    <h6>Check Out</h6>
                   </div>
                 </div>
                 <hr
@@ -155,30 +173,39 @@ const Attendance = () => {
                   <div>
                     {members.length
                       ? members.map((each, i) => (
-                          <div
-                            key={i}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                            className="member-attendance"
-                          >
-                            <Link to={`/gym/member/${each._id}`}>
-                              <span>
-                                {each.user.fname} {each.user.lname}
-                              </span>
-                            </Link>
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                checked={each.attendance}
-                                onChange={handleToggle.bind(i)}
-                              />
-                            </div>
+                        <div
+                          key={i}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                          className="member-attendance"
+                        >
+                          {/* <Link to={`/gym/member/${each._id}`}> */}
+                          <span>
+                            {each.user.fname} {each.user.lname}
+                          </span>
+                          {/* </Link> */}
+                          <div className="form-check form-switch">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              checked={each.checkin}
+                              onChange={handleCheckinToggle.bind(i)}
+                            />
                           </div>
-                        ))
+                          <div className="form-check form-switch">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              checked={each.checkout}
+                              disabled={!each.checkin}
+                              onChange={handleCheckoutToggle.bind(i)}
+                            />
+                          </div>
+                        </div>
+                      ))
                       : ""}
                   </div>
                 )}
@@ -211,7 +238,10 @@ const Attendance = () => {
                         <h6>Member's Name</h6>
                       </div>
                       <div>
-                        <h6>Date and Time</h6>
+                        <h6>Check In</h6>
+                      </div>
+                      <div>
+                        <h6>Check Out</h6>
                       </div>
                     </div>
                     <hr
@@ -221,7 +251,8 @@ const Attendance = () => {
                       }}
                     />
                     {logs.length
-                      ? logs.map((each, i) => (
+                      ? logs.map((each, i) => {
+                        return (
                           <div
                             key={i}
                             style={{
@@ -234,9 +265,11 @@ const Attendance = () => {
                             <div>
                               {each.member.fname} {each.member.lname}
                             </div>
-                            <div>{displayDateAndTime(each.checkin)}</div>
+                            <div>{displayTime(each.checkin)}</div>
+                            <div>{each.checkout ? displayTime(each.checkout) : '-'}</div>
                           </div>
-                        ))
+                        )
+                      })
                       : ""}
                   </div>
                 </>

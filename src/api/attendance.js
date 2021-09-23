@@ -12,9 +12,9 @@ export const createOrDisplayAttendance = async (authtoken, today) => {
   );
 };
 
-export const markAbsent = async (aid, mid, authtoken) => {
+export const markPresent = async (aid, mid, authtoken) => {
   return await axios.post(
-    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/absent`,
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/checkin`,
     {},
     {
       headers: {
@@ -24,9 +24,33 @@ export const markAbsent = async (aid, mid, authtoken) => {
   );
 };
 
-export const markPresent = async (aid, mid, authtoken) => {
+export const markAbsent = async (aid, mid, authtoken) => {
   return await axios.post(
-    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/present`,
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/checkinback`,
+    {},
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
+export const markCheckout = async (aid, mid, authtoken) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/checkout`,
+    {},
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
+export const markCheckoutBack = async (aid, mid, authtoken) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/checkoutback`,
     {},
     {
       headers: {
