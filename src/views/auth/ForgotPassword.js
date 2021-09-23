@@ -41,22 +41,34 @@ const ForgotPassword = ({ history }) => {
   };
 
   return (
-    <div className="container col-md-6 offset-md-3 p-5">
-      {!loading ? <h4>Forgot Password</h4> : <h4>...Loading</h4>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your email"
-          autoFocus
-        />
-        <br />
-        <button className="btn btn-raised" type="submit" disabled={!email}>
-          Send Link
-        </button>
-      </form>
+    <div className="login-register">
+      <div className="row w-100">
+        <div className="col-md-4">
+          <div className="form-head text-center">
+            <h3 className="mb-2">Forgot Password</h3>
+            <span>Enter your email</span>
+          </div>
+          <div className="form-area  text-center">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="email"
+                className="form-control mb-4"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email"
+                autoFocus
+              />
+              <button
+                className="btn btn-primary"
+                type="submit"
+                disabled={!email}
+              >
+                Send Link
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

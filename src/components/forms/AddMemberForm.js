@@ -7,6 +7,7 @@ import { Upload } from "antd";
 import Webcam from "react-webcam";
 import { validateHouseId } from "../../api/member";
 import { CameraOutlined } from "@ant-design/icons";
+import ScaleLoader from "react-spinners/ScaleLoader";
 // import ImgCrop from "antd-img-crop";
 
 const AddMemberForm = () => {
@@ -231,7 +232,12 @@ const AddMemberForm = () => {
   return (
     <>
       {loading ? (
-        <h5>loading</h5>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "200px", width: "100%" }}
+        >
+          <ScaleLoader />
+        </div>
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="row">

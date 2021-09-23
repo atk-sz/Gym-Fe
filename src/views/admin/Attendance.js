@@ -10,6 +10,8 @@ import {
   markPresent,
 } from "../../api/attendance";
 import "./styles/members.css";
+import { css } from "@emotion/react";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const Attendance = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -73,7 +75,7 @@ const Attendance = () => {
       .catch((err) => {
         setLoadingLogs(false);
         toast.error(
-          err.response
+          err.response300
             ? err.response.data
             : "Some error occured please try later"
         );
@@ -142,33 +144,44 @@ const Attendance = () => {
                     marginTop: "20px",
                   }}
                 />
-                {members.length
-                  ? members.map((each, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                        className="member-attendance"
-                      >
-                        <Link to={`/gym/member/${each._id}`}>
-                          <span>
-                            {each.user.fname} {each.user.lname}
-                          </span>
-                        </Link>
-                        <div className="form-check form-switch">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            checked={each.attendance}
-                            onChange={handleToggle.bind(i)}
-                          />
-                        </div>
-                      </div>
-                    ))
-                  : ""}
+                {loading ? (
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ minHeight: "200px", width: "100%" }}
+                  >
+                    <ScaleLoader />
+                  </div>
+                ) : (
+                  <div>
+                    {members.length
+                      ? members.map((each, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                            className="member-attendance"
+                          >
+                            <Link to={`/gym/member/${each._id}`}>
+                              <span>
+                                {each.user.fname} {each.user.lname}
+                              </span>
+                            </Link>
+                            <div className="form-check form-switch">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                checked={each.attendance}
+                                onChange={handleToggle.bind(i)}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      : ""}
+                  </div>
+                )}
               </div>
             </Card.Body>
           </Card>
@@ -178,7 +191,12 @@ const Attendance = () => {
             <Card.Body>
               <h3>Logs</h3>
               {loadingLogs ? (
-                <h4>loading...</h4>
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ minHeight: "200px", width: "100%" }}
+                >
+                  <ScaleLoader />
+                </div>
               ) : (
                 <>
                   <div className="logs">
