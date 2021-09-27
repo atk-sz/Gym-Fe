@@ -48,7 +48,7 @@ body {
 .calendar-rectangle:before {
   content: "";
   display: block;
-  padding-top: 120%;
+  padding-top: 99%;
 }
 .calendar-content {
   position: absolute;

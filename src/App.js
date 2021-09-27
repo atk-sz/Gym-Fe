@@ -6,7 +6,7 @@ import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { currentUser } from "./api/auth";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import AppRoute from "./components/routes/AppRoute";
 import UserRoute from "./components/routes/UserRoute";
 import MainLayout from "./layouts/MainLayout";
@@ -94,11 +94,7 @@ const App = () => {
         <Switch>
           {/* approutes */}
 
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-
-          <AppRoute exact path="/login" component={Login} layout={MainLayout} />
+          <AppRoute exact path="/" component={Login} layout={MainLayout} />
           <AppRoute
             exact
             path="/register"
