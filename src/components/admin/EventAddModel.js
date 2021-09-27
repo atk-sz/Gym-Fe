@@ -2,15 +2,8 @@ import React, { useState } from "react";
 import { Modal } from "antd";
 import Datetime from "react-datetime";
 
-const EventAddModel = ({ onOpen, onClose, onEventAdded }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
+const EventAddModel = ({ onOpen, onClose, values, handleChange, handleSubmit }) => {
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onEventAdded({ title, description, date });
-  };
   return (
     <Modal
       title="Add Event"
@@ -26,11 +19,13 @@ const EventAddModel = ({ onOpen, onClose, onEventAdded }) => {
           </label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={values.title}
+            name="title"
+            onChange={handleChange}
             className="form-control"
             id="new-title"
             aria-describedby="emailHelp"
+            required
           />
         </div>
         <div className="mb-3">
@@ -39,15 +34,85 @@ const EventAddModel = ({ onOpen, onClose, onEventAdded }) => {
           </label>
           <input
             type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={values.description}
+            name="description"
+            onChange={handleChange}
             className="form-control"
             id="new-description"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="location" className="form-label">
+            Location
+          </label>
+          <input
+            type="text"
+            value={values.location}
+            name="location"
+            onChange={handleChange}
+            className="form-control"
+            id="location"
+            required
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Date</label>
-          <Datetime value={date} onChange={(date) => setDate(date)} />
+          <label htmlFor="number_of_guests" className="form-label">
+            Number Of Guests
+          </label>
+          <input
+            type="number"
+            value={values.number_of_guests}
+            name="number_of_guests"
+            onChange={handleChange}
+            className="form-control"
+            id="number_of_guests"
+            max='100'
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-date-label" htmlFor="date">
+            Date
+          </label>
+          <input
+            type="date"
+            name="date"
+            value={values.date}
+            className="form-control mb-3"
+            id="date"
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-time-label" htmlFor="start">
+            Start
+          </label>
+          <input
+            type="time"
+            name="start"
+            value={values.start}
+            className="form-control mb-3"
+            id="start"
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-time-label" htmlFor="end">
+            End
+          </label>
+          <input
+            type="time"
+            name="end"
+            value={values.end}
+            className="form-control mb-3"
+            id="end"
+            onChange={handleChange}
+            required
+          />
         </div>
         <button type="submit" className="btn btn-primary">
           Submit

@@ -9,9 +9,21 @@ import { useSelector } from "react-redux";
 
 const EventCalender = () => {
   const [visible, setVisible] = useState(false);
-  const [event, setEvent] = useState([]);
+  const [events, setEvents] = useState([]);
   const calenderRef = useRef(null);
   const { user } = useSelector((state) => ({ ...state }));
+
+  const initialvalues = {
+    title: '',
+    description: '',
+    date: '',
+    location: '',
+    start: '',
+    end: '',
+    gym: '',
+    number_of_guests: '',
+  }
+  const [values, setValues] = useState(initialvalues)
 
   useEffect(() => {
     loadEvents();
@@ -19,27 +31,38 @@ const EventCalender = () => {
 
   const onEventAdded = (event) => {
     let calendarApi = calenderRef.current.getApi();
-    calendarApi.addEvent({
-      title: event.title,
-      description: event.description,
-      date: event.date,
-    });
+    calendarApi.addEvent(event);
   };
+
   const loadEvents = () => {
     loadAllEvents(user.token).then((res) => {
-      setEvent(res.data);
+      setEvents(res.data);
+      console.log(res.data)
     });
   };
 
-  const handleEventAdd = (data) => {
-    console.log(data.event);
+  const handleEventAdd = (event) => {
     try {
-      addNewEvent(user.token, data.event);
+      addNewEvent(user.token, event);
       setVisible(false);
       loadEvents();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleClose = () => {
+    setVisible(false)
+    setValues(initialvalues)
+  }
+
+  const handleChange = e => {
+    setValues({ ...values, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleEventAdd(values);
   };
 
   return (
@@ -50,8 +73,10 @@ const EventCalender = () => {
         </Button>
         <EventAddModel
           onOpen={visible}
-          onClose={() => setVisible(false)}
-          onEventAdded={(event) => onEventAdded(event)}
+          onClose={handleClose}
+          values={values}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
         />
       </div>
       <FullCalendar
@@ -60,10 +85,10 @@ const EventCalender = () => {
         // eventDrop={this.handleEventDrop}
         // eventClick={this.handleEventClick}
         plugins={[dayGridPlugin, interactionPlugin]}
-        events={event}
+        events={events}
         initialView="dayGridMonth"
         selectable={true}
-        eventAdd={(event) => handleEventAdd(event)}
+      // eventAdd={(event) => handleEventAdd(event)}
       />
     </div>
   );
