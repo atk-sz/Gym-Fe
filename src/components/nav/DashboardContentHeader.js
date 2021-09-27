@@ -6,9 +6,11 @@ import { createOrDisplayAttendance } from "../../api/attendance";
 import { getMemberCount } from "../../api/attendance";
 import { loadAllEvents } from "../../api/event";
 import { useSelector } from "react-redux";
+import { Skeleton } from "antd";
 
 const DashboardContentHeader = () => {
   const [members, setMembers] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [activeMembers, setActiveMembers] = useState(true);
   const [attendedMembers, setAttendedMembers] = useState(true);
   const [totalEvents, setTotalEvents] = useState(true);
@@ -35,6 +37,7 @@ const DashboardContentHeader = () => {
       setAttendedMembers(attendanceResponse.data.present);
       setActiveMembers(memberResponse);
       setTotalEvents(events.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +52,13 @@ const DashboardContentHeader = () => {
               <Card.Body>
                 <div className="header-content">
                   <div className="head">Total Members</div>
-                  <div className="content">{members.length}</div>
+                  <div className="content">
+                    {loading ? (
+                      <Skeleton active paragraph={{ rows: 0 }} />
+                    ) : (
+                      <> {members.length}</>
+                    )}
+                  </div>
                 </div>
                 <div className="icon-section"></div>
               </Card.Body>
@@ -60,7 +69,13 @@ const DashboardContentHeader = () => {
               <Card.Body>
                 <div className="header-content">
                   <div className="head">Members attended today</div>
-                  <div className="content">{attendedMembers.length}</div>
+                  <div className="content">
+                    {loading ? (
+                      <Skeleton active paragraph={{ rows: 0 }} />
+                    ) : (
+                      <> {attendedMembers.length}</>
+                    )}
+                  </div>
                 </div>
                 <div className="icon-section"></div>
               </Card.Body>
@@ -71,7 +86,13 @@ const DashboardContentHeader = () => {
               <Card.Body>
                 <div className="header-content">
                   <div className="head">Active Members</div>
-                  <div className="content">{activeMembers.data}</div>
+                  <div className="content">
+                    {loading ? (
+                      <Skeleton active paragraph={{ rows: 0 }} />
+                    ) : (
+                      <> {activeMembers.data}</>
+                    )}
+                  </div>
                 </div>
                 <div className="icon-section"></div>
               </Card.Body>
@@ -82,7 +103,13 @@ const DashboardContentHeader = () => {
               <Card.Body>
                 <div className="header-content">
                   <div className="head">Total Events</div>
-                  <div className="content">{totalEvents.length}</div>
+                  <div className="content">
+                    {loading ? (
+                      <Skeleton active paragraph={{ rows: 0 }} />
+                    ) : (
+                      <> {totalEvents.length}</>
+                    )}
+                  </div>
                 </div>
                 <div className="icon-section"></div>
               </Card.Body>

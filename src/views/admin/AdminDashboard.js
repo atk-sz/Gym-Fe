@@ -16,6 +16,7 @@ import AreaChart from "../../components/admin/AreaChart";
 import { projectStorage } from "../../firebase";
 import { Modal } from "antd";
 import { css } from "@emotion/react";
+import DashboardContentHeader from "../../components/nav/DashboardContentHeader";
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 const AdminDashboard = ({ history }) => {
@@ -143,154 +144,157 @@ const AdminDashboard = ({ history }) => {
     }
   };
   return (
-    <Container className="admin-dashboard-div">
-      <Row>
-        <Col md="12">
-          <Card>
-            <Card.Body>
-              {loading ? (
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ minHeight: "300px", width: "100%" }}
-                >
-                  <ScaleLoader />
-                </div>
-              ) : (
-                <Row className="align-items-start justify-content-between">
-                  <Col md="4">
-                    <div
-                      onClick={() => setVisible(true)}
-                      className="add-button-section"
-                    >
-                      <Card
-                        className="bg-info text-center p-5"
-                        style={{ cursor: "pointer" }}
+    <>
+      <DashboardContentHeader />
+      <Container className="admin-dashboard-div">
+        <Row>
+          <Col md="12">
+            <Card>
+              <Card.Body>
+                {loading ? (
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ minHeight: "300px", width: "100%" }}
+                  >
+                    <ScaleLoader />
+                  </div>
+                ) : (
+                  <Row className="align-items-start justify-content-between">
+                    <Col md="4">
+                      <div
+                        onClick={() => setVisible(true)}
+                        className="add-button-section"
                       >
-                        <h3 className="text-white">Add a new member</h3>
-                      </Card>
-                    </div>
-                    <Modal
-                      title="Add Member"
-                      centered
-                      visible={visible}
-                      footer={null}
-                      onCancel={() => setVisible(false)}
-                      width={1000}
-                    >
-                      <AddMemberForm />
-                    </Modal>
-                    <div className="inhouse-count-section mt-4">
-                      <Card
-                        className=" text-center p-4"
-                        style={{ backgroundColor: "#2B2BF7" }}
+                        <Card
+                          className="bg-info text-center p-5"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <h3 className="text-white">Add a new member</h3>
+                        </Card>
+                      </div>
+                      <Modal
+                        title="Add Member"
+                        centered
+                        visible={visible}
+                        footer={null}
+                        onCancel={() => setVisible(false)}
+                        width={1000}
                       >
-                        <h3 className="text-white">Current In House:</h3>
-                        <h2 className="text-white">{count}</h2>
-                      </Card>
-                    </div>
-                  </Col>
-                  <Col md="8">
-                    <Card className="admin-dashboard">
-                      <Card.Body>
-                        {/* <h4>
+                        <AddMemberForm />
+                      </Modal>
+                      <div className="inhouse-count-section mt-4">
+                        <Card
+                          className=" text-center p-4"
+                          style={{ backgroundColor: "#2B2BF7" }}
+                        >
+                          <h3 className="text-white">Current In House:</h3>
+                          <h2 className="text-white">{count}</h2>
+                        </Card>
+                      </div>
+                    </Col>
+                    <Col md="8">
+                      <Card className="admin-dashboard">
+                        <Card.Body>
+                          {/* <h4>
                           {presentCount} / {memberCount}
                         </h4> */}
-                        <LineChart chartData={chartData} />
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col md="8">
-                    <Card className="mt-4">
-                      <Card.Body>
-                        <AreaChart />
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col md="4">
-                    <Card className="mt-4">
-                      <Calendar />
-                    </Card>
-                  </Col>
-                  <Col md="4">
-                    <Card className="dashboard-head-item-card dashboard-logo mt-4">
-                      <Card.Body>
-                        <div className="head">
-                          <img
-                            style={{ maxWidth: "10vw", maxHeight: "10vh" }}
-                            src={gym.logo}
-                            alt={gym.name}
-                          />
-                        </div>
-                        <div className="content">
-                          <p>{gym.name}</p>
-                          <div className="mb-3">
-                            <label htmlFor="logo" className="form-label">
-                              Upload Logo
-                            </label>
-                            <input
-                              type="file"
-                              className="form-control"
-                              id="logo"
-                              name="logo"
-                              accept="image/*"
-                              onChange={handleLogoSelect}
-                              required
+                          <LineChart chartData={chartData} />
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                    <Col md="8">
+                      <Card className="mt-4">
+                        <Card.Body>
+                          <AreaChart />
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                    <Col md="4">
+                      <Card className="mt-4">
+                        <Calendar />
+                      </Card>
+                    </Col>
+                    <Col md="4">
+                      <Card className="dashboard-head-item-card dashboard-logo mt-4">
+                        <Card.Body>
+                          <div className="head">
+                            <img
+                              style={{ maxWidth: "10vw", maxHeight: "10vh" }}
+                              src={gym.logo}
+                              alt={gym.name}
                             />
                           </div>
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col md="8">
-                    <Card className="mt-4">
-                      <Card.Body>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5>Member Details</h5>
-                          <Badge style={{ background: "#0DCAF0" }}>
-                            <Link
-                              to="/gym/members/all"
-                              style={{ color: "#fff" }}
-                            >
-                              See All
-                            </Link>
-                          </Badge>
-                        </div>
-                        <Table>
-                          <thead>
-                            <tr>
-                              <th>Card Id</th>
-                              <th>Name</th>
-                              <th>Email</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {loading ? (
-                              <h4 className="text-center">loading</h4>
-                            ) : members && members.length ? (
-                              members.slice(0, 6).map((each, i) => (
-                                <tr key={i}>
-                                  <td>{each.card_id}</td>
-                                  <td>
-                                    {each.fname} {each.lname}
-                                  </td>
-                                  <td>{each.email}</td>
-                                </tr>
-                              ))
-                            ) : (
-                              ""
-                            )}
-                          </tbody>
-                        </Table>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                          <div className="content">
+                            <p>{gym.name}</p>
+                            <div className="mb-3">
+                              <label htmlFor="logo" className="form-label">
+                                Upload Logo
+                              </label>
+                              <input
+                                type="file"
+                                className="form-control"
+                                id="logo"
+                                name="logo"
+                                accept="image/*"
+                                onChange={handleLogoSelect}
+                                required
+                              />
+                            </div>
+                          </div>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                    <Col md="8">
+                      <Card className="mt-4">
+                        <Card.Body>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h5>Member Details</h5>
+                            <Badge style={{ background: "#0DCAF0" }}>
+                              <Link
+                                to="/gym/members/all"
+                                style={{ color: "#fff" }}
+                              >
+                                See All
+                              </Link>
+                            </Badge>
+                          </div>
+                          <Table>
+                            <thead>
+                              <tr>
+                                <th>Card Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {loading ? (
+                                <h4 className="text-center">loading</h4>
+                              ) : members && members.length ? (
+                                members.slice(0, 6).map((each, i) => (
+                                  <tr key={i}>
+                                    <td>{each.card_id}</td>
+                                    <td>
+                                      {each.fname} {each.lname}
+                                    </td>
+                                    <td>{each.email}</td>
+                                  </tr>
+                                ))
+                              ) : (
+                                ""
+                              )}
+                            </tbody>
+                          </Table>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 

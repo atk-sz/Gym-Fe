@@ -2,5 +2,22 @@
   background-color: #101010e5;
 }
 .navbar .nav-link {
-  color: #fff;
+  color: #000;
+}
+.ant-menu-horizontal {
+  background: none !important;
+  border: 0 !important;
+  width: 100% !important;
+}
+.ant-menu .nav-link a,
+.ant-menu-item a:hover {
+  color: #000 !important;
+  font-weight: 600;
+}
+.ant-menu .nav-link::after {
+  display: none;
+}
+.gym-name-area {
+  font-size: 20px;
+  font-weight: 700;
 }

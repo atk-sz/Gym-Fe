@@ -37,8 +37,8 @@ const AllMembers = () => {
 
   useEffect(() => {
     loadMembers();
-    const results = searchResults.filter((member) =>
-      member.card_id.includes(filter)
+    const results = searchResults.filter(
+      (member) => member.fname.includes(filter) || member.lname.includes(filter)
     );
     setSearchResults(results);
   }, [filter]);
@@ -170,7 +170,7 @@ const AllMembers = () => {
                     }}
                     className="form-control"
                     type="text"
-                    placeholder="Search by Card Id"
+                    placeholder="Search by Name"
                     value={filter}
                     onChange={handleChange}
                   />
@@ -194,12 +194,9 @@ const AllMembers = () => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <div
-                      className="d-flex justify-content-center align-items-center"
-                      style={{ minHeight: "200px", width: "100%" }}
-                    >
+                    <td style={{ textAlign: "center" }} colSpan="5">
                       <ScaleLoader />
-                    </div>
+                    </td>
                   ) : searchResults && searchResults.length ? (
                     searchResults.map((each, i) => (
                       <tr key={i}>
