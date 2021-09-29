@@ -1,8 +1,30 @@
-.search-member .suggesstion{
-    padding: 5px;
-    background-color: aqua;
-    cursor: pointer;
+.search-member .suggesstion-div {
+  position: absolute;
+  z-index: 2;
+  display: none;
 }
-.search-member .suggesstion:hover{
-    background-color: rgb(48, 175, 175);
+.search-member .suggesstion-div.visible {
+  display: block;
+}
+.search-member .suggesstion {
+  padding: 5px;
+  background-color: aqua;
+  cursor: pointer;
+}
+.search-member .suggesstion:hover {
+  background-color: rgb(48, 175, 175);
+}
+.scanner-page-div .log-book-div {
+  margin: 50px 5vw;
+  padding: 20px 30px;
+  border: solid 2px black;
+  height: 45vh;
+  width: 70vw;
+  overflow-y: scroll;
+}
+.log-book-div .log-book-header,
+.log-book-div .log-book-records {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -15,6 +15,7 @@ const Scanner = () => {
     const [search, setSearch] = useState('')
     const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
     const [disable, setDisable] = useState(true)
+    const [visible, setVisible] = useState(false)
 
     const filterMember = ({ absent, log }) => {
         return new Promise((resolve, reject) => {
@@ -40,6 +41,7 @@ const Scanner = () => {
             setAid(res.data._id)
             const resultMems = await filterMember(res.data);
             setMembers(resultMems);
+            setLoading(false);
             loadLogs(res.data._id)
         } catch (error) {
             toast.error(
@@ -64,9 +66,9 @@ const Scanner = () => {
 
     const loadLogs = async (aid) => {
         try {
+            setLoadingLogs(true)
             const res = await getLogs(user.token, aid)
-            console.log(res.data)
-            setLoading(false);
+            sortAndSave(res.data.log_book)
         } catch (error) {
             toast.error(
                 error.response
@@ -77,12 +79,25 @@ const Scanner = () => {
         }
     }
 
+    const sortAndSave = (logs) => {
+        logs.sort(function (a, b) {
+            return new Date(b.time) - new Date(a.time);
+        });
+        setLogs(logs)
+        setLoadingLogs(false)
+    }
+
     const handleSubmit = async e => {
         e.preventDefault()
         try {
+            setDisable(true)
             const res = await checkAndMark(aid, search, user.token)
-            console.log(res.data)
+            // setSearch('')
+            setDisable(false)
+            setLoadingLogs(true)
+            sortAndSave(res.data.log_book)
         } catch (error) {
+            setDisable(false)
             toast.error(
                 error.response
                     ? error.response.data
@@ -91,6 +106,11 @@ const Scanner = () => {
             console.log(error);
         }
     }
+
+    const displayTime = (date) => {
+        const dateAndTime = new Date(date);
+        return `${dateAndTime.getHours()} : ${dateAndTime.getMinutes()}`;
+    };
 
     const filteredMembers = members.filter((each) =>
         each.card_id.toLocaleLowerCase().includes((search.toLocaleLowerCase()))
@@ -99,7 +119,7 @@ const Scanner = () => {
     const membersToSuggest = search ? filteredMembers : [];
 
     return (
-        <div>
+        <div className="scanner-page-div">
             {
                 loading ? (<div style={{ textAlign: "center" }} colSpan="5">
                     <ScaleLoader />
@@ -112,7 +132,7 @@ const Scanner = () => {
                                     <input
                                         type="text"
                                         value={search}
-                                        onChange={e => setSearch(e.target.value)}
+                                        onChange={e => { setSearch(e.target.value); setVisible(true) }}
                                         className="form-control"
                                         id="ID"
                                         aria-describedby="idHelp"
@@ -120,11 +140,11 @@ const Scanner = () => {
                                     // required
                                     />
                                     {
-                                        membersToSuggest.length ? (<div className="suggesstion-div">
+                                        membersToSuggest.length ? (<div className={`suggesstion-div ${visible ? 'visible' : ''}`}>
                                             {
                                                 membersToSuggest.map((each, i) => {
                                                     if (i < 5)
-                                                        return (<h3 key={i} onClick={e => setSearch(each.card_id)} className="suggesstion">{each.card_id}</h3>)
+                                                        return (<h3 key={i} onClick={e => { setSearch(each.card_id); setVisible(false) }} className="suggesstion">{each.card_id}</h3>)
                                                 })
                                             }
                                         </div>) : ''
@@ -141,6 +161,27 @@ const Scanner = () => {
                                 </div>
                             </div>
                         </form>
+                        {
+                            loadingLogs ? (<div style={{ textAlign: "center" }} colSpan="5">
+                                <ScaleLoader />
+                            </div>) : (
+                                <div className="log-book-div">
+                                    <div className="log-book-header">
+                                        <h4>Card Id</h4>
+                                        <h4>Action</h4>
+                                        <h4>Time</h4>
+                                    </div>
+                                    {
+                                        logs.length ? logs.map((each, i) =>
+                                        (<div className="primary" key={i} className="log-book-records">
+                                            <h3>{each.member}</h3>
+                                            <h3>{each.action}</h3>
+                                            <h3>{displayTime(each.time)}</h3>
+                                        </div>)) : ''
+                                    }
+                                </div>
+                            )
+                        }
                     </>
                 )
             }
