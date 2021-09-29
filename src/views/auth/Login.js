@@ -155,7 +155,6 @@ const Login = ({ history }) => {
                   className="form-control shadow-sm"
                   value={password}
                   onChange={handlePassword}
-                  autoFocus
                   placeholder="Your Password"
                 />
               </div>

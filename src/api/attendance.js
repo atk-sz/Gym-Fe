@@ -60,6 +60,18 @@ export const markCheckoutBack = async (aid, mid, authtoken) => {
   );
 };
 
+export const checkAndMark = async (aid, card_id, authtoken) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/check-and-mark`,
+    { card_id },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
 export const getPresentCount = async (authtoken, aid) => {
   return await axios.get(
     `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/present/count`,
@@ -82,12 +94,9 @@ export const getMemberCount = async (authtoken, aid) => {
   );
 };
 
-export const getLogs = async (authtoken, gid) => {
-  return await axios.post(
-    `${process.env.REACT_APP_BACKEND_API}/attendance/${gid}/logs`,
-    {
-      startDate: new Date(),
-    },
+export const getLogs = async (authtoken, aid) => {
+  return await axios.get(
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/logs`,
     {
       headers: {
         authtoken,

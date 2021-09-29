@@ -194,9 +194,9 @@ const AllMembers = () => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <td style={{ textAlign: "center" }} colSpan="5">
+                    <div style={{ textAlign: "center" }} colSpan="5">
                       <ScaleLoader />
-                    </td>
+                    </div>
                   ) : searchResults && searchResults.length ? (
                     searchResults.map((each, i) => (
                       <tr key={i}>

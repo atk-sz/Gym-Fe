@@ -1,0 +1,8 @@
+.search-member .suggesstion{
+    padding: 5px;
+    background-color: aqua;
+    cursor: pointer;
+}
+.search-member .suggesstion:hover{
+    background-color: rgb(48, 175, 175);
+}

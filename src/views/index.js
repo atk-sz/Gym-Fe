@@ -19,6 +19,7 @@ export { default as AllMembers } from "./admin/AllMembers";
 export { default as CalenderEvents } from "./admin/CalenderOfEvents";
 export { default as AddManager } from "./admin/AddManager";
 export { default as HouseMembers } from "./admin/HouseMembers";
+export { default as Scanner } from "./admin/Scanner";
 
 // super-admin views
 export { default as SuperAdminDashboard } from "./super-admin/Dashboard";
