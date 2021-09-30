@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { createOrDisplayAttendance } from "../../api/attendance";
-import { getHouseMembers } from "../../api/admin";
 import { Container, Row, Col, Card, Table, Badge } from "react-bootstrap";
 import {
   weeklyStats,
   getAllGymMembers,
+  currentInHouse,
   getGymDetails,
   updateGymLogo,
 } from "../../api/gym";
@@ -21,7 +21,6 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 
 const AdminDashboard = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
-  const { hid } = useParams();
   const [loading, setLoading] = useState(true);
   const [aID, setAID] = useState("");
   const [gID, setGID] = useState("");
@@ -68,16 +67,8 @@ const AdminDashboard = ({ history }) => {
 
   const loadPresentCount = async (attendanceID, gymID) => {
     try {
-      // setPresentCount(
-      //   await (
-      //     await getPresentCount(user.token, attendanceID)
-      //   ).data
-      // );
-      // setMemberCount(
-      //   await (
-      //     await getMemberCount(user.token, attendanceID)
-      //   ).data
-      // );
+      const res = await currentInHouse(user.token, gymID)
+      setCount(res.data)
       loadStats(gymID);
     } catch (err) {
       toast.error(
@@ -105,8 +96,6 @@ const AdminDashboard = ({ history }) => {
     try {
       const res = await getAllGymMembers(user.token);
       setMembers(res.data);
-      const response = await getHouseMembers(user.token, hid);
-      setCount(response.data.length);
     } catch (error) {
       console.log(error);
     }

@@ -62,3 +62,14 @@ export const getAllGymMembers = async (authtoken) => {
     }
   );
 };
+
+export const currentInHouse = async (authtoken, gid) => {
+  return await axios.get(
+    `${process.env.REACT_APP_BACKEND_API}/gym/${gid}/current-in-house`,
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
