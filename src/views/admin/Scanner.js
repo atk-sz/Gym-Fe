@@ -18,7 +18,7 @@ const Scanner = () => {
     const [disable, setDisable] = useState(true)
     const [visible, setVisible] = useState(false)
     const [camVisible, setCamVisible] = useState(false)
-    const [searchDisable, setSearchDisable] = useState(true)
+    const [searchDisable, setSearchDisable] = useState(false)
 
     const filterMember = ({ absent, log }) => {
         return new Promise((resolve, reject) => {
