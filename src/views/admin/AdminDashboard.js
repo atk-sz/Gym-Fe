@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { createOrDisplayAttendance } from "../../api/attendance";
-import { Container, Row, Col, Card, Table, Badge } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Badge,
+  Button,
+} from "react-bootstrap";
 import {
   weeklyStats,
   getAllGymMembers,
@@ -67,8 +75,8 @@ const AdminDashboard = ({ history }) => {
 
   const loadPresentCount = async (attendanceID, gymID) => {
     try {
-      const res = await currentInHouse(user.token, gymID)
-      setCount(res.data)
+      const res = await currentInHouse(user.token, gymID);
+      setCount(res.data);
       loadStats(gymID);
     } catch (err) {
       toast.error(
@@ -156,7 +164,11 @@ const AdminDashboard = ({ history }) => {
                       >
                         <Card
                           className="bg-info text-center p-5"
-                          style={{ cursor: "pointer" }}
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor:
+                              "linear-gradient(126deg, rgba(112,255,150,1) 0%, rgba(97,190,175,1) 100%)",
+                          }}
                         >
                           <h3 className="text-white">Add a new member</h3>
                         </Card>
@@ -174,7 +186,9 @@ const AdminDashboard = ({ history }) => {
                       <div className="inhouse-count-section mt-4">
                         <Card
                           className=" text-center p-4"
-                          style={{ backgroundColor: "#2B2BF7" }}
+                          style={{
+                            backgroundColor: "rgb(79,15,182)",
+                          }}
                         >
                           <h3 className="text-white">Current In House:</h3>
                           <h2 className="text-white">{count}</h2>
@@ -203,7 +217,7 @@ const AdminDashboard = ({ history }) => {
                         <Calendar />
                       </Card>
                     </Col>
-                    <Col md="4">
+                    {/* <Col md="4">
                       <Card className="dashboard-head-item-card dashboard-logo mt-4">
                         <Card.Body>
                           <div className="head">
@@ -233,19 +247,21 @@ const AdminDashboard = ({ history }) => {
                         </Card.Body>
                       </Card>
                     </Col>
-                    <Col md="8">
+  */}
+                    <Col md="12">
                       <Card className="mt-4">
                         <Card.Body>
                           <div className="d-flex justify-content-between align-items-center">
-                            <h5>Member Details</h5>
-                            <Badge style={{ background: "#0DCAF0" }}>
+                            <h3>Member Details</h3>
+                            <Button className="btn cust-btn">
                               <Link
                                 to="/gym/members/all"
                                 style={{ color: "#fff" }}
                               >
                                 See All
                               </Link>
-                            </Badge>
+                            </Button>
+                            <Badge style={{ background: "#0DCAF0" }}></Badge>
                           </div>
                           <Table>
                             <thead>

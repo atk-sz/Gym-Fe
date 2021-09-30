@@ -64,3 +64,14 @@
   right: 0;
   top: 0;
 }
+.cust-btn {
+  cursor: pointer;
+  background-color: #0dcaf0;
+  color: whitesmoke;
+  padding: 15px 30px;
+  border: none;
+}
+.cust-btn:hover{
+  box-shadow: 2px 3px 4px solid #0dcaf0;
+  color: white;
+}

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getAllGymMembers } from "../../api/gym";
-import { Card, Table, Badge } from "react-bootstrap";
+import { Card, Table, Badge, Container } from "react-bootstrap";
 import { BsArrowUpDown } from "react-icons/bs";
 import * as AiIcons from "react-icons/ai";
 import { css } from "@emotion/react";
@@ -20,15 +20,21 @@ const antIcon = (
 );
 // const { TextArea } = Input;
 
-const DraftMessageForm = ({ handleSend, draftMessage, setDraftMessage, sendingMessage }) => {
+const DraftMessageForm = ({
+  handleSend,
+  draftMessage,
+  setDraftMessage,
+  sendingMessage,
+}) => {
   return (
-    <>{
-      sendingMessage ? (
+    <>
+      {sendingMessage ? (
         <h3>Sending Message</h3>
       ) : (
         <form onSubmit={handleSend}>
           <div className="mb-3">
-            <textarea className="form-control"
+            <textarea
+              className="form-control"
               style={{ resize: "none", width: "100%" }}
               value={draftMessage}
               onChange={(e) => setDraftMessage(e.target.value)}
@@ -36,12 +42,14 @@ const DraftMessageForm = ({ handleSend, draftMessage, setDraftMessage, sendingMe
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </form>
-      )
-    }
-    </>)
-}
+      )}
+    </>
+  );
+};
 
 const AllMembers = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -80,17 +88,25 @@ const AllMembers = () => {
     let membersUpdate = members;
     if (nameSort) {
       membersUpdate.sort(function (a, b) {
-        if (a.fullName.toLowerCase() < b.fullName.toLowerCase()) { return -1; }
-        if (a.fullName.toLowerCase() > b.fullName.toLowerCase()) { return 1; }
+        if (a.fullName.toLowerCase() < b.fullName.toLowerCase()) {
+          return -1;
+        }
+        if (a.fullName.toLowerCase() > b.fullName.toLowerCase()) {
+          return 1;
+        }
         return 0;
-      })
+      });
       membersUpdate.reverse();
     } else
       membersUpdate.sort(function (a, b) {
-        if (a.fullName.toLowerCase() < b.fullName.toLowerCase()) { return -1; }
-        if (a.fullName.toLowerCase() > b.fullName.toLowerCase()) { return 1; }
+        if (a.fullName.toLowerCase() < b.fullName.toLowerCase()) {
+          return -1;
+        }
+        if (a.fullName.toLowerCase() > b.fullName.toLowerCase()) {
+          return 1;
+        }
         return 0;
-      })
+      });
     setMembers(membersUpdate);
     setNameSort(!nameSort);
   };
@@ -169,48 +185,48 @@ const AllMembers = () => {
   };
 
   const handleSelect = (value, member, index) => {
-    const membersToUpdate = draftMembers
+    const membersToUpdate = draftMembers;
     if (value) {
-      const i = membersToUpdate.findIndex(item => item == member)
+      const i = membersToUpdate.findIndex((item) => item == member);
       if (!i >= 0) {
-        membersToUpdate.push(member)
-        setDraftMembers(membersToUpdate)
+        membersToUpdate.push(member);
+        setDraftMembers(membersToUpdate);
       }
     } else {
-      const resultingmembers = membersToUpdate.filter(each => each !== member)
-      setDraftMembers(resultingmembers)
+      const resultingmembers = membersToUpdate.filter(
+        (each) => each !== member
+      );
+      setDraftMembers(resultingmembers);
     }
-  }
+  };
 
-  const handleSend = async e => {
-    e.preventDefault()
+  const handleSend = async (e) => {
+    e.preventDefault();
     try {
-      setSendingMessage(true)
-      const checkboxes = document.getElementsByClassName("select-check")
+      setSendingMessage(true);
+      const checkboxes = document.getElementsByClassName("select-check");
       if (!draftMembers.length) {
-        setSendingMessage(false)
-        return toast.error("First please select some members")
+        setSendingMessage(false);
+        return toast.error("First please select some members");
       }
       if (draftMembers.length === 1) {
-        await adminSendMailToMember(user.token, draftMessage, draftMembers[0])
+        await adminSendMailToMember(user.token, draftMessage, draftMembers[0]);
         for (let i = 0; i < checkboxes.length; i++)
-          if (checkboxes[i].type == 'checkbox')
-            checkboxes[i].checked = false
-        setSendingMessage(false)
-        setDraftVisible(false)
-        setDraftMembers([])
-        setDraftMessage('')
-        return toast.success("Message sent successfully")
+          if (checkboxes[i].type == "checkbox") checkboxes[i].checked = false;
+        setSendingMessage(false);
+        setDraftVisible(false);
+        setDraftMembers([]);
+        setDraftMessage("");
+        return toast.success("Message sent successfully");
       }
-      await adminSendMailToMember(user.token, draftMessage, draftMembers)
+      await adminSendMailToMember(user.token, draftMessage, draftMembers);
       for (let i = 0; i < checkboxes.length; i++)
-        if (checkboxes[i].type == 'checkbox')
-          checkboxes[i].checked = false
-      setSendingMessage(false)
-      setDraftVisible(false)
-      setDraftMembers([])
-      setDraftMessage('')
-      toast.success("Message sent successfully")
+        if (checkboxes[i].type == "checkbox") checkboxes[i].checked = false;
+      setSendingMessage(false);
+      setDraftVisible(false);
+      setDraftMembers([]);
+      setDraftMessage("");
+      toast.success("Message sent successfully");
     } catch (error) {
       toast.error(
         error.response
@@ -219,7 +235,7 @@ const AllMembers = () => {
       );
       console.log(error);
     }
-  }
+  };
 
   const filteredItems = members.filter((item) =>
     item.fullName.toLocaleLowerCase().includes(keyword)
@@ -233,65 +249,79 @@ const AllMembers = () => {
         <div className="col-md-12">
           <Card>
             <Card.Body>
-              <div className="d-flex justify-content-between">
-                <div>
-                  <h4>All Members</h4>
-                  <button className="btn btn-primary"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setDraftVisible(true)}
-                  >
-                    Draft Message
-                  </button>
-                  <Modal
-                    title="Add Member"
-                    centered
-                    visible={draftVisible}
-                    footer={null}
-                    onCancel={() => setDraftVisible(false)}
-                    width={1000}
-                  >
-                    <DraftMessageForm handleSend={handleSend} draftMessage={draftMessage} setDraftMessage={setDraftMessage} sendingMessage={sendingMessage} />
-                  </Modal>
+              <Container style={{ marginBottom: "2rem" }}>
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <button
+                      className="btn cust-btn"
+                      onClick={() => setDraftVisible(true)}
+                    >
+                      Draft Message
+                    </button>
+                    <Modal
+                      title="Draft Messaging"
+                      centered
+                      visible={draftVisible}
+                      footer={null}
+                      onCancel={() => setDraftVisible(false)}
+                      width={1000}
+                    >
+                      <DraftMessageForm
+                        handleSend={handleSend}
+                        draftMessage={draftMessage}
+                        setDraftMessage={setDraftMessage}
+                        sendingMessage={sendingMessage}
+                      />
+                    </Modal>
+                  </div>
+                  <div>
+                    <button
+                      className="btn cust-btn"
+                      onClick={() => setVisible(true)}
+                    >
+                      Add Member
+                    </button>
+                    <Modal
+                      title="Add Member"
+                      centered
+                      visible={visible}
+                      footer={null}
+                      onCancel={() => setVisible(false)}
+                      width={1000}
+                    >
+                      <AddMemberForm />
+                    </Modal>
+                    <input
+                      style={{
+                        display: "inline",
+                        width: "auto",
+                        marginLeft: "15px",
+                      }}
+                      className="form-control"
+                      type="text"
+                      placeholder="Search by Name"
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <button className="btn btn-success"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setVisible(true)}
-                  >
-                    Add Member
-                  </button>
-                  <Modal
-                    title="Add Member"
-                    centered
-                    visible={visible}
-                    footer={null}
-                    onCancel={() => setVisible(false)}
-                    width={1000}
-                  >
-                    <AddMemberForm />
-                  </Modal>
-                  <input
-                    style={{
-                      display: "inline",
-                      width: "auto",
-                      marginLeft: "15px",
-                    }}
-                    className="form-control"
-                    type="text"
-                    placeholder="Search by Name"
-                    value={keyword}
-                    onChange={e => setKeyword(e.target.value)}
-                  />
-                </div>
-              </div>
+              </Container>
+
               <Table>
                 <thead>
                   <tr>
-                    <th><input className="form-check-input" type="checkbox" disabled /></th>
-                    <th>Card Id</th>
+                    <th>
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        disabled
+                      />
+                    </th>
+
                     <th style={{ cursor: "default" }} onClick={sortByName}>
                       Name <BsArrowUpDown />
                     </th>
+                    <th>Family Id</th>
                     <th style={{ cursor: "default" }} onClick={sortByJoin}>
                       Join <BsArrowUpDown />
                     </th>
@@ -308,8 +338,16 @@ const AllMembers = () => {
                   ) : membersToDisplay && membersToDisplay.length ? (
                     membersToDisplay.map((each, i) => (
                       <tr key={i}>
-                        <td><input className="form-check-input select-check" type="checkbox" onChange={e => { handleSelect(e.target.checked, each.email, i) }} /></td>
-                        <td>{each.card_id}</td>
+                        <td>
+                          <input
+                            className="form-check-input select-check"
+                            type="checkbox"
+                            onChange={(e) => {
+                              handleSelect(e.target.checked, each.email, i);
+                            }}
+                          />
+                        </td>
+
                         <td>
                           <Link
                             to={`/gym/member/${each._id}`}
@@ -318,6 +356,7 @@ const AllMembers = () => {
                             <td>{`${each.fullName}`}</td>
                           </Link>
                         </td>
+                        <td>{each.card_id}</td>
                         <td>{displayDate(new Date(each.join))}</td>
                         <td>
                           <div

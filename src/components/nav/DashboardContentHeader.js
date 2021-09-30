@@ -51,7 +51,10 @@ const DashboardContentHeader = () => {
             <Card className="dashboard-head-item-card">
               <Card.Body>
                 <div className="header-content">
-                  <div className="head">Total Members</div>
+                  <div className="sub-head">
+                    <p>Total Members</p>
+                  </div>
+
                   <div className="content">
                     {loading ? (
                       <Skeleton active paragraph={{ rows: 0 }} />
@@ -68,7 +71,10 @@ const DashboardContentHeader = () => {
             <Card className="dashboard-head-item-card">
               <Card.Body>
                 <div className="header-content">
-                  <div className="head">Members attended today</div>
+                  <div className="sub-head">
+                    <p>Members attended today</p>
+                  </div>
+
                   <div className="content">
                     {loading ? (
                       <Skeleton active paragraph={{ rows: 0 }} />
@@ -85,7 +91,10 @@ const DashboardContentHeader = () => {
             <Card className="dashboard-head-item-card">
               <Card.Body>
                 <div className="header-content">
-                  <div className="head">Active Members</div>
+                  <div className="sub-head">
+                    <p>Active Members</p>
+                  </div>
+
                   <div className="content">
                     {loading ? (
                       <Skeleton active paragraph={{ rows: 0 }} />
@@ -102,7 +111,10 @@ const DashboardContentHeader = () => {
             <Card className="dashboard-head-item-card">
               <Card.Body>
                 <div className="header-content">
-                  <div className="head">Total Events</div>
+                  <div className="sub-head">
+                    <p>Total Events</p>
+                  </div>
+
                   <div className="content">
                     {loading ? (
                       <Skeleton active paragraph={{ rows: 0 }} />

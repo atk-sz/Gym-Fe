@@ -21,15 +21,18 @@ const Header = () => {
 
   const goToDahboard = () => {
     if (user.role === "admin" || user.role === "manager")
-      history.push('/admin/dashboard');
+      history.push("/admin/dashboard");
     else if (user.role === "super-admin")
-      history.push('/super-admin/dashboard')
-    else
-      history.push('/user/dashboard');
-  }
+      history.push("/super-admin/dashboard");
+    else history.push("/user/dashboard");
+  };
 
   return (
-    <nav id="header" className="navbar navbar-expand-md shadow">
+    <nav
+      id="header"
+      className="navbar navbar-expand-md shadow"
+      style={{ boxShadow: "1px 5px 3px lightgrey" }}
+    >
       <div className="container">
         <ul className="navbar-nav">
           <li className="nav-item">
@@ -62,11 +65,13 @@ const Header = () => {
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li>
-                    <button onClick={(e) => {
-                      e.preventDefault();
-                      goToDahboard();
-                    }}
-                      className='btn btn-light'>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        goToDahboard();
+                      }}
+                      className="btn btn-light"
+                    >
                       Dashboard
                     </button>
                   </li>
@@ -76,7 +81,8 @@ const Header = () => {
                         e.preventDefault();
                         handleLogout();
                       }}
-                      className='btn btn-light'>
+                      className="btn btn-light"
+                    >
                       {/* <Link
                         to="/"
                         onClick={(e) => {

@@ -305,3 +305,16 @@ body {
   transform: translateX(0);
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
+
+
+.cust-btn {
+  cursor: pointer;
+  background-color: #0dcaf0;
+  color: whitesmoke;
+  padding: 15px 30px;
+  border: none;
+}
+.cust-btn:hover{
+  box-shadow: 2px 3px 4px solid #0dcaf0;
+  color: white;
+}

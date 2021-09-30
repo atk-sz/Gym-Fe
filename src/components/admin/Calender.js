@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { TransitionGroup } from "react-transition-group";
 import moment from "moment";
 import "./Calender.css";
-import { addNewEvent, loadAllEvents, removeServerEvent, updateServerEvent } from "../../api/event";
+import {
+  addNewEvent,
+  loadAllEvents,
+  removeServerEvent,
+  updateServerEvent,
+} from "../../api/event";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -67,7 +72,7 @@ class Calendar extends React.Component {
       editEvent: null,
       deleteIndex: -1,
       updateIndex: -1,
-      edit: false
+      edit: false,
     };
     this.previous = this.previous.bind(this);
     this.next = this.next.bind(this);
@@ -182,7 +187,7 @@ class Calendar extends React.Component {
   }
 
   removeEvent() {
-    const i = this.state.deleteIndex
+    const i = this.state.deleteIndex;
     const monthEvents = this.state.selectedMonthEvents.slice();
     const currentSelectedDate = this.state.selectedDay;
     const { user } = this.props;
@@ -191,13 +196,13 @@ class Calendar extends React.Component {
     if (currentSelectedDate.isAfter(isAfterDay)) {
       if (window.confirm("Are you sure you want to remove this event?")) {
         let index = i;
-        this.hideEventDialog()
+        this.hideEventDialog();
         if (index != -1) {
           this.setState({ loadingDayEvents: true });
           removeServerEvent(user.token, monthEvents[index]._id)
             .then((res) => {
               monthEvents.splice(index, 1);
-              this.hideEventDialog()
+              this.hideEventDialog();
               this.setState({ loadingDayEvents: false });
             })
             .catch((err) => {
@@ -234,29 +239,34 @@ class Calendar extends React.Component {
   }
 
   showEventDialog(event, i) {
-    this.setState({ viewEvent: event, deleteIndex: i })
-    this.setState({ showEventDialog: true })
+    this.setState({ viewEvent: event, deleteIndex: i });
+    this.setState({ showEventDialog: true });
   }
 
   hideEventDialog() {
-    this.setState({ showEventDialog: false, viewEvent: null, deleteIndex: -1 })
+    this.setState({ showEventDialog: false, viewEvent: null, deleteIndex: -1 });
   }
 
   hideDialog() {
-    this.hideEventDialog()
+    this.hideEventDialog();
     this.setState({
       showDialog: false,
       editEvent: null,
-      edit: false
+      edit: false,
     });
   }
 
   editEventHandle() {
-    const event = this.state.viewEvent
-    const index = this.state.deleteIndex
-    this.setState({ showEventDialog: false, edit: true, updateIndex: index, deleteIndex: -1 })
-    this.setState({ editEvent: event })
-    this.showDialog()
+    const event = this.state.viewEvent;
+    const index = this.state.deleteIndex;
+    this.setState({
+      showEventDialog: false,
+      edit: true,
+      updateIndex: index,
+      deleteIndex: -1,
+    });
+    this.setState({ editEvent: event });
+    this.showDialog();
   }
 
   handleSubmit(values) {
@@ -264,7 +274,7 @@ class Calendar extends React.Component {
     let monthEvents = this.state.selectedMonthEvents;
     const currentSelectedDate = this.state.selectedDay;
     const { updateIndex } = this.state;
-    values.date = currentSelectedDate
+    values.date = currentSelectedDate;
     let newEvents = [];
     this.setState({ loadingDayEvents: true });
     this.hideDialog();
@@ -273,18 +283,18 @@ class Calendar extends React.Component {
         .then((res) => {
           let eventToUpdate = res.data;
           eventToUpdate.date = moment(eventToUpdate.date);
-          monthEvents[updateIndex] = eventToUpdate
+          monthEvents[updateIndex] = eventToUpdate;
           this.setState({
             selectedMonthEvents: monthEvents,
             updateIndex: -1,
-            edit: false
+            edit: false,
           });
           this.setState({ loadingDayEvents: false });
         })
         .catch((err) => {
           this.setState({
             updateIndex: -1,
-            edit: false
+            edit: false,
           });
           toast.error(
             err.response
@@ -354,7 +364,10 @@ class Calendar extends React.Component {
                   />
                 </div>
                 <div className="dialog-body">
-                  <AddEventForm handleSubmit={this.handleSubmit} editEvent={this.state.editEvent} />
+                  <AddEventForm
+                    handleSubmit={this.handleSubmit}
+                    editEvent={this.state.editEvent}
+                  />
                 </div>
               </div>
             </div>
@@ -363,11 +376,33 @@ class Calendar extends React.Component {
             <div className="event-dialog-box">
               <div className="event-dialog-card">
                 <div className="event-dialog-header">
-                  <div><button onClick={this.editEventHandle} className="btn btn-warning">Edit</button></div>
-                  <div><button onClick={this.removeEvent} className="btn btn-danger">Delete</button></div>
-                  <div><i className="box arrow fa fa-times" onClick={this.hideDialog} /></div>
+                  <div>
+                    <button
+                      onClick={this.editEventHandle}
+                      className="btn cust-btn"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      onClick={this.removeEvent}
+                      className="btn btn-danger"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <div>
+                    <i
+                      className="box arrow fa fa-times"
+                      onClick={this.hideDialog}
+                    />
+                  </div>
                 </div>
-                <div style={{ marginTop: '20px' }} className="event-dialog-body">
+                <div
+                  style={{ marginTop: "20px" }}
+                  className="event-dialog-body"
+                >
                   <h2>{this.state.viewEvent.title}</h2>
                 </div>
               </div>
