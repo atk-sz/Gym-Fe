@@ -6,7 +6,6 @@ import { getAllGymMembers } from "../../api/gym";
 import { Card, Table, Badge } from "react-bootstrap";
 import { BsArrowUpDown } from "react-icons/bs";
 import * as AiIcons from "react-icons/ai";
-import "./styles/members.css";
 import { css } from "@emotion/react";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { adminSendMailToMember } from "../../api/admin";
@@ -14,11 +13,35 @@ import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
 import { AddMemberForm } from "../../components";
+import "./styles/members.css";
 
 const antIcon = (
   <LoadingOutlined style={{ fontSize: 24, color: "white" }} spin />
 );
 // const { TextArea } = Input;
+
+const DraftMessageForm = ({ handleSend, draftMessage, setDraftMessage, sendingMessage }) => {
+  return (
+    <>{
+      sendingMessage ? (
+        <h3>Sending Message</h3>
+      ) : (
+        <form onSubmit={handleSend}>
+          <div className="mb-3">
+            <textarea className="form-control"
+              style={{ resize: "none", width: "100%" }}
+              value={draftMessage}
+              onChange={(e) => setDraftMessage(e.target.value)}
+              rows="5"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
+      )
+    }
+    </>)
+}
 
 const AllMembers = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -33,6 +56,10 @@ const AllMembers = () => {
   const [sending, setSending] = useState(false);
   const [visible, setVisible] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [draftVisible, setDraftVisible] = useState(false);
+  const [draftMembers, setDraftMembers] = useState([]);
+  const [draftMessage, setDraftMessage] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   useEffect(() => {
     loadMembers();
@@ -141,6 +168,59 @@ const AllMembers = () => {
       });
   };
 
+  const handleSelect = (value, member, index) => {
+    const membersToUpdate = draftMembers
+    if (value) {
+      const i = membersToUpdate.findIndex(item => item == member)
+      if (!i >= 0) {
+        membersToUpdate.push(member)
+        setDraftMembers(membersToUpdate)
+      }
+    } else {
+      const resultingmembers = membersToUpdate.filter(each => each !== member)
+      setDraftMembers(resultingmembers)
+    }
+  }
+
+  const handleSend = async e => {
+    e.preventDefault()
+    try {
+      setSendingMessage(true)
+      const checkboxes = document.getElementsByClassName("select-check")
+      if (!draftMembers.length) {
+        setSendingMessage(false)
+        return toast.error("First please select some members")
+      }
+      if (draftMembers.length === 1) {
+        await adminSendMailToMember(user.token, draftMessage, draftMembers[0])
+        for (let i = 0; i < checkboxes.length; i++)
+          if (checkboxes[i].type == 'checkbox')
+            checkboxes[i].checked = false
+        setSendingMessage(false)
+        setDraftVisible(false)
+        setDraftMembers([])
+        setDraftMessage('')
+        return toast.success("Message sent successfully")
+      }
+      await adminSendMailToMember(user.token, draftMessage, draftMembers)
+      for (let i = 0; i < checkboxes.length; i++)
+        if (checkboxes[i].type == 'checkbox')
+          checkboxes[i].checked = false
+      setSendingMessage(false)
+      setDraftVisible(false)
+      setDraftMembers([])
+      setDraftMessage('')
+      toast.success("Message sent successfully")
+    } catch (error) {
+      toast.error(
+        error.response
+          ? error.response.data
+          : "Some error occured please try later"
+      );
+      console.log(error);
+    }
+  }
+
   const filteredItems = members.filter((item) =>
     item.fullName.toLocaleLowerCase().includes(keyword)
   );
@@ -156,14 +236,30 @@ const AllMembers = () => {
               <div className="d-flex justify-content-between">
                 <div>
                   <h4>All Members</h4>
+                  <button className="btn btn-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setDraftVisible(true)}
+                  >
+                    Draft Message
+                  </button>
+                  <Modal
+                    title="Add Member"
+                    centered
+                    visible={draftVisible}
+                    footer={null}
+                    onCancel={() => setDraftVisible(false)}
+                    width={1000}
+                  >
+                    <DraftMessageForm handleSend={handleSend} draftMessage={draftMessage} setDraftMessage={setDraftMessage} sendingMessage={sendingMessage} />
+                  </Modal>
                 </div>
                 <div>
-                  <Badge
-                    style={{ background: "#000", cursor: "pointer" }}
+                  <button className="btn btn-success"
+                    style={{ cursor: "pointer" }}
                     onClick={() => setVisible(true)}
                   >
                     Add Member
-                  </Badge>
+                  </button>
                   <Modal
                     title="Add Member"
                     centered
@@ -191,6 +287,7 @@ const AllMembers = () => {
               <Table>
                 <thead>
                   <tr>
+                    <th><input className="form-check-input" type="checkbox" disabled /></th>
                     <th>Card Id</th>
                     <th style={{ cursor: "default" }} onClick={sortByName}>
                       Name <BsArrowUpDown />
@@ -201,7 +298,6 @@ const AllMembers = () => {
                     <th style={{ cursor: "default" }} onClick={sortByActive}>
                       Active <BsArrowUpDown />
                     </th>
-                    <th>Message</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -212,6 +308,7 @@ const AllMembers = () => {
                   ) : membersToDisplay && membersToDisplay.length ? (
                     membersToDisplay.map((each, i) => (
                       <tr key={i}>
+                        <td><input className="form-check-input select-check" type="checkbox" onChange={e => { handleSelect(e.target.checked, each.email, i) }} /></td>
                         <td>{each.card_id}</td>
                         <td>
                           <Link
@@ -236,14 +333,14 @@ const AllMembers = () => {
                             }}
                           ></div>
                         </td>
-                        <td
+                        {/* <td
                           style={{ cursor: "pointer" }}
                           onClick={(e) => {
                             handleSendMessage(each);
                           }}
                         >
                           <AiIcons.AiOutlineMessage />
-                        </td>
+                        </td> */}
                       </tr>
                     ))
                   ) : (
