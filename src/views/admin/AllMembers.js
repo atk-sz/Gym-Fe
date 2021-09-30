@@ -141,6 +141,12 @@ const AllMembers = () => {
       });
   };
 
+  const filteredItems = members.filter((item) =>
+    item.fullName.toLocaleLowerCase().includes(keyword)
+  );
+
+  const membersToDisplay = keyword ? filteredItems : members;
+
   return (
     <div className="container-fluid all-member-of-gym-div">
       <div className="row">
@@ -203,8 +209,8 @@ const AllMembers = () => {
                     <div style={{ textAlign: "center" }} colSpan="5">
                       <ScaleLoader />
                     </div>
-                  ) : members && members.length ? (
-                    members.map((each, i) => (
+                  ) : membersToDisplay && membersToDisplay.length ? (
+                    membersToDisplay.map((each, i) => (
                       <tr key={i}>
                         <td>{each.card_id}</td>
                         <td>
@@ -255,7 +261,7 @@ const AllMembers = () => {
             <button className="close" onClick={(e) => setShowMessageBox(false)}>
               X
             </button>
-            <h3>{messageMember.fname}</h3>
+            <h3>{messageMember.fullName}</h3>
             <form onSubmit={handleSubmit}>
               <textarea
                 required
