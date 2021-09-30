@@ -28,3 +28,12 @@
   justify-content: space-between;
   align-items: center;
 }
+.scanner-page-div .barcode-webcam-div {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 3;
+}
+.scanner-page-div .barcode-webcam-div {
+  padding: 10vh 20vw;
+}

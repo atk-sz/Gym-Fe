@@ -34,6 +34,7 @@
     "react-toastify": "^7.0.4",
     "react-transition-group": "^4.4.2",
     "react-webcam": "^6.0.0",
+    "react-webcam-barcode-scanner": "^0.0.2-rc2",
     "redux": "^4.1.0",
     "web-vitals": "^1.1.2",
     "yarn": "^1.22.10"

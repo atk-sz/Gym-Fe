@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ScaleLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
+import BarcodeScannerComponent from "react-webcam-barcode-scanner";
 import { checkAndMark, createOrDisplayAttendance, getLogs } from '../../api/attendance';
 import './styles/Scanner.css'
 
@@ -16,6 +17,8 @@ const Scanner = () => {
     const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
     const [disable, setDisable] = useState(true)
     const [visible, setVisible] = useState(false)
+    const [camVisible, setCamVisible] = useState(false)
+    const [searchDisable, setSearchDisable] = useState(true)
 
     const filterMember = ({ absent, log }) => {
         return new Promise((resolve, reject) => {
@@ -92,7 +95,7 @@ const Scanner = () => {
         try {
             setDisable(true)
             const res = await checkAndMark(aid, search, user.token)
-            // setSearch('')
+            setSearch('')
             setDisable(false)
             setLoadingLogs(true)
             sortAndSave(res.data.log_book)
@@ -118,8 +121,30 @@ const Scanner = () => {
 
     const membersToSuggest = search ? filteredMembers : [];
 
+    const handleScan = async (err, result) => {
+        if (result) {
+            setSearch(result.text)
+            setDisable(true)
+            setSearchDisable(true)
+            setCamVisible(false)
+            const res = await checkAndMark(aid, result.text, user.token)
+            setSearch('')
+            setDisable(false)
+            setSearchDisable(false)
+            setLoadingLogs(true)
+            sortAndSave(res.data.log_book)
+        }
+    }
+
     return (
         <div className="scanner-page-div">
+            {camVisible && (<div className="barcode-webcam-div">
+                <BarcodeScannerComponent
+                    width={500}
+                    height={500}
+                    onUpdate={handleScan}
+                />
+            </div>)}
             {
                 loading ? (<div style={{ textAlign: "center" }} colSpan="5">
                     <ScaleLoader />
@@ -137,6 +162,7 @@ const Scanner = () => {
                                         id="ID"
                                         aria-describedby="idHelp"
                                         autoFocus
+                                        disabled={searchDisable}
                                     // required
                                     />
                                     {
@@ -154,13 +180,17 @@ const Scanner = () => {
                                 <div className="col-sm">
                                     <button
                                         type="submit"
-                                        // disabled={disable}
+                                        disabled={disable}
                                         className="btn btn-primary">
                                         Mark
                                     </button>
                                 </div>
                             </div>
                         </form>
+                        <h3>Or</h3>
+                        <div className="scanner-webcam-btn-div">
+                            <button onClick={e => setCamVisible(true)} className="btn btn-primary"> Scan</button>
+                        </div>
                         {
                             loadingLogs ? (<div style={{ textAlign: "center" }} colSpan="5">
                                 <ScaleLoader />
