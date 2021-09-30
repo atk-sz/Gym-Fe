@@ -81,6 +81,7 @@ class Calendar extends React.Component {
     this.hideEventDialog = this.hideEventDialog.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.editEventHandle = this.editEventHandle.bind(this);
+    this.removeEvent = this.removeEvent.bind(this);
   }
 
   previous() {
@@ -180,7 +181,8 @@ class Calendar extends React.Component {
     return weeks;
   }
 
-  removeEvent(i) {
+  removeEvent() {
+    const i = this.state.deleteIndex
     const monthEvents = this.state.selectedMonthEvents.slice();
     const currentSelectedDate = this.state.selectedDay;
     const { user } = this.props;
@@ -195,6 +197,7 @@ class Calendar extends React.Component {
           removeServerEvent(user.token, monthEvents[index]._id)
             .then((res) => {
               monthEvents.splice(index, 1);
+              this.hideEventDialog()
               this.setState({ loadingDayEvents: false });
             })
             .catch((err) => {
@@ -270,10 +273,6 @@ class Calendar extends React.Component {
           let eventToUpdate = res.data;
           eventToUpdate.date = moment(eventToUpdate.date);
           monthEvents[updateIndex] = eventToUpdate
-          // newEvents.push(eventToUpdate);
-          // for (var i = 0; i < newEvents.length; i++) {
-          //   monthEvents.push(newEvents[i]);
-          // }
           this.setState({
             selectedMonthEvents: monthEvents,
             updateIndex: -1,
@@ -360,7 +359,7 @@ class Calendar extends React.Component {
               <div className="event-dialog-card">
                 <div className="event-dialog-header">
                   <div><button onClick={this.editEventHandle} className="btn btn-warning">Edit</button></div>
-                  <div><button className="btn btn-danger">Delete</button></div>
+                  <div><button onClick={this.removeEvent} className="btn btn-danger">Delete</button></div>
                   <div><i className="box arrow fa fa-times" onClick={this.hideDialog} /></div>
                 </div>
                 <div className="event-dialog-body">
