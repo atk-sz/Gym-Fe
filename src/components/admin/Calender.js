@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TransitionGroup } from "react-transition-group";
 import moment from "moment";
 import "./Calender.css";
-import { addNewEvent, loadAllEvents, removeEvent } from "../../api/event";
+import { addNewEvent, loadAllEvents, removeServerEvent, updateServerEvent } from "../../api/event";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -62,6 +62,12 @@ class Calendar extends React.Component {
       loadingDayEvents: false,
       showEvents: false,
       showDialog: false,
+      showEventDialog: false,
+      viewEvent: null,
+      editEvent: null,
+      deleteIndex: -1,
+      updateIndex: -1,
+      edit: false
     };
     this.previous = this.previous.bind(this);
     this.next = this.next.bind(this);
@@ -70,8 +76,11 @@ class Calendar extends React.Component {
     this.goToCurrentMonthView = this.goToCurrentMonthView.bind(this);
     this.initialiseEvents();
     this.showDialog = this.showDialog.bind(this);
+    this.showEventDialog = this.showEventDialog.bind(this);
     this.hideDialog = this.hideDialog.bind(this);
+    this.hideEventDialog = this.hideEventDialog.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.editEventHandle = this.editEventHandle.bind(this);
   }
 
   previous() {
@@ -171,57 +180,6 @@ class Calendar extends React.Component {
     return weeks;
   }
 
-  // handleAdd() {
-  //   let monthEvents = this.state.selectedMonthEvents;
-  //   const currentSelectedDate = this.state.selectedDay;
-
-  //   let newEvents = [];
-
-  //   var eventTitle = prompt("Please enter a name for your event: ");
-
-  //   switch (eventTitle) {
-  //     case "":
-  //       alert("Event name cannot be empty.");
-  //       break;
-  //     case null:
-  //       alert("Changed your mind? You can add one later!");
-  //       break;
-  //     default:
-  //       var newEvent = {
-  //         title: eventTitle,
-  //         date: currentSelectedDate,
-  //       };
-
-  //       newEvents.push(newEvent);
-
-  //       for (var i = 0; i < newEvents.length; i++) {
-  //         monthEvents.push(newEvents[i]);
-  //       }
-
-  //       this.setState({
-  //         selectedMonthEvents: monthEvents,
-  //       });
-
-  //       break;
-  //   }
-  // }
-
-  // addEvent() {
-  //   const currentSelectedDate = this.state.selectedDay;
-  //   let isAfterDay = moment().startOf("day").subtract(1, "d");
-
-  //   if (currentSelectedDate.isAfter(isAfterDay)) {
-  //     this.handleAdd();
-  //   } else {
-  //     if (
-  //       window.confirm("Are you sure you want to add an event in the past?")
-  //     ) {
-  //       this.handleAdd();
-  //     } else {
-  //     } // end confirm past
-  //   } //end is in the past
-  // }
-
   removeEvent(i) {
     const monthEvents = this.state.selectedMonthEvents.slice();
     const currentSelectedDate = this.state.selectedDay;
@@ -234,7 +192,7 @@ class Calendar extends React.Component {
 
         if (index != -1) {
           this.setState({ loadingDayEvents: true });
-          removeEvent(user.token, monthEvents[index]._id)
+          removeServerEvent(user.token, monthEvents[index]._id)
             .then((res) => {
               monthEvents.splice(index, 1);
               this.setState({ loadingDayEvents: false });
@@ -272,43 +230,90 @@ class Calendar extends React.Component {
     }
   }
 
+  showEventDialog(event, i) {
+    this.setState({ viewEvent: event, deleteIndex: i })
+    this.setState({ showEventDialog: true })
+  }
+
+  hideEventDialog() {
+    this.setState({ showEventDialog: false, viewEvent: null, deleteIndex: -1 })
+  }
+
   hideDialog() {
+    this.hideEventDialog()
     this.setState({
       showDialog: false,
+      editEvent: null,
     });
   }
 
-  handleSubmit(newEvent) {
+  editEventHandle() {
+    const event = this.state.viewEvent
+    const index = this.state.deleteIndex
+    this.setState({ showEventDialog: false, edit: true, updateIndex: index, deleteIndex: -1 })
+    this.setState({ editEvent: event })
+    this.showDialog()
+  }
+
+  handleSubmit(values) {
     const { user } = this.props;
     let monthEvents = this.state.selectedMonthEvents;
     const currentSelectedDate = this.state.selectedDay;
-    newEvent.date = currentSelectedDate
+    const { updateIndex } = this.state;
+    values.date = currentSelectedDate
     let newEvents = [];
     this.setState({ loadingDayEvents: true });
     this.hideDialog();
-
-    addNewEvent(user.token, newEvent)
-      .then((res) => {
-        let eventToAdd = res.data;
-        eventToAdd.date = moment(eventToAdd.date);
-        newEvents.push(eventToAdd);
-        for (var i = 0; i < newEvents.length; i++) {
-          monthEvents.push(newEvents[i]);
-        }
-        this.setState({
-          selectedMonthEvents: monthEvents,
+    if (this.state.edit) {
+      updateServerEvent(user.token, values._id, values)
+        .then((res) => {
+          let eventToUpdate = res.data;
+          eventToUpdate.date = moment(eventToUpdate.date);
+          monthEvents[updateIndex] = eventToUpdate
+          // newEvents.push(eventToUpdate);
+          // for (var i = 0; i < newEvents.length; i++) {
+          //   monthEvents.push(newEvents[i]);
+          // }
+          this.setState({
+            selectedMonthEvents: monthEvents,
+            updateIndex: -1,
+            edit: false
+          });
+          this.setState({ loadingDayEvents: false });
+        })
+        .catch((err) => {
+          toast.error(
+            err.response
+              ? err.response.data
+              : "Some error occured please try later"
+          );
+          console.log(err);
+          this.setState({ loadingDayEvents: false });
         });
-        this.setState({ loadingDayEvents: false });
-      })
-      .catch((err) => {
-        toast.error(
-          err.response
-            ? err.response.data
-            : "Some error occured please try later"
-        );
-        console.log(err);
-        this.setState({ loadingDayEvents: false });
-      });
+    } else {
+      addNewEvent(user.token, values)
+        .then((res) => {
+          let eventToAdd = res.data;
+          eventToAdd.date = moment(eventToAdd.date);
+          newEvents.push(eventToAdd);
+          for (var i = 0; i < newEvents.length; i++) {
+            monthEvents.push(newEvents[i]);
+          }
+          this.setState({
+            selectedMonthEvents: monthEvents,
+          });
+          this.setState({ loadingDayEvents: false });
+        })
+        .catch((err) => {
+          toast.error(
+            err.response
+              ? err.response.data
+              : "Some error occured please try later"
+          );
+          console.log(err);
+          this.setState({ loadingDayEvents: false });
+        });
+    }
   }
 
   initialiseEvents() {
@@ -329,6 +334,7 @@ class Calendar extends React.Component {
     const currentSelectedDay = this.state.selectedDay;
     const showEvents = this.state.showEvents;
     const showDialog = this.state.showDialog;
+    const showEventDialog = this.state.showEventDialog;
 
     if (showEvents) {
       return (
@@ -344,7 +350,21 @@ class Calendar extends React.Component {
                   />
                 </div>
                 <div className="dialog-body">
-                  <AddEventForm handleSubmit={this.handleSubmit} />
+                  <AddEventForm handleSubmit={this.handleSubmit} editEvent={this.state.editEvent} />
+                </div>
+              </div>
+            </div>
+          )}
+          {showEventDialog && (
+            <div className="event-dialog-box">
+              <div className="event-dialog-card">
+                <div className="event-dialog-header">
+                  <div><button onClick={this.editEventHandle} className="btn btn-warning">Edit</button></div>
+                  <div><button className="btn btn-danger">Delete</button></div>
+                  <div><i className="box arrow fa fa-times" onClick={this.hideDialog} /></div>
+                </div>
+                <div className="event-dialog-body">
+                  <h2>{this.state.viewEvent.title}</h2>
                 </div>
               </div>
             </div>
@@ -366,7 +386,7 @@ class Calendar extends React.Component {
             selectedMonth={this.state.selectedMonth}
             selectedDay={this.state.selectedDay}
             selectedMonthEvents={this.state.selectedMonthEvents}
-            removeEvent={(i) => this.removeEvent(i)}
+            showEventDialog={(event, i) => this.showEventDialog(event, i)}
             loadingDayEvents={this.state.loadingDayEvents}
           />
         </section>
@@ -400,7 +420,7 @@ class Events extends React.Component {
     const currentMonthView = this.props.selectedMonth;
     const currentSelectedDay = this.props.selectedDay;
     const monthEvents = this.props.selectedMonthEvents;
-    const removeEvent = this.props.removeEvent;
+    const showEventDialog = this.props.showEventDialog;
     const loading = this.props.loadingDayEvents;
 
     const monthEventsRendered = monthEvents.map((event, i) => {
@@ -408,7 +428,7 @@ class Events extends React.Component {
         <div
           key={event.title}
           className="event-container"
-          onClick={() => removeEvent(i)}
+          onClick={() => showEventDialog(event, i)}
         >
           <TransitionGroup component="div" className="animated-title">
             <div className="event-title event-attribute">{event.title}</div>

@@ -20,9 +20,23 @@ export const loadAllEvents = async (authtoken) => {
   });
 };
 
-export const removeEvent = async (authtoken, event_id) => {
+export const removeServerEvent = async (authtoken, event_id) => {
   return await axios.delete(
     `${process.env.REACT_APP_BACKEND_API}/event/${event_id}/delete`,
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
+export const updateServerEvent = async (authtoken, event_id, values) => {
+  return await axios.put(
+    `${process.env.REACT_APP_BACKEND_API}/event/${event_id}/edit`,
+    {
+      values
+    },
     {
       headers: {
         authtoken,

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 
-const AddEventForm = ({ handleSubmit }) => {
+const AddEventForm = ({ handleSubmit, editEvent }) => {
     const initialValues = {
         title: '',
         description: '',
@@ -11,7 +11,7 @@ const AddEventForm = ({ handleSubmit }) => {
         number_of_guests: '',
     }
 
-    const [values, setValues] = useState(initialValues)
+    const [values, setValues] = useState(editEvent ? editEvent : initialValues)
 
     const handleChange = e => {
         setValues({ ...values, [e.target.name]: e.target.value })
