@@ -191,7 +191,7 @@ class Calendar extends React.Component {
     if (currentSelectedDate.isAfter(isAfterDay)) {
       if (window.confirm("Are you sure you want to remove this event?")) {
         let index = i;
-
+        this.hideEventDialog()
         if (index != -1) {
           this.setState({ loadingDayEvents: true });
           removeServerEvent(user.token, monthEvents[index]._id)
@@ -247,6 +247,7 @@ class Calendar extends React.Component {
     this.setState({
       showDialog: false,
       editEvent: null,
+      edit: false
     });
   }
 
@@ -281,6 +282,10 @@ class Calendar extends React.Component {
           this.setState({ loadingDayEvents: false });
         })
         .catch((err) => {
+          this.setState({
+            updateIndex: -1,
+            edit: false
+          });
           toast.error(
             err.response
               ? err.response.data
@@ -362,7 +367,7 @@ class Calendar extends React.Component {
                   <div><button onClick={this.removeEvent} className="btn btn-danger">Delete</button></div>
                   <div><i className="box arrow fa fa-times" onClick={this.hideDialog} /></div>
                 </div>
-                <div className="event-dialog-body">
+                <div style={{ marginTop: '20px' }} className="event-dialog-body">
                   <h2>{this.state.viewEvent.title}</h2>
                 </div>
               </div>
