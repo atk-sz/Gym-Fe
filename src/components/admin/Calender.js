@@ -6,6 +6,7 @@ import { addNewEvent, loadAllEvents, removeEvent } from "../../api/event";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import AddEventForm from "../forms/AddEventForm";
 
 const MyCalendar = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -61,13 +62,10 @@ class Calendar extends React.Component {
       loadingDayEvents: false,
       showEvents: false,
       showDialog: false,
-      newEventTitle: "",
-      newEventDescription: "",
     };
-
     this.previous = this.previous.bind(this);
     this.next = this.next.bind(this);
-    this.addEvent = this.addEvent.bind(this);
+    // this.addEvent = this.addEvent.bind(this);
     this.showCalendar = this.showCalendar.bind(this);
     this.goToCurrentMonthView = this.goToCurrentMonthView.bind(this);
     this.initialiseEvents();
@@ -173,56 +171,56 @@ class Calendar extends React.Component {
     return weeks;
   }
 
-  handleAdd() {
-    let monthEvents = this.state.selectedMonthEvents;
-    const currentSelectedDate = this.state.selectedDay;
+  // handleAdd() {
+  //   let monthEvents = this.state.selectedMonthEvents;
+  //   const currentSelectedDate = this.state.selectedDay;
 
-    let newEvents = [];
+  //   let newEvents = [];
 
-    var eventTitle = prompt("Please enter a name for your event: ");
+  //   var eventTitle = prompt("Please enter a name for your event: ");
 
-    switch (eventTitle) {
-      case "":
-        alert("Event name cannot be empty.");
-        break;
-      case null:
-        alert("Changed your mind? You can add one later!");
-        break;
-      default:
-        var newEvent = {
-          title: eventTitle,
-          date: currentSelectedDate,
-        };
+  //   switch (eventTitle) {
+  //     case "":
+  //       alert("Event name cannot be empty.");
+  //       break;
+  //     case null:
+  //       alert("Changed your mind? You can add one later!");
+  //       break;
+  //     default:
+  //       var newEvent = {
+  //         title: eventTitle,
+  //         date: currentSelectedDate,
+  //       };
 
-        newEvents.push(newEvent);
+  //       newEvents.push(newEvent);
 
-        for (var i = 0; i < newEvents.length; i++) {
-          monthEvents.push(newEvents[i]);
-        }
+  //       for (var i = 0; i < newEvents.length; i++) {
+  //         monthEvents.push(newEvents[i]);
+  //       }
 
-        this.setState({
-          selectedMonthEvents: monthEvents,
-        });
+  //       this.setState({
+  //         selectedMonthEvents: monthEvents,
+  //       });
 
-        break;
-    }
-  }
+  //       break;
+  //   }
+  // }
 
-  addEvent() {
-    const currentSelectedDate = this.state.selectedDay;
-    let isAfterDay = moment().startOf("day").subtract(1, "d");
+  // addEvent() {
+  //   const currentSelectedDate = this.state.selectedDay;
+  //   let isAfterDay = moment().startOf("day").subtract(1, "d");
 
-    if (currentSelectedDate.isAfter(isAfterDay)) {
-      this.handleAdd();
-    } else {
-      if (
-        window.confirm("Are you sure you want to add an event in the past?")
-      ) {
-        this.handleAdd();
-      } else {
-      } // end confirm past
-    } //end is in the past
-  }
+  //   if (currentSelectedDate.isAfter(isAfterDay)) {
+  //     this.handleAdd();
+  //   } else {
+  //     if (
+  //       window.confirm("Are you sure you want to add an event in the past?")
+  //     ) {
+  //       this.handleAdd();
+  //     } else {
+  //     } // end confirm past
+  //   } //end is in the past
+  // }
 
   removeEvent(i) {
     const monthEvents = this.state.selectedMonthEvents.slice();
@@ -277,171 +275,49 @@ class Calendar extends React.Component {
   hideDialog() {
     this.setState({
       showDialog: false,
-      newEventTitle: "",
-      newEventDescription: "",
     });
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
+  handleSubmit(newEvent) {
     const { user } = this.props;
-    if (
-      this.state.newEventTitle.trim() &&
-      this.state.newEventDescription.trim()
-    ) {
-      let monthEvents = this.state.selectedMonthEvents;
-      const currentSelectedDate = this.state.selectedDay;
+    let monthEvents = this.state.selectedMonthEvents;
+    const currentSelectedDate = this.state.selectedDay;
+    newEvent.date = currentSelectedDate
+    let newEvents = [];
+    this.setState({ loadingDayEvents: true });
+    this.hideDialog();
 
-      let newEvents = [];
-
-      const newEvent = {
-        title: this.state.newEventTitle.trim(),
-        description: this.state.newEventDescription.trim(),
-        date: currentSelectedDate,
-      };
-
-      this.setState({ loadingDayEvents: true });
-
-      this.hideDialog();
-
-      addNewEvent(user.token, newEvent)
-        .then((res) => {
-          let eventToAdd = res.data;
-          eventToAdd.date = moment(eventToAdd.date);
-          newEvents.push(eventToAdd);
-          for (var i = 0; i < newEvents.length; i++) {
-            monthEvents.push(newEvents[i]);
-          }
-          this.setState({
-            selectedMonthEvents: monthEvents,
-          });
-          this.setState({ loadingDayEvents: false });
-        })
-        .catch((err) => {
-          toast.error(
-            err.response
-              ? err.response.data
-              : "Some error occured please try later"
-          );
-          console.log(err);
-          this.setState({ loadingDayEvents: false });
+    addNewEvent(user.token, newEvent)
+      .then((res) => {
+        let eventToAdd = res.data;
+        eventToAdd.date = moment(eventToAdd.date);
+        newEvents.push(eventToAdd);
+        for (var i = 0; i < newEvents.length; i++) {
+          monthEvents.push(newEvents[i]);
+        }
+        this.setState({
+          selectedMonthEvents: monthEvents,
         });
-    } else window.alert("Both title and description needs to be filled");
+        this.setState({ loadingDayEvents: false });
+      })
+      .catch((err) => {
+        toast.error(
+          err.response
+            ? err.response.data
+            : "Some error occured please try later"
+        );
+        console.log(err);
+        this.setState({ loadingDayEvents: false });
+      });
   }
 
   initialiseEvents() {
     const monthEvents = this.state.selectedMonthEvents;
-    const allTheEvents = this.state.allEvents;
+    const allTheEventsFromDB = this.state.allEvents;
 
-    let allEvents = [];
-
-    var event1 = {
-      createdAt: "2021-08-11T04:47:02.039Z",
-      date: moment("2021-08-19T18:30:00.000Z"),
-      description: "now",
-      gym: "60fed793c674a50a881e3dda",
-      title: "Again",
-      updatedAt: "2021-08-11T04:47:02.039Z",
-      __v: 0,
-    };
-
-    var event2 = {
-      title: "Event 2 - Meeting",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(17, "d").add(2, "h"),
-    };
-
-    var event3 = {
-      title: "Event 3 - Cinema",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(7, "d").add(18, "h"),
-    };
-
-    var event4 = {
-      title: "Event 4 - Theater",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(16, "d").add(20, "h"),
-    };
-
-    var event5 = {
-      title: "Event 5 - Drinks",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(12, "h"),
-    };
-
-    var event6 = {
-      title: "Event 6 - Diving",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(13, "h"),
-    };
-
-    var event7 = {
-      title: "Event 7 - Tennis",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(14, "h"),
-    };
-
-    var event8 = {
-      title: "Event 8 - Swimmming",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(17, "h"),
-    };
-
-    var event19 = {
-      title: "Event 19 - Swimmming",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(17, "h"),
-    };
-
-    var event20 = {
-      title: "Event 20 - Swimmming",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(17, "h"),
-    };
-
-    var event9 = {
-      title: "Event 9 - Chilling",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").subtract(2, "d").add(16, "h"),
-    };
-
-    var event10 = {
-      title: "Hello World",
-      description:
-        "Description sdkldjddjddkandndnnddndndnd  djdjdjjfjfjfjjff dkdjdjddjdkjdk",
-      date: moment().startOf("day").add(5, "h"),
-    };
-
-    allEvents.push(event1);
-    // allEvents.push(event2);
-    // allEvents.push(event3);
-    // allEvents.push(event4);
-    // allEvents.push(event5);
-    // allEvents.push(event6);
-    // allEvents.push(event7);
-    // allEvents.push(event8);
-    // allEvents.push(event9);
-    // allEvents.push(event19);
-    // allEvents.push(event10);
-    // allEvents.push(event20);
-
-    allTheEvents.forEach((each) => {
+    allTheEventsFromDB.forEach((each) => {
       monthEvents.push(each);
     });
-
-    // for (var i = 0; i < allEvents.length; i++) {
-    //     monthEvents.push(allEvents[i]);
-    // }
 
     this.setState({
       selectedMonthEvents: monthEvents,
@@ -468,40 +344,7 @@ class Calendar extends React.Component {
                   />
                 </div>
                 <div className="dialog-body">
-                  <form onSubmit={this.handleSubmit} className="new-event-form">
-                    <div className="mb-3">
-                      <label htmlFor="new-title" className="form-label">
-                        Title
-                      </label>
-                      <input
-                        type="text"
-                        value={this.state.newEventTitle}
-                        onChange={(e) =>
-                          this.setState({ newEventTitle: e.target.value })
-                        }
-                        className="form-control"
-                        id="new-title"
-                        aria-describedby="emailHelp"
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="new-description" className="form-label">
-                        Description
-                      </label>
-                      <input
-                        type="text"
-                        value={this.state.newEventDescription}
-                        onChange={(e) =>
-                          this.setState({ newEventDescription: e.target.value })
-                        }
-                        className="form-control"
-                        id="new-description"
-                      />
-                    </div>
-                    <button type="submit" className="btn btn-primary">
-                      Submit
-                    </button>
-                  </form>
+                  <AddEventForm handleSubmit={this.handleSubmit} />
                 </div>
               </div>
             </div>

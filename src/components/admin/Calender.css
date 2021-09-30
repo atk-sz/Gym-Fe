@@ -68,12 +68,12 @@ body {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 2;
+  z-index: 200;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(2px);
 }
 .main-calendar .input-dialog-box .dialog-card {
-  margin: 20vh auto;
+  margin: 10vh auto;
   padding: 1vw;
   width: 45vw;
   background-color: white;
