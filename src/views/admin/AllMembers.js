@@ -32,29 +32,39 @@ const AllMembers = () => {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [filter, setFilter] = useState("");
-  const [searchResults, setSearchResults] = useState(members);
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     loadMembers();
-    const results = searchResults.filter(
-      (member) => member.fname.includes(filter) || member.lname.includes(filter)
-    );
-    setSearchResults(results);
-  }, [filter]);
+  }, []);
+
+  const updateAllMembers = (members) => {
+    return new Promise((resolve, reject) => {
+      const updatedMember = members.map((each) => {
+        let member = each;
+        member.fullName = `${each.fname} ${each.lname}`;
+        return member;
+      });
+      resolve(updatedMember);
+    });
+  };
 
   const sortByName = () => {
     let membersUpdate = members;
     if (nameSort) {
-      membersUpdate.sort((a, b) =>
-        a.fname > b.fname ? 1 : b.fname > a.fname ? -1 : 0
-      );
+      membersUpdate.sort(function (a, b) {
+        if (a.fullName.toLowerCase() < b.fullName.toLowerCase()) { return -1; }
+        if (a.fullName.toLowerCase() > b.fullName.toLowerCase()) { return 1; }
+        return 0;
+      })
       membersUpdate.reverse();
     } else
-      membersUpdate.sort((a, b) =>
-        a.fname > b.fname ? 1 : b.fname > a.fname ? -1 : 0
-      );
-    setSearchResults(membersUpdate);
+      membersUpdate.sort(function (a, b) {
+        if (a.fullName.toLowerCase() < b.fullName.toLowerCase()) { return -1; }
+        if (a.fullName.toLowerCase() > b.fullName.toLowerCase()) { return 1; }
+        return 0;
+      })
+    setMembers(membersUpdate);
     setNameSort(!nameSort);
   };
 
@@ -63,7 +73,7 @@ const AllMembers = () => {
     if (joinSort) {
       membersUpdate.sort((a, b) => new Date(b.join) - new Date(a.join));
     } else membersUpdate.sort((a, b) => new Date(a.join) - new Date(b.join));
-    setSearchResults(membersUpdate);
+    setMembers(membersUpdate);
     setJoinSort(!joinSort);
   };
 
@@ -77,15 +87,15 @@ const AllMembers = () => {
       membersUpdate.sort((a, b) =>
         a.active === b.active ? 0 : a.active ? 1 : -1
       );
-    setSearchResults(membersUpdate);
+    setMembers(membersUpdate);
     setActiveSort(!activeSort);
   };
 
   const loadMembers = async () => {
     try {
       const res = await getAllGymMembers(user.token);
-      setMembers(res.data);
-      setSearchResults(res.data);
+      const updatedMembers = await updateAllMembers(res.data);
+      setMembers(updatedMembers);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -96,10 +106,6 @@ const AllMembers = () => {
       );
       console.log(error);
     }
-  };
-  const handleChange = (event) => {
-    event.preventDefault();
-    setFilter(event.target.value);
   };
 
   const displayDate = (date) => {
@@ -171,8 +177,8 @@ const AllMembers = () => {
                     className="form-control"
                     type="text"
                     placeholder="Search by Name"
-                    value={filter}
-                    onChange={handleChange}
+                    value={keyword}
+                    onChange={e => setKeyword(e.target.value)}
                   />
                 </div>
               </div>
@@ -197,8 +203,8 @@ const AllMembers = () => {
                     <div style={{ textAlign: "center" }} colSpan="5">
                       <ScaleLoader />
                     </div>
-                  ) : searchResults && searchResults.length ? (
-                    searchResults.map((each, i) => (
+                  ) : members && members.length ? (
+                    members.map((each, i) => (
                       <tr key={i}>
                         <td>{each.card_id}</td>
                         <td>
@@ -206,7 +212,7 @@ const AllMembers = () => {
                             to={`/gym/member/${each._id}`}
                             style={{ color: "#000" }}
                           >
-                            <td>{`${each.fname} ${each.lname}`}</td>
+                            <td>{`${each.fullName}`}</td>
                           </Link>
                         </td>
                         <td>{displayDate(new Date(each.join))}</td>

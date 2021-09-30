@@ -80,7 +80,6 @@ const HouseMembers = () => {
         member.fullName = `${each.fname} ${each.lname}`;
         return member;
       });
-      // console.log(updatedMember)
       resolve(updatedMember);
     });
   };
