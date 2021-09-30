@@ -94,10 +94,10 @@ const Scanner = () => {
         e.preventDefault()
         try {
             setDisable(true)
+            setLoadingLogs(true)
             const res = await checkAndMark(aid, search, user.token)
             setSearch('')
             setDisable(false)
-            setLoadingLogs(true)
             sortAndSave(res.data.log_book)
         } catch (error) {
             setDisable(false)
@@ -127,11 +127,11 @@ const Scanner = () => {
             setDisable(true)
             setSearchDisable(true)
             setCamVisible(false)
+            setLoadingLogs(true)
             const res = await checkAndMark(aid, result.text, user.token)
             setSearch('')
             setDisable(false)
             setSearchDisable(false)
-            setLoadingLogs(true)
             sortAndSave(res.data.log_book)
         }
     }
