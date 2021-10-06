@@ -43,7 +43,7 @@ const App = () => {
 
   useEffect(() => {
     setInterval(async () => {
-      console.log(await KeepAliveServer());
+      console.log(await (await KeepAliveServer()).data);
     }, [3000]);
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
