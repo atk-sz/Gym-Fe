@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "antd/dist/antd.css";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
-import { currentUser } from "./api/auth";
+import { currentUser, KeepAliveServer } from "./api/auth";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Switch } from "react-router-dom";
 import AppRoute from "./components/routes/AppRoute";
@@ -32,7 +32,7 @@ import {
   GymStatistics,
   AddManager,
   HouseMembers,
-  Scanner
+  Scanner,
 } from "./views";
 import { AdminRoute, AdminManagerRoute, SuperAdminRoute } from "./components";
 import GymStatAndMessage from "./views/super-admin/GymStatAndMessage";
@@ -42,6 +42,9 @@ const App = () => {
   // to check firebase auth state
 
   useEffect(() => {
+    setInterval(async () => {
+      console.log(await KeepAliveServer());
+    }, [3000]);
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const idTokenResult = await user.getIdTokenResult();

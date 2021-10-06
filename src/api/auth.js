@@ -12,14 +12,11 @@ export const checkToLogin = async (authtoken) => {
 };
 
 export const currentUser = async (authtoken) => {
-  return await axios.get(
-    `${process.env.REACT_APP_BACKEND_API}/currentUser`,
-    {
-      headers: {
-        authtoken,
-      },
-    }
-  );
+  return await axios.get(`${process.env.REACT_APP_BACKEND_API}/currentUser`, {
+    headers: {
+      authtoken,
+    },
+  });
 };
 
 export const currentTeacher = async (authtoken) => {
@@ -34,14 +31,11 @@ export const currentTeacher = async (authtoken) => {
 };
 
 export const currentAdmin = async (authtoken) => {
-  return await axios.get(
-    `${process.env.REACT_APP_BACKEND_API}/currentAdmin`,
-    {
-      headers: {
-        authtoken,
-      },
-    }
-  );
+  return await axios.get(`${process.env.REACT_APP_BACKEND_API}/currentAdmin`, {
+    headers: {
+      authtoken,
+    },
+  });
 };
 
 export const currentSuperAdmin = async (authtoken) => {
@@ -64,4 +58,8 @@ export const currentAdminOrManager = async (authtoken) => {
       },
     }
   );
+};
+
+export const KeepAliveServer = async () => {
+  return await axios.get(`${process.env.REACT_APP_BACKEND_API}/keep-alive`);
 };
