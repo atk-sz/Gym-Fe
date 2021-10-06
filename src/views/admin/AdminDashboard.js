@@ -40,6 +40,8 @@ const AdminDashboard = ({ history }) => {
     loadGymDetails();
   }, []);
 
+  console.log(count)
+
   const loadDashboard = async () => {
     try {
       const res = await createOrDisplayAttendance(user.token, dateToday);
