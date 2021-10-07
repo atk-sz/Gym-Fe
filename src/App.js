@@ -42,9 +42,9 @@ const App = () => {
   // to check firebase auth state
 
   useEffect(() => {
-    setInterval(async () => {
-      console.log(await (await KeepAliveServer()).data);
-    }, [3000]);
+    // setInterval(async () => {
+    //   console.log(await (await KeepAliveServer()).data);
+    // }, [3000]);
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const idTokenResult = await user.getIdTokenResult();
