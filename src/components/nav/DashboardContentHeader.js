@@ -9,39 +9,73 @@ import { useSelector } from "react-redux";
 import { Skeleton } from "antd";
 
 const DashboardContentHeader = () => {
-  const [members, setMembers] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [activeMembers, setActiveMembers] = useState(true);
-  const [attendedMembers, setAttendedMembers] = useState(true);
-  const [totalEvents, setTotalEvents] = useState(true);
+  const [members, setMembers] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [activeMembers, setActiveMembers] = useState(0);
+  const [attendedMembers, setAttendedMembers] = useState(0);
+  const [totalEvents, setTotalEvents] = useState(0);
   const { user } = useSelector((state) => ({ ...state }));
   const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
 
-  useEffect(() => {
-    loadMembers();
-  }, []);
+  // useEffect(() => {
+  //   // loadMembers();
+  // }, []);
 
-  const loadMembers = async () => {
-    try {
-      const gymDetails = await getGymDetails(user.token);
-      const attendanceResponse = await createOrDisplayAttendance(
-        user.token,
-        dateToday
-      );
-      const memberResponse = await getMemberCount(
-        user.token,
-        attendanceResponse.data._id
-      );
-      const events = await loadAllEvents(user.token);
-      setMembers(gymDetails.data.members);
-      setAttendedMembers(attendanceResponse.data.present);
-      setActiveMembers(memberResponse);
-      setTotalEvents(events.data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const loadAttendance = async () => {
+  //   const res = await attendanceCheck(user.token, dateToday);
+  //   setGym(res.data.gym);
+  //   setGID(res.data.gym._id);
+  //   if (res.data.attendance.length) {
+  //     if (
+  //       new Date(res.data.attendance[res.data.attendance.length - 1].date) -
+  //         dateToday ==
+  //       0
+  //     ) {
+  //       const resultAttendance = await displayAttendance(
+  //         user.token,
+  //         res.data.attendance[res.data.attendance.length - 1]._id
+  //       );
+  //       setAID(resultAttendance.data._id);
+  //     } else {
+  //       const createdAttendance = await createAttendance(
+  //         user.token,
+  //         dateToday,
+  //         res.data.gym._id
+  //       );
+  //       setAID(createdAttendance.data._id);
+  //     }
+  //   } else {
+  //     const createdAttendance = await createAttendance(
+  //       user.token,
+  //       // dateToday.setDate(dateToday.getDate() - 1),
+  //       dateToday,
+  //       res.data.gym._id
+  //     );
+  //     setAID(createdAttendance.data._id);
+  //   }
+  // };
+
+  // const loadMembers = async () => {
+  //   try {
+  //     const gymDetails = await getGymDetails(user.token);
+  //     const attendanceResponse = await createOrDisplayAttendance(
+  //       user.token,
+  //       dateToday
+  //     );
+  //     const memberResponse = await getMemberCount(
+  //       user.token,
+  //       attendanceResponse.data._id
+  //     );
+  //     const events = await loadAllEvents(user.token);
+  //     setMembers(gymDetails.data.members);
+  //     setAttendedMembers(attendanceResponse.data.present);
+  //     setActiveMembers(memberResponse);
+  //     setTotalEvents(events.data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="dashboard-top-head">

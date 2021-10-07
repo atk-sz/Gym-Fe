@@ -171,6 +171,15 @@ const Login = ({ history }) => {
                 >
                   Login
                 </Button>
+                <Button
+                  onClick={(e) => e.preventDefault()}
+                  type="primary"
+                  size="large"
+                >
+                  <Link to="/register" className="float-right">
+                    Registor
+                  </Link>
+                </Button>
                 {/* <Button
                 onClick={handleGoogleLogin}
                 type="danger"

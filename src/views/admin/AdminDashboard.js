@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { createOrDisplayAttendance } from "../../api/attendance";
+import {
+  attendanceCheck,
+  createAttendance,
+  createOrDisplayAttendance,
+  displayAttendance,
+} from "../../api/attendance";
 import { Container, Row, Col, Card, Table, Badge } from "react-bootstrap";
 import {
   weeklyStats,
@@ -24,8 +29,6 @@ const AdminDashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
   const [aID, setAID] = useState("");
   const [gID, setGID] = useState("");
-  // const [presentCount, setPresentCount] = useState(0);
-  // const [memberCount, setMemberCount] = useState(0);
   const [count, setCount] = useState(0);
   const [members, setMembers] = useState([]);
   const [statsRange, setStatsRange] = useState("weekly");
@@ -35,12 +38,47 @@ const AdminDashboard = ({ history }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    loadDashboard();
-    loadAllMembers();
-    loadGymDetails();
+    loadAttendance();
+    // loadDashboard();
+    // loadAllMembers();
+    // loadGymDetails();
   }, []);
 
-  console.log(count)
+  // console.log(count);
+
+  const loadAttendance = async () => {
+    const res = await attendanceCheck(user.token, dateToday);
+    setGym(res.data.gym);
+    setGID(res.data.gym._id);
+    if (res.data.attendance.length) {
+      if (
+        new Date(res.data.attendance[res.data.attendance.length - 1].date) -
+          dateToday ==
+        0
+      ) {
+        const resultAttendance = await displayAttendance(
+          user.token,
+          res.data.attendance[res.data.attendance.length - 1]._id
+        );
+        setAID(resultAttendance.data._id);
+      } else {
+        const createdAttendance = await createAttendance(
+          user.token,
+          dateToday,
+          res.data.gym._id
+        );
+        setAID(createdAttendance.data._id);
+      }
+    } else {
+      const createdAttendance = await createAttendance(
+        user.token,
+        // dateToday.setDate(dateToday.getDate() - 1),
+        dateToday,
+        res.data.gym._id
+      );
+      setAID(createdAttendance.data._id);
+    }
+  };
 
   const loadDashboard = async () => {
     try {
@@ -58,6 +96,7 @@ const AdminDashboard = ({ history }) => {
   const loadGymDetails = async () => {
     try {
       const gymDetails = await getGymDetails(user.token);
+      console.log(gymDetails.data);
       setGym(gymDetails.data);
     } catch (err) {
       toast.error(
@@ -69,8 +108,8 @@ const AdminDashboard = ({ history }) => {
 
   const loadPresentCount = async (attendanceID, gymID) => {
     try {
-      const res = await currentInHouse(user.token, gymID)
-      setCount(res.data)
+      const res = await currentInHouse(user.token, gymID);
+      setCount(res.data);
       loadStats(gymID);
     } catch (err) {
       toast.error(

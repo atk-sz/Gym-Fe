@@ -59,7 +59,3 @@ export const currentAdminOrManager = async (authtoken) => {
     }
   );
 };
-
-export const KeepAliveServer = async () => {
-  return await axios.get(`${process.env.REACT_APP_BACKEND_API}/keep-alive`);
-};

@@ -47,6 +47,7 @@ const Attendance = () => {
   };
 
   useEffect(() => {
+    // loadAttendance();
     createOrDisplayAttendance(user.token, dateToday)
       .then(async (res) => {
         setAid(res.data._id);
@@ -67,6 +68,49 @@ const Attendance = () => {
       });
   }, []);
 
+  // const loadAttendance = async () => {
+  //   try {
+  //     const res = await attendanceCheck(user.token, dateToday);
+  //     setGym(res.data.gym);
+  //     setGID(res.data.gym._id);
+  //     if (res.data.attendance.length) {
+  //       if (
+  //         new Date(res.data.attendance[res.data.attendance.length - 1].date) -
+  //           dateToday ==
+  //         0
+  //       ) {
+  //         const resultAttendance = await displayAttendance(
+  //           user.token,
+  //           res.data.attendance[res.data.attendance.length - 1]._id
+  //         );
+  //         setAID(resultAttendance.data._id);
+  //       } else {
+  //         const createdAttendance = await createAttendance(
+  //           user.token,
+  //           dateToday,
+  //           res.data.gym._id
+  //         );
+  //         setAID(createdAttendance.data._id);
+  //       }
+  //     } else {
+  //       const createdAttendance = await createAttendance(
+  //         user.token,
+  //         // dateToday.setDate(dateToday.getDate() - 1),
+  //         dateToday,
+  //         res.data.gym._id
+  //       );
+  //       setAID(createdAttendance.data._id);
+  //     }
+  //   } catch (error) {
+  //     toast.error(
+  //       error.response
+  //         ? error.response.data
+  //         : "Some error occured please try later"
+  //     );
+  //     console.log(error);
+  //   }
+  // };
+
   const loadLogs = (logs) => {
     setLoadingLogs(true);
     const sortedLogs = logs.sort(
@@ -78,7 +122,7 @@ const Attendance = () => {
 
   async function handleCheckinToggle(e) {
     try {
-      setDisable(true)
+      setDisable(true);
       const updatedMembers = members.map((item, i) => {
         if (this === i) {
           const updatedItem = {
@@ -99,14 +143,14 @@ const Attendance = () => {
         loadLogs(res.data);
       }
       setMembers(updatedMembers);
-      setDisable(false)
+      setDisable(false);
     } catch (error) {
       console.log(error.message);
     }
   }
 
   async function handleCheckoutToggle(e) {
-    setDisable(true)
+    setDisable(true);
     try {
       const updatedMembers = members.map((item, i) => {
         if (this === i) {
@@ -131,7 +175,7 @@ const Attendance = () => {
         loadLogs(res.data);
       }
       setMembers(updatedMembers);
-      setDisable(false)
+      setDisable(false);
     } catch (error) {
       console.log(error.message);
     }
@@ -182,36 +226,36 @@ const Attendance = () => {
                   <>
                     {members.length
                       ? members.map((each, i) => (
-                        <tr key={i} className="member-attendance">
-                          <td>
-                            {each.user.fname} {each.user.lname}
-                          </td>
-                          <td
-                            className="form-switch"
-                            style={{ textAlign: "center" }}
-                          >
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              checked={each.checkin}
-                              disabled={disable}
-                              onChange={handleCheckinToggle.bind(i)}
-                            />
-                          </td>
-                          <td
-                            className="form-switch"
-                            style={{ textAlign: "center" }}
-                          >
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              checked={each.checkout}
-                              disabled={!each.checkin || disable}
-                              onChange={handleCheckoutToggle.bind(i)}
-                            />
-                          </td>
-                        </tr>
-                      ))
+                          <tr key={i} className="member-attendance">
+                            <td>
+                              {each.user.fname} {each.user.lname}
+                            </td>
+                            <td
+                              className="form-switch"
+                              style={{ textAlign: "center" }}
+                            >
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                checked={each.checkin}
+                                disabled={disable}
+                                onChange={handleCheckinToggle.bind(i)}
+                              />
+                            </td>
+                            <td
+                              className="form-switch"
+                              style={{ textAlign: "center" }}
+                            >
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                checked={each.checkout}
+                                disabled={!each.checkin || disable}
+                                onChange={handleCheckoutToggle.bind(i)}
+                              />
+                            </td>
+                          </tr>
+                        ))
                       : ""}
                   </>
                 )}
@@ -256,22 +300,22 @@ const Attendance = () => {
                     </tr>
                     {logs.length
                       ? logs.map((each, i) => {
-                        return (
-                          <tr key={i} className="member-attendance">
-                            <td>
-                              {each.member.fname} {each.member.lname}
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              {displayTime(each.checkin)}
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              {each.checkout
-                                ? displayTime(each.checkout)
-                                : "-"}
-                            </td>
-                          </tr>
-                        );
-                      })
+                          return (
+                            <tr key={i} className="member-attendance">
+                              <td>
+                                {each.member.fname} {each.member.lname}
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                {displayTime(each.checkin)}
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                {each.checkout
+                                  ? displayTime(each.checkout)
+                                  : "-"}
+                              </td>
+                            </tr>
+                          );
+                        })
                       : ""}
                   </table>
                 </>
