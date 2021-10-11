@@ -6,12 +6,7 @@ import {
   attendanceCheck,
   checkAndMark,
   createAttendance,
-  createOrDisplayAttendance,
   displayAttendance,
-  markAbsent,
-  markCheckout,
-  markCheckoutBack,
-  markPresent,
 } from "../../api/attendance";
 import "./styles/members.css";
 import { css } from "@emotion/react";
@@ -74,7 +69,7 @@ const Attendance = () => {
           const resultMems = await filterMember(resultAttendance.data);
           setMembers(resultMems);
           setLoading(false);
-          console.log(resultAttendance.data.logbook);
+          // console.log(resultAttendance.data.logbook);
           setLogs(resultAttendance.data.logbook);
           setLoadingLogs(false);
         } else {
@@ -146,7 +141,12 @@ const Attendance = () => {
       setMembers(updatedMembers);
       setDisable(false);
     } catch (error) {
-      console.log(error.message);
+      toast.error(
+        error.response
+          ? error.response.data
+          : "Some error occured please try later"
+      );
+      console.log(error);
     }
   }
 
