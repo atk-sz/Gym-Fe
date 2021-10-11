@@ -16,7 +16,6 @@ import {
 import "./styles/members.css";
 import { css } from "@emotion/react";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import moment from "moment";
 
 const Attendance = () => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -36,7 +35,7 @@ const Attendance = () => {
       logbook.map((each) => {
         members.push({
           user: each.member,
-          checkin: each.log[each.log.length - 1].action === "checkin",
+          checkin: true,
         });
       });
       absent.map((each) => {
@@ -53,6 +52,24 @@ const Attendance = () => {
 
   useEffect(() => {
     loadAttendance();
+    // createOrDisplayAttendance(user.token, dateToday)
+    //   .then(async (res) => {
+    //     setAid(res.data._id);
+    //     const resultMems = await filterMember(res.data);
+    //     setMembers(resultMems);
+    //     setLoading(false);
+    //     setGid(res.data.gym);
+    //     loadLogs(res.data.log);
+    //   })
+    //   .catch((err) => {
+    //     // setLoading(false);
+    //     toast.error(
+    //       err.response
+    //         ? err.response.data
+    //         : "Some error occured please try later"
+    //     );
+    //     console.log(err);
+    //   });
   }, []);
 
   const loadAttendance = async () => {
@@ -74,9 +91,7 @@ const Attendance = () => {
           const resultMems = await filterMember(resultAttendance.data);
           setMembers(resultMems);
           setLoading(false);
-          console.log(resultAttendance.data.logbook);
-          setLogs(resultAttendance.data.logbook);
-          setLoadingLogs(false);
+          console.log(resultAttendance);
         } else {
           const createdAttendance = await createAttendance(
             user.token,
@@ -87,9 +102,7 @@ const Attendance = () => {
           const resultMems = await filterMember(createdAttendance.data);
           setMembers(resultMems);
           setLoading(false);
-          // console.log(createdAttendance.data.logbook);
-          setLogs([]);
-          setLoadingLogs(false);
+          console.log(createdAttendance);
         }
       } else {
         const createdAttendance = await createAttendance(
@@ -102,9 +115,7 @@ const Attendance = () => {
         const resultMems = await filterMember(createdAttendance.data);
         setMembers(resultMems);
         setLoading(false);
-        // console.log(createdAttendance.data.logbook);
-        setLogs([]);
-        setLoadingLogs(false);
+        console.log(createdAttendance);
       }
     } catch (error) {
       toast.error(
@@ -140,9 +151,7 @@ const Attendance = () => {
       });
 
       const res = await checkAndMark(aid, members[this].user._id, user.token);
-      setLoadingLogs(true);
-      setLogs(res.data.logbook);
-      setLoadingLogs(false);
+      // loadLogs(res.data);
       setMembers(updatedMembers);
       setDisable(false);
     } catch (error) {
@@ -233,13 +242,13 @@ const Attendance = () => {
                   <table className="logs w-100">
                     <thead>
                       <th>
-                        <h6>Name</h6>
+                        <h6>Member's Name</h6>
                       </th>
                       <th style={{ textAlign: "center" }}>
-                        <h6>Action(Time)</h6>
+                        <h6>Check In</h6>
                       </th>
                       <th style={{ textAlign: "center" }}>
-                        <h6>{moment().format("MMMM Do YYYY")}</h6>
+                        <h6>Check Out</h6>
                       </th>
                     </thead>
                     <tr>
@@ -259,26 +268,13 @@ const Attendance = () => {
                               <td>
                                 {each.member.fname} {each.member.lname}
                               </td>
-                              <td
-                                style={{
-                                  textAlign: "center",
-                                  overflowX: "auto",
-                                  display: "flex",
-                                  flexWrap: "nowrap",
-                                  justifyContent: "space-around",
-                                  alignItems: "center",
-                                }}
-                              >
-                                {each.log.length
-                                  ? each.log.map((item) => {
-                                      return (
-                                        <span>
-                                          {item.action}({displayTime(item.time)}
-                                          )
-                                        </span>
-                                      );
-                                    })
-                                  : ""}
+                              <td style={{ textAlign: "center" }}>
+                                {displayTime(each.checkin)}
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                {each.checkout
+                                  ? displayTime(each.checkout)
+                                  : "-"}
                               </td>
                             </tr>
                           );

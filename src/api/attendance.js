@@ -95,10 +95,10 @@ export const markCheckoutBack = async (aid, mid, authtoken) => {
   );
 };
 
-export const checkAndMark = async (aid, card_id, authtoken) => {
+export const checkAndMark = async (aid, mid, authtoken) => {
   return await axios.post(
-    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/check-and-mark`,
-    { card_id },
+    `${process.env.REACT_APP_BACKEND_API}/attendance/${aid}/${mid}/check-and-mark`,
+    {},
     {
       headers: {
         authtoken,
