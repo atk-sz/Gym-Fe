@@ -56,6 +56,7 @@ const AllMembers = () => {
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [nameSort, setNameSort] = useState(true);
+  const [cardIdSort, setCardIdSort] = useState(true);
   const [joinSort, setJoinSort] = useState(true);
   const [activeSort, setActiveSort] = useState(true);
   const [messageMember, setMessageMember] = useState({});
@@ -109,6 +110,33 @@ const AllMembers = () => {
       });
     setMembers(membersUpdate);
     setNameSort(!nameSort);
+  };
+
+  const sortByCardId = () => {
+    let membersUpdate = members;
+    if (cardIdSort) {
+      membersUpdate.sort(function (a, b) {
+        if (a.card_id.toLowerCase() < b.card_id.toLowerCase()) {
+          return -1;
+        }
+        if (a.card_id.toLowerCase() > b.card_id.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      });
+      membersUpdate.reverse();
+    } else
+      membersUpdate.sort(function (a, b) {
+        if (a.card_id.toLowerCase() < b.card_id.toLowerCase()) {
+          return -1;
+        }
+        if (a.card_id.toLowerCase() > b.card_id.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      });
+    setMembers(membersUpdate);
+    setCardIdSort(!cardIdSort);
   };
 
   const sortByJoin = () => {
@@ -321,7 +349,9 @@ const AllMembers = () => {
                     <th style={{ cursor: "default" }} onClick={sortByName}>
                       Name <BsArrowUpDown />
                     </th>
-                    <th>Family Id</th>
+                    <th style={{ cursor: "default" }} onClick={sortByCardId}>
+                      Card Id <BsArrowUpDown />
+                    </th>
                     <th style={{ cursor: "default" }} onClick={sortByJoin}>
                       Join <BsArrowUpDown />
                     </th>

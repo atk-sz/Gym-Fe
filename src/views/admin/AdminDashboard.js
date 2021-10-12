@@ -7,7 +7,15 @@ import {
   createOrDisplayAttendance,
   displayAttendance,
 } from "../../api/attendance";
-import { Container, Row, Col, Card, Table, Badge, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Badge,
+  Button,
+} from "react-bootstrap";
 import {
   weeklyStats,
   getAllGymMembers,
@@ -29,7 +37,9 @@ const AdminDashboard = ({ history }) => {
   const [loading, setLoading] = useState(true);
   const [aID, setAID] = useState("");
   const [gID, setGID] = useState("");
+  const [att, setAtt] = useState({});
   const [count, setCount] = useState(0);
+  const [presentCount, setPresentCount] = useState(0);
   const [members, setMembers] = useState([]);
   const [statsRange, setStatsRange] = useState("weekly");
   const [chartData, setChartData] = useState({});
@@ -39,37 +49,55 @@ const AdminDashboard = ({ history }) => {
 
   useEffect(() => {
     loadAttendance();
-    // loadDashboard();
-    // loadAllMembers();
-    // loadGymDetails();
+    loadAllMembers();
+    loadGymDetails();
   }, []);
-
-  // console.log(count);
 
   const loadAttendance = async () => {
     const res = await attendanceCheck(user.token, dateToday);
     setGym(res.data.gym);
     setGID(res.data.gym._id);
     if (res.data.attendance.length) {
+      console.log(
+        new Date(res.data.attendance[res.data.attendance.length - 1].date)
+      );
+      console.log(dateToday);
+      console.log(
+        new Date(res.data.attendance[res.data.attendance.length - 1].date) -
+          dateToday ==
+          0
+      );
       if (
         new Date(res.data.attendance[res.data.attendance.length - 1].date) -
           dateToday ==
         0
       ) {
+        console.log("going to display");
         const resultAttendance = await displayAttendance(
           user.token,
           res.data.attendance[res.data.attendance.length - 1]._id
         );
         setAID(resultAttendance.data._id);
+        setAtt(resultAttendance.data);
+        setPresentCount(resultAttendance.data.present.length);
+        loadPresentCount(resultAttendance.data._id, resultAttendance.data.gym);
       } else {
+        console.log("going to create");
+        console.log(dateToday);
         const createdAttendance = await createAttendance(
           user.token,
           dateToday,
           res.data.gym._id
         );
         setAID(createdAttendance.data._id);
+        setAtt(createdAttendance.data);
+        setCount(0);
+        setPresentCount(0);
+        loadStats(createdAttendance.data.gym);
       }
     } else {
+      console.log("new attts");
+      console.log(dateToday);
       const createdAttendance = await createAttendance(
         user.token,
         // dateToday.setDate(dateToday.getDate() - 1),
@@ -77,22 +105,13 @@ const AdminDashboard = ({ history }) => {
         res.data.gym._id
       );
       setAID(createdAttendance.data._id);
+      setAtt(createdAttendance.data);
+      setCount(0);
+      setPresentCount(0);
+      loadStats(createdAttendance.data.gym);
     }
   };
 
-  const loadDashboard = async () => {
-    try {
-      const res = await createOrDisplayAttendance(user.token, dateToday);
-      setAID(res.data._id);
-      setGID(res.data.gym);
-      loadPresentCount(res.data._id, res.data.gym);
-    } catch (err) {
-      toast.error(
-        err.response ? err.response.data : "Some error occured please try later"
-      );
-      console.log(err);
-    }
-  };
   const loadGymDetails = async () => {
     try {
       const gymDetails = await getGymDetails(user.token);
@@ -108,7 +127,7 @@ const AdminDashboard = ({ history }) => {
 
   const loadPresentCount = async (attendanceID, gymID) => {
     try {
-      const res = await currentInHouse(user.token, gymID);
+      const res = await currentInHouse(user.token, attendanceID);
       setCount(res.data);
       loadStats(gymID);
     } catch (err) {
@@ -173,9 +192,14 @@ const AdminDashboard = ({ history }) => {
       }
     }
   };
+
   return (
     <>
-      <DashboardContentHeader />
+      <DashboardContentHeader
+        att={att}
+        totalCount={members.length}
+        presentCount={presentCount}
+      />
       <Container className="admin-dashboard-div">
         <Row>
           <Col md="12">
