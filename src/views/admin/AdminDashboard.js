@@ -30,7 +30,6 @@ import { Modal } from "antd";
 import { css } from "@emotion/react";
 import DashboardContentHeader from "../../components/nav/DashboardContentHeader";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import moment from "moment";
 
 const AdminDashboard = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
