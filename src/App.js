@@ -33,6 +33,8 @@ import {
   AddManager,
   HouseMembers,
   Scanner,
+  Settings,
+  AllManagers,
 } from "./views";
 import { AdminRoute, AdminManagerRoute, SuperAdminRoute } from "./components";
 import GymStatAndMessage from "./views/super-admin/GymStatAndMessage";
@@ -158,10 +160,22 @@ const App = () => {
           component={AddManager}
           layout={DashboardLayout}
         />
+        <AdminRoute
+          exact
+          path="/gym/managers"
+          component={AllManagers}
+          layout={DashboardLayout}
+        />
         <AdminManagerRoute
           exact
           path="/admin/house/:hid/members"
           component={HouseMembers}
+          layout={DashboardLayout}
+        />
+        <AdminRoute
+          exact
+          path="/settings"
+          component={Settings}
           layout={DashboardLayout}
         />
         {/* super-admin routes */}

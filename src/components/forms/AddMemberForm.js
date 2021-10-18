@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addMember, getCountriesAndCities } from "../../api/gym";
+import { getDuratoins } from "../../api/duration";
 import { projectStorage } from "../../firebase";
 import { Upload } from "antd";
 import Webcam from "react-webcam";
@@ -30,13 +31,34 @@ const AddMemberForm = ({ loadMembers }) => {
   const today = new Date();
   const webRef = useRef();
   const { user } = useSelector((state) => ({ ...state }));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [values, setValues] = useState(initialVals);
-  const [validities, setValidities] = useState(["1", "3", "6", "12"]);
   const [validHouseID, setValidHouseID] = useState(true);
   const [load, setLoad] = useState(false);
   const [capturing, setCapturing] = useState(false);
+  const [durations, setDurations] = useState([]);
   const dateToday = new Date(new Date().setHours(0, 0, 0, 0));
+
+  useEffect(() => {
+    loadDuration();
+  }, []);
+
+  const loadDuration = async (gid) => {
+    try {
+      setLoading(true);
+      const res = await getDuratoins(user.token);
+      setDurations(res.data.values);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast.error(
+        error.response
+          ? error.response.data
+          : "Some error occured please try later"
+      );
+      console.log(error);
+    }
+  };
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -89,7 +111,7 @@ const AddMemberForm = ({ loadMembers }) => {
     setCapturing(false);
   };
 
-  const handlevalidityChange = (e) => {
+  const handleValidityChange = (e) => {
     const addMonths = (date, months) => {
       var d = date.getDate();
       date.setMonth(date.getMonth() + +months);
@@ -286,15 +308,15 @@ const AddMemberForm = ({ loadMembers }) => {
             </div>
             <div className="col-md-4">
               <label className="form-label">Valid Till*</label>
-              {validities && (
+              {durations && (
                 <select
                   className="form-select mb-3"
                   name="expire"
-                  onChange={handlevalidityChange}
+                  onChange={handleValidityChange}
                   required
                 >
                   <option defaultValue>Please select the validity</option>
-                  {validities.map((each, i) => (
+                  {durations.map((each, i) => (
                     <option key={i} value={each}>
                       {each} months
                     </option>

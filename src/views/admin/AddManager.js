@@ -29,6 +29,7 @@ const AddManager = () => {
   const [cities, setCities] = useState([]);
   const [loadingCities, setLoadingCities] = useState(true);
   const [image, setImage] = useState([]);
+  
   useEffect(() => {
     getCountriesAndCities()
       .then((res) => {

@@ -7,6 +7,7 @@ import "./DashboardHeader.css";
 import { getGymDetails } from "../../api/gym";
 import { Menu } from "antd";
 import { ScaleLoader } from "react-spinners";
+
 const DashboardHeader = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -77,11 +78,6 @@ const DashboardHeader = (props) => {
                       Events
                     </Link>
                   </Menu.Item>
-                  {/* <Menu.Item key="6">
-                      <Link to="/gym/add/manager" className="nav-link">
-                        Managers
-                      </Link>
-                    </Menu.Item> */}
                 </Menu>
               </>
             ) : user.role == "super-admin" ? (
@@ -107,11 +103,13 @@ const DashboardHeader = (props) => {
               {user.name}
             </button>
             <ul className="dropdown-menu dropdown-menu-end">
-              <li>
-                <Link to="/gym/add/manager" className="nav-link">
-                  Managers
-                </Link>
-              </li>
+              {user.role === "admin" && (
+                <li>
+                  <Link to="/settings" className="nav-link">
+                    Settings
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
                   to="/"
