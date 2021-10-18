@@ -137,9 +137,9 @@ const Attendance = () => {
       const res = await checkAndMark(aid, members[this].user._id, user.token);
       setLoadingLogs(true);
       setLogs(res.data.logbook);
-      setLoadingLogs(false);
       setMembers(updatedMembers);
       setDisable(false);
+      setLoadingLogs(false);
     } catch (error) {
       toast.error(
         error.response

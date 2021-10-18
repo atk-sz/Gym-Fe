@@ -4,7 +4,7 @@ import "./DashboardContentHeader.css";
 import { getGymDetails } from "../../api/gym";
 import { createOrDisplayAttendance } from "../../api/attendance";
 import { getMemberCount } from "../../api/attendance";
-import { loadAllEvents } from "../../api/event";
+import { loadEventsPerWeek } from "../../api/event";
 import { useSelector } from "react-redux";
 import { Skeleton } from "antd";
 
@@ -20,7 +20,7 @@ const DashboardContentHeader = ({ att, totalCount, presentCount }) => {
 
   const loadEvents = async () => {
     try {
-      const events = await loadAllEvents(user.token);
+      const events = await loadEventsPerWeek(user.token);
       setTotalEvents(events.data);
       setLoading(false);
     } catch (error) {
@@ -97,7 +97,7 @@ const DashboardContentHeader = ({ att, totalCount, presentCount }) => {
               <Card.Body>
                 <div className="header-content">
                   <div className="sub-head">
-                    <p>Total Events</p>
+                    <p>Events this week</p>
                   </div>
 
                   <div className="content">

@@ -10,7 +10,7 @@ import { CameraOutlined } from "@ant-design/icons";
 import ScaleLoader from "react-spinners/ScaleLoader";
 // import ImgCrop from "antd-img-crop";
 
-const AddMemberForm = () => {
+const AddMemberForm = ({ loadMembers }) => {
   const initialVals = {
     fname: "",
     lname: "",
@@ -30,7 +30,7 @@ const AddMemberForm = () => {
   const today = new Date();
   const webRef = useRef();
   const { user } = useSelector((state) => ({ ...state }));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState(initialVals);
   const [validities, setValidities] = useState(["1", "3", "6", "12"]);
   const [validHouseID, setValidHouseID] = useState(true);
@@ -99,7 +99,6 @@ const AddMemberForm = () => {
       return date;
     };
     setValues({ ...values, expire: addMonths(new Date(), e.target.value) });
-    console.log(addMonths(new Date(), e.target.value));
   };
 
   const handleSubmit = async (e) => {
@@ -117,8 +116,8 @@ const AddMemberForm = () => {
               setLoading(true);
               const res = await addMember(values, user.token);
               toast.success(res.data);
-              console.log(values);
-              // setValues(initialVals);
+              setValues(initialVals);
+              loadMembers();
               setLoading(false);
             }
           }

@@ -287,8 +287,8 @@ const Scanner = () => {
               </div>
             </div>
           </form>
-          <h3>Or</h3>
-          <div className="scanner-webcam-btn-div">
+          {/* <h3>Or</h3> */}
+          {/* <div className="scanner-webcam-btn-div">
             <button
               onClick={(e) => setCamVisible(true)}
               className="btn btn-primary"
@@ -296,7 +296,7 @@ const Scanner = () => {
               {" "}
               Scan
             </button>
-          </div>
+          </div> */}
           {loadingLogs ? (
             <div style={{ textAlign: "center" }} colSpan="5">
               <ScaleLoader />

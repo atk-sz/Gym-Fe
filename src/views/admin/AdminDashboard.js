@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import {
   attendanceCheck,
   createAttendance,
-  createOrDisplayAttendance,
   displayAttendance,
 } from "../../api/attendance";
 import {
@@ -31,6 +30,7 @@ import { Modal } from "antd";
 import { css } from "@emotion/react";
 import DashboardContentHeader from "../../components/nav/DashboardContentHeader";
 import ScaleLoader from "react-spinners/ScaleLoader";
+import moment from "moment";
 
 const AdminDashboard = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -115,7 +115,6 @@ const AdminDashboard = ({ history }) => {
   const loadGymDetails = async () => {
     try {
       const gymDetails = await getGymDetails(user.token);
-      console.log(gymDetails.data);
       setGym(gymDetails.data);
     } catch (err) {
       toast.error(

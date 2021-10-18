@@ -25,6 +25,8 @@ const DraftMessageForm = ({
   draftMessage,
   setDraftMessage,
   sendingMessage,
+  draftSubject,
+  setDraftSubject,
 }) => {
   return (
     <>
@@ -32,6 +34,16 @@ const DraftMessageForm = ({
         <h3>Sending Message</h3>
       ) : (
         <form onSubmit={handleSend}>
+          <div style={{ marginBottom: "20px" }} className="md-3">
+            <input
+              type="text"
+              className="form-control"
+              value={draftSubject}
+              onChange={(e) => setDraftSubject(e.target.value)}
+              placeholder="Subject"
+              required
+            />
+          </div>
           <div className="mb-3">
             <textarea
               className="form-control"
@@ -39,6 +51,7 @@ const DraftMessageForm = ({
               value={draftMessage}
               onChange={(e) => setDraftMessage(e.target.value)}
               rows="5"
+              placeholder="Message..."
               required
             />
           </div>
@@ -56,8 +69,8 @@ const AllMembers = () => {
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [nameSort, setNameSort] = useState(true);
-  const [cardIdSort, setCardIdSort] = useState(true);
-  const [joinSort, setJoinSort] = useState(true);
+  const [houseIdSort, setHouseIdSort] = useState(true);
+  const [expireSort, setExpireSort] = useState(true);
   const [activeSort, setActiveSort] = useState(true);
   const [messageMember, setMessageMember] = useState({});
   const [showMessageBox, setShowMessageBox] = useState(false);
@@ -68,6 +81,7 @@ const AllMembers = () => {
   const [draftVisible, setDraftVisible] = useState(false);
   const [draftMembers, setDraftMembers] = useState([]);
   const [draftMessage, setDraftMessage] = useState("");
+  const [draftSubject, setDraftSubject] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
 
   useEffect(() => {
@@ -112,14 +126,14 @@ const AllMembers = () => {
     setNameSort(!nameSort);
   };
 
-  const sortByCardId = () => {
+  const sortByHouseId = () => {
     let membersUpdate = members;
-    if (cardIdSort) {
+    if (houseIdSort) {
       membersUpdate.sort(function (a, b) {
-        if (a.card_id.toLowerCase() < b.card_id.toLowerCase()) {
+        if (a.house_id.toLowerCase() < b.house_id.toLowerCase()) {
           return -1;
         }
-        if (a.card_id.toLowerCase() > b.card_id.toLowerCase()) {
+        if (a.house_id.toLowerCase() > b.house_id.toLowerCase()) {
           return 1;
         }
         return 0;
@@ -127,25 +141,26 @@ const AllMembers = () => {
       membersUpdate.reverse();
     } else
       membersUpdate.sort(function (a, b) {
-        if (a.card_id.toLowerCase() < b.card_id.toLowerCase()) {
+        if (a.house_id.toLowerCase() < b.house_id.toLowerCase()) {
           return -1;
         }
-        if (a.card_id.toLowerCase() > b.card_id.toLowerCase()) {
+        if (a.house_id.toLowerCase() > b.house_id.toLowerCase()) {
           return 1;
         }
         return 0;
       });
     setMembers(membersUpdate);
-    setCardIdSort(!cardIdSort);
+    setHouseIdSort(!houseIdSort);
   };
 
-  const sortByJoin = () => {
+  const sortByExpire = () => {
     let membersUpdate = members;
-    if (joinSort) {
-      membersUpdate.sort((a, b) => new Date(b.join) - new Date(a.join));
-    } else membersUpdate.sort((a, b) => new Date(a.join) - new Date(b.join));
+    if (expireSort) {
+      membersUpdate.sort((a, b) => new Date(b.expire) - new Date(a.expire));
+    } else
+      membersUpdate.sort((a, b) => new Date(a.expire) - new Date(b.expire));
     setMembers(membersUpdate);
-    setJoinSort(!joinSort);
+    setExpireSort(!expireSort);
   };
 
   const sortByActive = () => {
@@ -162,8 +177,26 @@ const AllMembers = () => {
     setActiveSort(!activeSort);
   };
 
+  const lastActiveDisplay = (last_active) => {
+    switch (last_active.state) {
+      case "new":
+        return "New Member";
+      case "active now":
+        return "Active Now";
+      default:
+        if (
+          new Date(new Date(last_active.date).setHours(0, 0, 0, 0)) -
+            new Date().setHours(0, 0, 0, 0) ===
+          0
+        )
+          return "Today";
+        return displayDate(new Date(last_active.date));
+    }
+  };
+
   const loadMembers = async () => {
     try {
+      setLoading(true);
       const res = await getAllGymMembers(user.token);
       const updatedMembers = await updateAllMembers(res.data);
       setMembers(updatedMembers);
@@ -237,23 +270,19 @@ const AllMembers = () => {
         setSendingMessage(false);
         return toast.error("First please select some members");
       }
-      if (draftMembers.length === 1) {
-        await adminSendMailToMember(user.token, draftMessage, draftMembers[0]);
-        for (let i = 0; i < checkboxes.length; i++)
-          if (checkboxes[i].type == "checkbox") checkboxes[i].checked = false;
-        setSendingMessage(false);
-        setDraftVisible(false);
-        setDraftMembers([]);
-        setDraftMessage("");
-        return toast.success("Message sent successfully");
-      }
-      await adminSendMailToMember(user.token, draftMessage, draftMembers);
+      await adminSendMailToMember(
+        user.token,
+        draftMessage,
+        draftMembers,
+        draftSubject
+      );
       for (let i = 0; i < checkboxes.length; i++)
         if (checkboxes[i].type == "checkbox") checkboxes[i].checked = false;
       setSendingMessage(false);
       setDraftVisible(false);
       setDraftMembers([]);
       setDraftMessage("");
+      setDraftSubject("");
       toast.success("Message sent successfully");
     } catch (error) {
       toast.error(
@@ -294,11 +323,28 @@ const AllMembers = () => {
                       onCancel={() => setDraftVisible(false)}
                       width={1000}
                     >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-evenly",
+                          alignItems: "center",
+                          flexWrap: "wrap",
+                        }}
+                        className="selected-members-for-draft"
+                      >
+                        {draftMembers.length
+                          ? draftMembers.map((each, i) => {
+                              return <p key={i}>{each}</p>;
+                            })
+                          : ""}
+                      </div>
                       <DraftMessageForm
                         handleSend={handleSend}
                         draftMessage={draftMessage}
                         setDraftMessage={setDraftMessage}
                         sendingMessage={sendingMessage}
+                        draftSubject={draftSubject}
+                        setDraftSubject={setDraftSubject}
                       />
                     </Modal>
                   </div>
@@ -317,7 +363,7 @@ const AllMembers = () => {
                       onCancel={() => setVisible(false)}
                       width={1000}
                     >
-                      <AddMemberForm />
+                      <AddMemberForm loadMembers={loadMembers} />
                     </Modal>
                     <input
                       style={{
@@ -349,14 +395,17 @@ const AllMembers = () => {
                     <th style={{ cursor: "default" }} onClick={sortByName}>
                       Name <BsArrowUpDown />
                     </th>
-                    <th style={{ cursor: "default" }} onClick={sortByCardId}>
-                      Card Id <BsArrowUpDown />
+                    <th style={{ cursor: "default" }} onClick={sortByHouseId}>
+                      House Id <BsArrowUpDown />
                     </th>
-                    <th style={{ cursor: "default" }} onClick={sortByJoin}>
-                      Join <BsArrowUpDown />
+                    <th style={{ cursor: "default" }} onClick={sortByExpire}>
+                      Expire <BsArrowUpDown />
                     </th>
-                    <th style={{ cursor: "default" }} onClick={sortByActive}>
-                      Active <BsArrowUpDown />
+                    <th
+                    // style={{ cursor: "default" }} onClick={sortByActive}
+                    >
+                      Last Active
+                      {/* <BsArrowUpDown /> */}
                     </th>
                   </tr>
                 </thead>
@@ -386,22 +435,9 @@ const AllMembers = () => {
                             <td>{`${each.fullName}`}</td>
                           </Link>
                         </td>
-                        <td>{each.card_id}</td>
-                        <td>{displayDate(new Date(each.join))}</td>
-                        <td>
-                          <div
-                            className={
-                              each.active
-                                ? "member-active-green"
-                                : "member-expire-red"
-                            }
-                            style={{
-                              width: "10px",
-                              height: "10px",
-                              margin: "auto",
-                            }}
-                          ></div>
-                        </td>
+                        <td>{each.house_id}</td>
+                        <td>{displayDate(new Date(each.expire))}</td>
+                        <td>{lastActiveDisplay(each.last_active)}</td>
                         {/* <td
                           style={{ cursor: "pointer" }}
                           onClick={(e) => {
