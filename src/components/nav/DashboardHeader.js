@@ -48,7 +48,7 @@ const DashboardHeader = (props) => {
           </div>
         ) : (
           <div className="d-flex justify-content-between align-items-center w-100">
-            {user.role == "admin" ? (
+            {user.role == "admin" || user.role == "manager" ? (
               <>
                 <div className="logo-area d-flex align-items-center">
                   <Link to="/" style={{ marginRight: "20px" }}>
