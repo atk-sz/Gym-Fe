@@ -158,6 +158,7 @@ const AdminDashboard = ({ history }) => {
       console.log(error);
     }
   };
+  
   const uploadImage = (image) => {
     return new Promise((resolve, reject) => {
       try {

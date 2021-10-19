@@ -12,6 +12,20 @@ export const getGymDetails = async (authtoken) => {
   });
 };
 
+export const updateGymName = async (authtoken, id, name) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/gym/${id}/edit-name`,
+    {
+      name,
+    },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
 export const updateGymLogo = async (authtoken, id, logo) => {
   return await axios.post(
     `${process.env.REACT_APP_BACKEND_API}/gym/${id}/update-logo`,

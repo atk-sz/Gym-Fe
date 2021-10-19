@@ -3,12 +3,15 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { addDuration, getDuratoins, removeDuration } from "../../api/duration";
-import { getGymDetails } from "../../api/gym";
+import { getGymDetails, updateGymLogo, updateGymName } from "../../api/gym";
 import { DeleteOutlined } from "@ant-design/icons";
+import { projectStorage } from "../../firebase";
 
 const Settings = () => {
   const { user } = useSelector((state) => ({ ...state }));
   const [gymDetail, setGymDetail] = useState({});
+  const [name, setName] = useState("");
+  const [editable, setEditable] = useState(false);
   const [durations, setDurations] = useState([]);
   const [duration, setDuration] = useState("3");
   const [loading, setLoading] = useState(true);
@@ -21,6 +24,7 @@ const Settings = () => {
     try {
       const res = await getGymDetails(user.token);
       setGymDetail(res.data);
+      setName(res.data.name);
       loadDuration(res.data._id);
     } catch (error) {
       setLoading(false);
@@ -46,6 +50,83 @@ const Settings = () => {
           : "Some error occured please try later"
       );
       console.log(error);
+    }
+  };
+
+  const handleEditName = async (e) => {
+    e.preventDefault();
+    if (editable) {
+      if (
+        window.confirm(
+          `Are you sure you want to change your name form ${gymDetail.name} to ${name}`
+        )
+      ) {
+        try {
+          setLoading(true);
+          const res = await updateGymName(user.token, gymDetail._id, name);
+          setGymDetail(res.data);
+          setName(res.data.name);
+          setEditable(false);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          toast.error(
+            error.response
+              ? error.response.data
+              : "Some error occured please try later"
+          );
+          console.log(error);
+        }
+      }
+    } else setEditable(true);
+  };
+
+  const uploadImage = (image) => {
+    return new Promise((resolve, reject) => {
+      try {
+        let storageRef = projectStorage.ref(
+          "/Gym/" + gymDetail.email + "/logo/" + image.name
+        );
+        storageRef.put(image).on(
+          "state_changed",
+          null,
+          (err) => console.log(err),
+          async () => {
+            resolve(await storageRef.getDownloadURL());
+          }
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  const handleLogoSelect = async (e) => {
+    if (e.target.files[0]) {
+      try {
+        if (window.confirm("Are you sure you want to update logo?")) {
+          try {
+            setLoading(true);
+            const newLogoURL = await uploadImage(e.target.files[0]);
+            const res = await updateGymLogo(user.token, gymDetail._id, newLogoURL);
+            toast.success("Logo updated successfully");
+            setGymDetail(res.data);
+            setName(res.data.name);
+            setEditable(false);
+            setLoading(false);
+          } catch (error) {
+            setLoading(false);
+            toast.error(
+              error.response
+                ? error.response.data
+                : "Some error occured please try later"
+            );
+            console.log(error);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -93,7 +174,8 @@ const Settings = () => {
       ) : (
         <div className="settings-div">
           <h1>Settings</h1>
-          <div
+          <form
+            onSubmit={handleEditName}
             style={{
               display: "flex",
               justifyContent: "space-evenly",
@@ -102,9 +184,16 @@ const Settings = () => {
             }}
             className="gym-name-div"
           >
-            <h3>{gymDetail.name}</h3>
-            <button className="btn btn-warning">Edit</button>
-          </div>
+            <input
+              type="text"
+              disabled={!editable}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <button className="btn btn-warning">
+              {editable ? "Change" : "Edit"}
+            </button>
+          </form>
           <div
             style={{
               display: "flex",
@@ -119,7 +208,21 @@ const Settings = () => {
               src={gymDetail.logo}
               alt={gymDetail.name}
             />
-            <button className="btn btn-warning">Edit</button>
+            <div className="mb-3">
+              <label htmlFor="logo" className="form-label">
+                Upload Logo
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                id="logo"
+                name="logo"
+                accept="image/*"
+                onChange={handleLogoSelect}
+                required
+              />
+            </div>
+            {/* <button className="btn btn-warning">Edit</button> */}
           </div>
           <div
             style={{
