@@ -18,28 +18,12 @@ const AddManager = () => {
       first_line: "",
       second_line: "",
       city: "",
-      pincode: "",
-      country: "",
     },
   };
   const { user } = useSelector((state) => ({ ...state }));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState(initialVals);
-  const [countries, setCountries] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [loadingCities, setLoadingCities] = useState(true);
   const [image, setImage] = useState([]);
-  
-  useEffect(() => {
-    getCountriesAndCities()
-      .then((res) => {
-        setCountries(res.data.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -54,50 +38,50 @@ const AddManager = () => {
     });
   };
 
-  const handleCityChange = (city) => {
-    let { address } = values;
-    address.city = city;
-    setValues({ ...values, address });
-  };
+  // const handleCityChange = (city) => {
+  //   let { address } = values;
+  //   address.city = city;
+  //   setValues({ ...values, address });
+  // };
 
-  const handleCountryChange = (country) => {
-    let { address } = values;
-    address.country = country;
-    setValues({ ...values, address });
-  };
+  // const handleCountryChange = (country) => {
+  //   let { address } = values;
+  //   address.country = country;
+  //   setValues({ ...values, address });
+  // };
 
-  const handleCountrySelect = async (e) => {
-    setLoadingCities(true);
-    if (e.target.value !== "Please select the country") {
-      try {
-        const country = countries.filter(
-          (each) => each.country === e.target.value
-        );
-        setCities(country[0].cities);
-        handleCountryChange(e.target.value);
-        handleCityChange("");
-        setLoadingCities(false);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      handleCountryChange("");
-      setCities([]);
-      handleCityChange("");
-    }
-  };
+  // const handleCountrySelect = async (e) => {
+  //   setLoadingCities(true);
+  //   if (e.target.value !== "Please select the country") {
+  //     try {
+  //       const country = countries.filter(
+  //         (each) => each.country === e.target.value
+  //       );
+  //       setCities(country[0].cities);
+  //       handleCountryChange(e.target.value);
+  //       handleCityChange("");
+  //       setLoadingCities(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   } else {
+  //     handleCountryChange("");
+  //     setCities([]);
+  //     handleCityChange("");
+  //   }
+  // };
 
-  const handleCitySelect = async (e) => {
-    if (e.target.value !== "Please select the city") {
-      try {
-        handleCityChange(e.target.value);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      handleCityChange("");
-    }
-  };
+  // const handleCitySelect = async (e) => {
+  //   if (e.target.value !== "Please select the city") {
+  //     try {
+  //       handleCityChange(e.target.value);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   } else {
+  //     handleCityChange("");
+  //   }
+  // };
 
   const handleImageSelect = async (e) => {
     if (e.target.files) {
@@ -134,10 +118,9 @@ const AddManager = () => {
       setLoading(true);
       if (image) values.profile = await uploadImage();
       values.email = values.email.toLocaleLowerCase();
-      await auth.createUserWithEmailAndPassword(values.email, "password");
       const res = await addManager(user.token, values);
-      toast.success("Manager Added");
       setValues(initialVals);
+      toast.success("Manager Added");
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -161,13 +144,8 @@ const AddManager = () => {
               ) : (
                 <AddManagerForm
                   values={values}
-                  countries={countries}
-                  cities={cities}
-                  loadingCities={loadingCities}
                   handleChange={handleChange}
                   handleAddressChange={handleAddressChange}
-                  handleCountrySelect={handleCountrySelect}
-                  handleCitySelect={handleCitySelect}
                   handleImageSelect={handleImageSelect}
                   handleSubmit={handleSubmit}
                   image={image}

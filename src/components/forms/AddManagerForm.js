@@ -3,13 +3,8 @@ import { Upload } from "antd";
 
 const AddManagerForm = ({
   values,
-  countries,
-  cities,
-  loadingCities,
   handleChange,
   handleAddressChange,
-  handleCountrySelect,
-  handleCitySelect,
   handleImageSelect,
   handleSubmit,
   image,
@@ -19,7 +14,7 @@ const AddManagerForm = ({
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-6">
-            <label htmlFor="fname" class="form-label">
+            <label htmlFor="fname" className="form-label">
               First Name
             </label>
             <input
@@ -34,7 +29,7 @@ const AddManagerForm = ({
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="lname" class="form-label">
+            <label htmlFor="lname" className="form-label">
               Last Name
             </label>
             <input
@@ -66,7 +61,7 @@ const AddManagerForm = ({
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="email" class="form-label">
+            <label htmlFor="email" className="form-label">
               Email address
             </label>
             <input
@@ -83,62 +78,14 @@ const AddManagerForm = ({
         </div>
         <div className="row justify-content-center">
           <div className="col-md-6 text-center">
-            <label htmlFor="photos" className="form-label">
+            <label htmlFor="profile" className="form-label">
               Upload Profile Image
             </label>
-            <Upload
-              listType="picture-card"
-              fileList={image}
-              name="photos"
-              id="photos"
+            <input
+              type="file"
+              accept="image/*"
+              id="profile"
               onChange={handleImageSelect}
-              required
-              multiple
-            >
-              + Upload
-            </Upload>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-4">
-            <label className="form-date-label" htmlFor="DOB-member">
-              Date Of Birth
-            </label>
-            <input
-              type="date"
-              name="DOB"
-              value={values.DOB}
-              className="form-control mb-3"
-              id="DOB-member"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <label className="form-date-label" htmlFor="join-member">
-              Joining
-            </label>
-            <input
-              type="date"
-              name="join"
-              value={values.join}
-              className="form-control mb-3"
-              id="join-member"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <label className="form-date-label" htmlFor="expire-member">
-              Valid Till
-            </label>
-            <input
-              type="date"
-              name="expire"
-              value={values.expire}
-              className="form-control mb-3"
-              id="expire-member"
-              onChange={handleChange}
               required
             />
           </div>
@@ -160,9 +107,6 @@ const AddManagerForm = ({
             />
           </div>
           <div className="col-md-12">
-            <label htmlFor="second_line" className="form-label">
-              Address 2
-            </label>
             <input
               type="text"
               value={values.address.second_line}
@@ -175,58 +119,21 @@ const AddManagerForm = ({
           </div>
         </div>
         <div className="row">
-          <div className="col-md-4">
-            <label className="form-label">Country</label>
-            {countries && (
-              <select
-                onChange={handleCountrySelect}
-                name="country"
-                className="form-select mb-3"
-                value={values.address.country}
-              >
-                <option defaultValue>Please select the country</option>
-                {countries.map((each, i) => (
-                  <option key={i} value={each.country}>
-                    {each.country}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">State</label>
-            {cities && (
-              <select
-                className="form-select mb-3"
-                name="city"
-                disabled={loadingCities}
-                onChange={handleCitySelect}
-                value={values.address.city}
-              >
-                <option defaultValue>Please select the city</option>
-                {cities.map((each, i) => (
-                  <option key={i} value={each}>
-                    {each}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-          <div className="col-md-4">
-            <label htmlFor="pincode" className="form-label">
-              Pincode
-            </label>
-            <input
-              type="Number"
-              name="pincode"
-              className="form-control mb-3"
-              id="pincode"
-              placeholder="121004"
-              onChange={handleAddressChange}
-              value={values.address.pincode}
-              required
-            />
-          </div>
+          {/* <div className="col-md-12"> */}
+          <label htmlFor="city" className="form-label">
+            City
+          </label>
+          <input
+            type="text"
+            value={values.address.city}
+            name="city"
+            placeholder="Bangalore,Delhi"
+            className="form-control mb-3"
+            id="city"
+            onChange={handleAddressChange}
+            required
+          />
+          {/* </div> */}
         </div>
         <button type="submit" className="btn btn-primary btn-block w-100">
           Submit

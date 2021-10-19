@@ -4,6 +4,7 @@ export { default as Register } from "./auth/Register";
 export { default as RegisterComplete } from "./auth/RegisterComplete";
 export { default as ForgotPassword } from "./auth/ForgotPassword";
 export { default as Registration } from "./auth/Registration";
+export { default as ManagerRegister } from "./auth/ManagerRegistration";
 
 // common views
 export { default as Home } from "./Home";

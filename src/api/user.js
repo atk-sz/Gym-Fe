@@ -22,3 +22,11 @@ export const reSubmit = async (authtoken) => {
     }
   );
 };
+
+
+export const managerCheckAndUpdate = async (email) => {
+  return await axios.post(
+    `${process.env.REACT_APP_BACKEND_API}/manager-check-update`,
+    { email }
+  );
+};

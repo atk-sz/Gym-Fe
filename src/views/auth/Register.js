@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { sendRegistrationLink } from "../../api/registration";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Register = ({ history }) => {
@@ -70,6 +71,11 @@ const Register = ({ history }) => {
                 Send
               </button>
             </form>
+            <Link to="/register/manager" className="nav-link">
+              <button disabled={disable} className="btn btn-dark">
+                Manager Registration
+              </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -35,6 +35,7 @@ import {
   Scanner,
   Settings,
   AllManagers,
+  ManagerRegister,
 } from "./views";
 import { AdminRoute, AdminManagerRoute, SuperAdminRoute } from "./components";
 import GymStatAndMessage from "./views/super-admin/GymStatAndMessage";
@@ -101,6 +102,12 @@ const App = () => {
           exact
           path="/forgot/password"
           component={ForgotPassword}
+          layout={MainLayout}
+        />
+        <AppRoute
+          exact
+          path="/register/manager"
+          component={ManagerRegister}
           layout={MainLayout}
         />
         <AppRoute

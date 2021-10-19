@@ -284,7 +284,7 @@ const Settings = () => {
             </form>
           </div>
           <div className="see-all mangers-div">
-            <Link to="/gym/members/all" className="nav-link">
+            <Link to="/gym/managers" className="nav-link">
               <button className="btn btn-primary">See All Managers</button>
             </Link>
           </div>

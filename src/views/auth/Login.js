@@ -23,10 +23,10 @@ const Login = ({ history }) => {
     if (intended) {
       return;
     } else {
-      if (user && user.token && user.role == "admin") {
-        history.push("/admin/dashboard");
-      } else if (user && user.token && user.role == "super-admin") {
+      if (user && user.token && user.role == "super-admin") {
         history.push("/super-admin/dashboard");
+      } else if (user && user.token) {
+        history.push("/admin/dashboard");
       }
     }
   }, [history, user]);

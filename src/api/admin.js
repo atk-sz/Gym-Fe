@@ -12,6 +12,17 @@ export const addManager = async (authtoken, manager) => {
   );
 };
 
+export const getManagers = async (authtoken) => {
+  return await axios.get(
+    `${process.env.REACT_APP_BACKEND_API}/admin/managers`,
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+};
+
 export const adminSendMailToMember = async (
   authtoken,
   message,
