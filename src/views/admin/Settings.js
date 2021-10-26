@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { addDuration, getDuratoins, removeDuration } from "../../api/duration";
+import { addDuration, getDurations, removeDuration } from "../../api/duration";
 import { getGymDetails, updateGymLogo, updateGymName } from "../../api/gym";
 import { DeleteOutlined } from "@ant-design/icons";
 import { projectStorage } from "../../firebase";
@@ -39,7 +39,7 @@ const Settings = () => {
 
   const loadDuration = async (gid) => {
     try {
-      const res = await getDuratoins(user.token, gid);
+      const res = await getDurations(user.token);
       setDurations(res.data.values);
       setLoading(false);
     } catch (error) {

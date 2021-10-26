@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addMember, getCountriesAndCities } from "../../api/gym";
-import { getDuratoins } from "../../api/duration";
+import { getDurations } from "../../api/duration";
 import { projectStorage } from "../../firebase";
 import { Upload } from "antd";
 import Webcam from "react-webcam";
@@ -46,7 +46,7 @@ const AddMemberForm = ({ loadMembers }) => {
   const loadDuration = async (gid) => {
     try {
       setLoading(true);
-      const res = await getDuratoins(user.token);
+      const res = await getDurations(user.token);
       let arr = res.data.values;
       arr.sort((a, b) => a - b);
       setDurations(arr);

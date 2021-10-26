@@ -24,9 +24,9 @@ export const removeDuration = async (authtoken, value, gid) => {
   );
 };
 
-export const getDuratoins = async (authtoken, gid) => {
+export const getDurations = async (authtoken) => {
   return await axios.get(
-    `${process.env.REACT_APP_BACKEND_API}/durations/${gid}`,
+    `${process.env.REACT_APP_BACKEND_API}/durations`,
     {
       headers: {
         authtoken,
