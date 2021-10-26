@@ -47,7 +47,9 @@ const AddMemberForm = ({ loadMembers }) => {
     try {
       setLoading(true);
       const res = await getDuratoins(user.token);
-      setDurations(res.data.values);
+      let arr = res.data.values;
+      arr.sort((a, b) => a - b);
+      setDurations(arr);
       setLoading(false);
     } catch (error) {
       setLoading(false);

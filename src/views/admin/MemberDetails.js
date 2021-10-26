@@ -10,17 +10,20 @@ import { Card, Row, Col, Container, Image } from "react-bootstrap";
 import { css } from "@emotion/react";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { CloseOutlined } from "@ant-design/icons";
+import html2canvas from "html2canvas";
+import canvasToImage from "canvas-to-image";
 
 const IDCard = ({ member, setDisplay }) => {
-  const printableAreaRef = React.useRef(null);
+  const printableAreaRef = React.useRef();
 
-  const handlePrintClick = () => {
-    var mywindow = window.open("", "PRINT");
-    mywindow.document.write(printableAreaRef.current.innerHTML);
-    mywindow.document.close();
-    mywindow.focus();
-    mywindow.print();
-    return true;
+  const handleDownload = () => {
+    html2canvas(printableAreaRef.current).then((canvas) => {
+      canvasToImage(canvas, {
+        name: "myImage",
+        type: "jpg",
+        quality: 1,
+      });
+    });
   };
 
   return (
@@ -106,9 +109,9 @@ const IDCard = ({ member, setDisplay }) => {
         <button
           style={{ position: "absolute", bottom: "20px", left: "50%" }}
           className="btn btn-info"
-          onClick={handlePrintClick}
+          onClick={handleDownload}
         >
-          Print
+          Download
         </button>
       </div>
     </div>
