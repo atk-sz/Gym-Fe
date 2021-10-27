@@ -17,6 +17,7 @@ const CalenderOfEvents = () => {
 
   const loadEvents = async () => {
     try {
+      setLoading(true);
       const events = await loadEventsPerWeek(user.token);
       setEvents(events.data);
       setLoading(false);
@@ -25,10 +26,12 @@ const CalenderOfEvents = () => {
     }
   };
 
+  const displayTime = (date) => `${date.getHours()}:${date.getMinutes()}`;
+
   return (
     <div className="row admin-calender-of-events">
       <div className="col-md-6 calender-div">
-        <Calendar />
+        <Calendar loadEvents={loadEvents} />
       </div>
       <div style={{ marginLeft: "5%" }} className="col-md-4 events-div">
         {loading ? (
@@ -41,7 +44,8 @@ const CalenderOfEvents = () => {
               events.map((each, i) => (
                 <div key={i} className="each-event">
                   <p>
-                    <FieldTimeOutlined /> {each.start}-{each.end}
+                    <FieldTimeOutlined /> {displayTime(new Date(each.start))}-
+                    {displayTime(new Date(each.end))}
                   </p>
                   <h3>{each.title}</h3>
                   <h6>{each.location}</h6>

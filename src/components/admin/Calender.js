@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import AddEventForm from "../forms/AddEventForm";
 
-const MyCalendar = () => {
+const MyCalendar = ({ loadEvents }) => {
   const { user } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
@@ -48,7 +48,11 @@ const MyCalendar = () => {
   return (
     <div className="calendar-rectangle">
       <div id="calendar-content" className="calendar-content">
-        {loading ? <h1>loading</h1> : <Calendar user={user} events={events} />}
+        {loading ? (
+          <h1>loading</h1>
+        ) : (
+          <Calendar user={user} events={events} loadEvents={loadEvents} />
+        )}
       </div>
     </div>
   );
@@ -203,6 +207,7 @@ class Calendar extends React.Component {
             .then((res) => {
               monthEvents.splice(index, 1);
               this.hideEventDialog();
+              this.props.loadEvents();
               this.setState({ loadingDayEvents: false });
             })
             .catch((err) => {
@@ -274,60 +279,76 @@ class Calendar extends React.Component {
     let monthEvents = this.state.selectedMonthEvents;
     const currentSelectedDate = this.state.selectedDay;
     const { updateIndex } = this.state;
-    values.date = currentSelectedDate;
+    values.date = moment(currentSelectedDate).toDate();
     let newEvents = [];
-    this.setState({ loadingDayEvents: true });
-    this.hideDialog();
-    if (this.state.edit) {
-      updateServerEvent(user.token, values._id, values)
-        .then((res) => {
-          let eventToUpdate = res.data;
-          eventToUpdate.date = moment(eventToUpdate.date);
-          monthEvents[updateIndex] = eventToUpdate;
-          this.setState({
-            selectedMonthEvents: monthEvents,
-            updateIndex: -1,
-            edit: false,
+    let startString = values.start,
+      endString = values.end;
+    const startArr = startString.split(":");
+    const endArr = endString.split(":");
+    const startTime = moment(currentSelectedDate).toDate();
+    const endTime = moment(currentSelectedDate).toDate();
+    startTime.setHours(startArr[0], startArr[1]);
+    endTime.setHours(endArr[0], endArr[1]);
+    if (endTime - startTime > 10740000) {
+      values.start = startTime;
+      values.end = endTime;
+      this.setState({ loadingDayEvents: true });
+      this.hideDialog();
+      if (this.state.edit) {
+        updateServerEvent(user.token, values._id, values)
+          .then((res) => {
+            let eventToUpdate = res.data;
+            eventToUpdate.date = moment(eventToUpdate.date);
+            monthEvents[updateIndex] = eventToUpdate;
+            this.setState({
+              selectedMonthEvents: monthEvents,
+              updateIndex: -1,
+              edit: false,
+            });
+            this.props.loadEvents();
+            this.setState({ loadingDayEvents: false });
+          })
+          .catch((err) => {
+            this.setState({
+              updateIndex: -1,
+              edit: false,
+            });
+            toast.error(
+              err.response
+                ? err.response.data
+                : "Some error occured please try later"
+            );
+            console.log(err);
+            this.setState({ loadingDayEvents: false });
           });
-          this.setState({ loadingDayEvents: false });
-        })
-        .catch((err) => {
-          this.setState({
-            updateIndex: -1,
-            edit: false,
+      } else {
+        this.setState({ loadingDayEvents: false });
+        addNewEvent(user.token, values)
+          .then((res) => {
+            let eventToAdd = res.data;
+            eventToAdd.date = moment(eventToAdd.date);
+            newEvents.push(eventToAdd);
+            for (var i = 0; i < newEvents.length; i++) {
+              monthEvents.push(newEvents[i]);
+            }
+            this.setState({
+              selectedMonthEvents: monthEvents,
+            });
+            this.props.loadEvents();
+            this.setState({ loadingDayEvents: false });
+          })
+          .catch((err) => {
+            toast.error(
+              err.response
+                ? err.response.data
+                : "Some error occured please try later"
+            );
+            console.log(err);
+            this.setState({ loadingDayEvents: false });
           });
-          toast.error(
-            err.response
-              ? err.response.data
-              : "Some error occured please try later"
-          );
-          console.log(err);
-          this.setState({ loadingDayEvents: false });
-        });
-    } else {
-      addNewEvent(user.token, values)
-        .then((res) => {
-          let eventToAdd = res.data;
-          eventToAdd.date = moment(eventToAdd.date);
-          newEvents.push(eventToAdd);
-          for (var i = 0; i < newEvents.length; i++) {
-            monthEvents.push(newEvents[i]);
-          }
-          this.setState({
-            selectedMonthEvents: monthEvents,
-          });
-          this.setState({ loadingDayEvents: false });
-        })
-        .catch((err) => {
-          toast.error(
-            err.response
-              ? err.response.data
-              : "Some error occured please try later"
-          );
-          console.log(err);
-          this.setState({ loadingDayEvents: false });
-        });
-    }
+      }
+    } else
+      toast.error("Invalid Timings or An event must be of atleast 3 hours");
   }
 
   initialiseEvents() {
