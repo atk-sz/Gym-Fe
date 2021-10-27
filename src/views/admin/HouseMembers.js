@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Card, Table } from "react-bootstrap";
-import { BsArrowUpDown } from "react-icons/bs";
+import { BiSortAlt2 } from "react-icons/bi";
 import * as AiIcons from "react-icons/ai";
 import { useParams } from "react-router";
 import "./styles/members.css";
@@ -147,13 +147,13 @@ const HouseMembers = () => {
                   <tr>
                     <th>Card Id</th>
                     <th style={{ cursor: "default" }} onClick={sortByName}>
-                      Name <BsArrowUpDown />
+                      Name <BiSortAlt2 />
                     </th>
                     <th style={{ cursor: "default" }} onClick={sortByJoin}>
-                      Join <BsArrowUpDown />
+                      Join <BiSortAlt2 />
                     </th>
                     <th style={{ cursor: "default" }} onClick={sortByActive}>
-                      Active <BsArrowUpDown />
+                      Active <BiSortAlt2 />
                     </th>
                     <th>View</th>
                     <th>Message</th>

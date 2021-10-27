@@ -19,6 +19,7 @@ const AddMemberForm = ({ loadMembers }) => {
     email: "",
     profile: "",
     DOB: "",
+    gender: "male",
     join: new Date(),
     expire: "",
     house_id: "",
@@ -75,6 +76,10 @@ const AddMemberForm = ({ loadMembers }) => {
     });
   };
 
+  const setGender = (e) => {
+    setValues({ ...values, gender: e.target.value });
+  };
+
   const validateHouseID = (e) => {
     setLoad(true);
     if (e.target.value.trim()) {
@@ -122,30 +127,36 @@ const AddMemberForm = ({ loadMembers }) => {
       }
       return date;
     };
-    setValues({ ...values, expire: addMonths(new Date(), e.target.value) });
+    if (e.target.value === "Please select the validity")
+      setValues({ ...values, expire: "" });
+    else
+      setValues({ ...values, expire: addMonths(new Date(), e.target.value) });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (validHouseID) {
-        if (values.profile.trim()) {
-          dateToday.setDate(dateToday.getDate() + 1);
-          if (new Date(values.join) - dateToday > 0)
-            toast.error("Joining date cannot be before");
-          else {
-            if (new Date(values.join) - new Date(values.expire) > 0)
-              toast.error("Joining date cannot be after expire");
+        if (values.expire) {
+          if (values.profile && values.profile.trim()) {
+            dateToday.setDate(dateToday.getDate() + 1);
+            if (new Date(values.join) - dateToday > 0)
+              toast.error("Joining date cannot be before");
             else {
-              setLoading(true);
-              const res = await addMember(values, user.token);
-              toast.success(res.data);
-              setValues(initialVals);
-              loadMembers();
-              setLoading(false);
+              if (new Date(values.join) - new Date(values.expire) > 0)
+                toast.error("Joining date cannot be after expire");
+              else {
+                setLoading(true);
+                // console.log(values);
+                const res = await addMember(values, user.token);
+                toast.success(res.data);
+                setValues(initialVals);
+                loadMembers();
+                setLoading(false);
+              }
             }
-          }
-        } else toast.error("Take an iamge");
+          } else toast.error("Take an iamge");
+        } else toast.error("Select duration");
       } else toast.error("Invalid House ID");
     } catch (error) {
       setLoading(false);
@@ -202,7 +213,39 @@ const AddMemberForm = ({ loadMembers }) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-4">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  id="male"
+                  onChange={setGender}
+                  checked={values.gender === "male"}
+                  required={true}
+                />
+                <label className="form-check-label" htmlFor="male">
+                  Male
+                </label>
+              </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  value="female"
+                  name="gender"
+                  id="female"
+                  onChange={setGender}
+                  checked={values.gender === "female"}
+                  required={true}
+                />
+                <label className="form-check-label" htmlFor="female">
+                  Female
+                </label>
+              </div>
+            </div>
+            <div className="col-md-4">
               <label htmlFor="phone" className="form-label">
                 Phone*
               </label>
@@ -217,7 +260,7 @@ const AddMemberForm = ({ loadMembers }) => {
                 required
               />
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
               <label htmlFor="email" className="form-label">
                 Email address*
               </label>
@@ -303,7 +346,7 @@ const AddMemberForm = ({ loadMembers }) => {
                     <Webcam ref={webRef} width={100} height={80} />
                   </div>
                 )}
-                {values.profile.trim() && !capturing && (
+                {values.profile && values.profile.trim() && !capturing && (
                   <img src={values.profile} alt="profile" />
                 )}
               </div>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getAllGymMembers } from "../../api/gym";
 import { Card, Table, Badge, Container } from "react-bootstrap";
-import { BsArrowUpDown } from "react-icons/bs";
+import { BiSortAlt2 } from "react-icons/bi";
 import * as AiIcons from "react-icons/ai";
 import { css } from "@emotion/react";
 import ScaleLoader from "react-spinners/ScaleLoader";
@@ -393,19 +393,19 @@ const AllMembers = () => {
                     </th>
 
                     <th style={{ cursor: "default" }} onClick={sortByName}>
-                      Name <BsArrowUpDown />
+                      Name <BiSortAlt2 />
                     </th>
                     <th style={{ cursor: "default" }} onClick={sortByHouseId}>
-                      House Id <BsArrowUpDown />
+                      House Id <BiSortAlt2 />
                     </th>
                     <th style={{ cursor: "default" }} onClick={sortByExpire}>
-                      Expire <BsArrowUpDown />
+                      Expire <BiSortAlt2 />
                     </th>
                     <th
                     // style={{ cursor: "default" }} onClick={sortByActive}
                     >
                       Last Active
-                      {/* <BsArrowUpDown /> */}
+                      {/* <BiSortAlt2 /> */}
                     </th>
                   </tr>
                 </thead>
