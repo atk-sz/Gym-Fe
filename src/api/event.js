@@ -1,10 +1,10 @@
 import axios from "axios";
 import moment from "moment";
 
-export const addNewEvent = async (authtoken, newEvent) => {
+export const addNewEvent = async (authtoken, newEvent, filterValues) => {
   return await axios.post(
     `${process.env.REACT_APP_BACKEND_API}/event/new`,
-    { newEvent },
+    { newEvent, filterValues },
     {
       headers: {
         authtoken,

@@ -285,12 +285,9 @@ const AllMembers = () => {
       setDraftSubject("");
       toast.success("Message sent successfully");
     } catch (error) {
-      toast.error(
-        error.response
-          ? error.response.data
-          : "Some error occured please try later"
-      );
+      toast.error("Some error occured please try later");
       console.log(error);
+      setSendingMessage(false);
     }
   };
 

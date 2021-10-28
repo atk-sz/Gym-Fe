@@ -62,7 +62,8 @@ body {
   display: flex;
   flex-wrap: wrap;
 }
-.main-calendar .input-dialog-box, .main-calendar .event-dialog-box {
+.main-calendar .input-dialog-box,
+.main-calendar .event-dialog-box {
   height: 100vh;
   width: 100vw;
   position: fixed;
@@ -72,14 +73,19 @@ body {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(2px);
 }
-.main-calendar .input-dialog-box .dialog-card, .main-calendar .event-dialog-box .event-dialog-card {
+.main-calendar .input-dialog-box .dialog-card,
+.main-calendar .event-dialog-box .event-dialog-card {
   margin: 10vh auto;
   padding: 1vw;
   width: 45vw;
   background-color: white;
   box-shadow: 0px 0px 50px #888;
+  max-height: 70vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
-.main-calendar .input-dialog-box .dialog-card .dialog-header, .main-calendar .event-dialog-box .event-dialog-card .event-dialog-header {
+.main-calendar .input-dialog-box .dialog-card .dialog-header,
+.main-calendar .event-dialog-box .event-dialog-card .event-dialog-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -306,7 +312,6 @@ body {
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
 
-
 .cust-btn {
   cursor: pointer;
   background-color: #0dcaf0;
@@ -314,7 +319,7 @@ body {
   padding: 15px 30px;
   border: none;
 }
-.cust-btn:hover{
+.cust-btn:hover {
   box-shadow: 2px 3px 4px solid #0dcaf0;
   color: white;
 }

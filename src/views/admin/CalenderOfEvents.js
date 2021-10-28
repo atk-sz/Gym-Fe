@@ -4,15 +4,18 @@ import { Card, Container } from "react-bootstrap";
 import { loadEventsPerWeek } from "../../api/event";
 import { useSelector } from "react-redux";
 import { FieldTimeOutlined } from "@ant-design/icons";
+import { getAllGymMembers } from "../../api/gym";
+import { toast } from "react-toastify";
 // import EventCalender from "../../components/admin/EventCalender";
 
 const CalenderOfEvents = () => {
   const { user } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
-    loadEvents();
+    loadMembers();
   }, []);
 
   const loadEvents = async () => {
@@ -22,6 +25,28 @@ const CalenderOfEvents = () => {
       setEvents(events.data);
       setLoading(false);
     } catch (error) {
+      setLoading(false);
+      toast.error(
+        error.response
+          ? error.response.data
+          : "Some error occured please try later"
+      );
+      console.log(error);
+    }
+  };
+
+  const loadMembers = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllGymMembers(user.token);
+      setMembers(res.data);
+      loadEvents();
+    } catch (error) {
+      toast.error(
+        error.response
+          ? error.response.data
+          : "Some error occured please try later"
+      );
       console.log(error);
     }
   };
