@@ -122,6 +122,11 @@ body {
   right: 10px;
   top: 10px;
 }
+.filter-div-wrapper .filter-div .filter-save {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
 .filter-div-wrapper .filter-div .filter-body {
   display: flex;
   justify-content: space-between;

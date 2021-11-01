@@ -279,7 +279,7 @@ class Calendar extends React.Component {
     this.showDialog();
   }
 
-  handleSubmit(values, values1) {
+  handleSubmit(values) {
     const { user } = this.props;
     let monthEvents = this.state.selectedMonthEvents;
     const currentSelectedDate = this.state.selectedDay;
@@ -328,7 +328,7 @@ class Calendar extends React.Component {
           });
       } else {
         this.setState({ loadingDayEvents: false });
-        addNewEvent(user.token, values, values1)
+        addNewEvent(user.token, values)
           .then((res) => {
             let eventToAdd = res.data;
             eventToAdd.date = moment(eventToAdd.date);

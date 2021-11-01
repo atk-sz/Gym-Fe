@@ -8,6 +8,7 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
     location: "location",
     start: "",
     end: "",
+    tags: members,
     number_of_guests: 100,
   };
 
@@ -27,17 +28,6 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
   const [filtedMembers, setFiltedMembers] = useState(
     editEvent ? editEvent.tags : []
   );
-
-  const hideFilterBox = (e) => {
-    e.preventDefault();
-    setShowFilter(false);
-    // if (!editEvent) {
-    setAllMembers(members);
-    setKeyword("");
-    setValues1(initialValues1);
-    setFiltedMembers([]);
-    // }
-  };
 
   const getAge = (dateString) => {
     let today = new Date();
@@ -164,9 +154,67 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
     }, [50]);
   };
 
+  const addAll = (e) => {
+    e.preventDefault();
+    setLoad(true);
+    let localFiltedMembers = filtedMembers;
+    membersToDisplay.map((each) => {
+      const i = localFiltedMembers.findIndex(
+        (item) => item.card_id === each.card_id
+      );
+      if (i < 0) localFiltedMembers.push(each);
+    });
+    setFiltedMembers(localFiltedMembers);
+    setTimeout(() => {
+      setLoad(false);
+    }, [50]);
+  };
+
+  const removeAll = (e) => {
+    e.preventDefault();
+    setLoad(true);
+    let localFiltedMembers = filtedMembers;
+    membersToDisplay.map((each) => {
+      const i = localFiltedMembers.findIndex(
+        (item) => item.card_id === each.card_id
+      );
+      if (i >= 0) localFiltedMembers.splice(i, 1);
+    });
+    setFiltedMembers(localFiltedMembers);
+    setTimeout(() => {
+      setLoad(false);
+    }, [50]);
+  };
+
+  const memberCheck = (member) => {
+    let localFiltedMembers = filtedMembers;
+    const i = localFiltedMembers.findIndex(
+      (item) => item.card_id === member.card_id
+    );
+    if (i >= 0) return true;
+    return false;
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-    handleSubmit(values, values1);
+    handleSubmit(values);
+  };
+
+  const save = (e) => {
+    e.preventDefault();
+    setValues({ ...values, tags: filtedMembers });
+    setShowFilter(false);
+  };
+
+  const hideFilterBox = (e) => {
+    e.preventDefault();
+    setShowFilter(false);
+    // // if (!editEvent) {
+    // setAllMembers(members);
+    // setKeyword("");
+    // setValues1(initialValues1);
+    // setFiltedMembers([]);
+    // // }
   };
 
   const filteredItems = allMembers.filter((item) =>
@@ -280,9 +328,19 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
             <div className="filter-header">
               <i className="box arrow fa fa-times" onClick={hideFilterBox} />
             </div>
+            <div className="filter-save">
+              <button className="btn btn-success" onClick={save}>
+                Save
+              </button>
+            </div>
             <div className="filter-body">
               <div className="filtered-members-div">
                 <h3>Filtered members</h3>
+                <div className="mb-3">
+                  <button onClick={removeAll} className="btn btn-dark">
+                    Remove All
+                  </button>
+                </div>
                 {!load ? (
                   <div className="filtered-members">
                     {filtedMembers && filtedMembers.length
@@ -388,6 +446,11 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
                     />
                   </div>
                 </div>
+                <div className="mb-3">
+                  <button onClick={addAll} className="btn btn-warning">
+                    Add All
+                  </button>
+                </div>
                 <div className="all-members-div">
                   {membersToDisplay && membersToDisplay.length
                     ? membersToDisplay.map((each, i) => (
@@ -401,6 +464,7 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
                               handleAdd(each);
                             }}
                             className="btn btn-primary"
+                            disabled={memberCheck(each)}
                           >
                             Add
                           </button>
