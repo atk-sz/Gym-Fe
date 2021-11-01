@@ -294,6 +294,7 @@ class Calendar extends React.Component {
     const endTime = moment(currentSelectedDate).toDate();
     startTime.setHours(startArr[0], startArr[1]);
     endTime.setHours(endArr[0], endArr[1]);
+    if (values.tags.length <= 0) values.tags = this.state.members;
     if (endTime - startTime > 10740000) {
       values.start = startTime;
       values.end = endTime;

@@ -19,6 +19,8 @@ const AddEventForm = ({ handleSubmit, editEvent, members }) => {
     female: true,
   };
 
+  console.log(editEvent);
+
   const [values, setValues] = useState(editEvent ? editEvent : initialValues);
   const [showFilter, setShowFilter] = useState(false);
   const [load, setLoad] = useState(false);
