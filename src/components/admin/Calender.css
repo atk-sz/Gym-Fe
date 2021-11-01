@@ -90,6 +90,79 @@ body {
   flex-direction: row;
   justify-content: space-between;
 }
+/* form member filteration */
+.filter-div-wrapper {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(2px);
+}
+.filter-div-wrapper .filter-div {
+  position: relative;
+  box-shadow: 0px 0px 50px #888;
+  padding: 5vh 5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: white;
+  width: auto;
+  max-height: 90vh;
+}
+.filter-div-wrapper .filter-div .filter-header {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.filter-div-wrapper .filter-div .filter-body {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+.filter-div-wrapper .filter-div .filter-body .filtered-members-div {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-right: 20px;
+  width: 30vw;
+}
+.filter-div-wrapper
+  .filter-div
+  .filter-body
+  .filtered-members-div
+  .filtered-members {
+  height: 100%;
+  max-height: 30vh;
+  overflow-y: scroll;
+}
+.filter-div-wrapper .filter-div .filter-body .all-members-filter-options {
+  width: 40vw;
+}
+.filter-div-wrapper
+  .filter-div
+  .filter-body
+  .all-members-filter-options
+  .all-members-div {
+  max-height: 30vh;
+  overflow-y: scroll;
+}
+.filted-member,
+.each-member {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* =========== */
 .main-calendar .input-dialog-box .dialog-card .dialog-header h6 {
   flex: 5;
 }

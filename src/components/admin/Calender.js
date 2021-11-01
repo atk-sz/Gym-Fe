@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import AddEventForm from "../forms/AddEventForm";
 
-const MyCalendar = ({ loadEvents }) => {
+const MyCalendar = ({ loadEvents, members }) => {
   const { user } = useSelector((state) => ({ ...state }));
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
@@ -51,7 +51,12 @@ const MyCalendar = ({ loadEvents }) => {
         {loading ? (
           <h1>loading</h1>
         ) : (
-          <Calendar user={user} events={events} loadEvents={loadEvents} />
+          <Calendar
+            user={user}
+            events={events}
+            loadEvents={loadEvents}
+            members={members}
+          />
         )}
       </div>
     </div>
@@ -77,6 +82,7 @@ class Calendar extends React.Component {
       deleteIndex: -1,
       updateIndex: -1,
       edit: false,
+      members: this.props.members,
     };
     this.previous = this.previous.bind(this);
     this.next = this.next.bind(this);
@@ -95,7 +101,6 @@ class Calendar extends React.Component {
 
   previous() {
     const currentMonthView = this.state.selectedMonth;
-
     this.setState({
       selectedMonth: currentMonthView.subtract(1, "month"),
     });
@@ -388,6 +393,7 @@ class Calendar extends React.Component {
                   <AddEventForm
                     handleSubmit={this.handleSubmit}
                     editEvent={this.state.editEvent}
+                    members={this.state.members}
                   />
                 </div>
               </div>

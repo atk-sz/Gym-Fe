@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-const AddEventForm = ({ handleSubmit, editEvent }) => {
+const AddEventForm = ({ handleSubmit, editEvent, members }) => {
   const initialValues = {
     title: "title",
     description: "description",
@@ -18,21 +19,161 @@ const AddEventForm = ({ handleSubmit, editEvent }) => {
   };
 
   const [values, setValues] = useState(editEvent ? editEvent : initialValues);
+  const [showFilter, setShowFilter] = useState(false);
+  const [load, setLoad] = useState(false);
   const [values1, setValues1] = useState(initialValues1);
-  const [showRange, setShowRange] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [allMembers, setAllMembers] = useState(members);
+  const [filtedMembers, setFiltedMembers] = useState(
+    editEvent ? editEvent.tags : []
+  );
+
+  const hideFilterBox = (e) => {
+    e.preventDefault();
+    setShowFilter(false);
+    // if (!editEvent) {
+    setAllMembers(members);
+    setKeyword("");
+    setValues1(initialValues1);
+    setFiltedMembers([]);
+    // }
+  };
+
+  const getAge = (dateString) => {
+    let today = new Date();
+    let birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const filterByAgeFunc = (minAge, maxAge, members) => {
+    return new Promise((resolve, reject) => {
+      if (minAge == 0 && maxAge == 0) return resolve(members);
+      const resultingMembers = members.filter(
+        (each) => getAge(each.DOB) <= maxAge && getAge(each.DOB) >= minAge
+      );
+      resolve(resultingMembers);
+    });
+  };
+
+  const filterByGenderFunc = (male, female, members) => {
+    return new Promise((resolve, reject) => {
+      if (male && !female) {
+        const resMembers = members.filter((each) => each.gender === "male");
+        resolve(resMembers);
+      } else if (!male && female) {
+        const resMembers = members.filter((each) => each.gender === "female");
+        resolve(resMembers);
+      } else {
+        resolve(members);
+      }
+    });
+  };
+
+  const filterAllMembers = async (minAge, maxAge, male, female) => {
+    const ageResMembers = await filterByAgeFunc(minAge, maxAge, members);
+    const resMembers = await filterByGenderFunc(male, female, ageResMembers);
+    setAllMembers(resMembers);
+  };
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const handleChange1 = (e) => {
+    if (e.target.name === "minAge") {
+      filterAllMembers(
+        e.target.value,
+        values1.maxAge,
+        values1.male,
+        values1.female
+      );
+    } else {
+      filterAllMembers(
+        values1.minAge,
+        e.target.value,
+        values1.male,
+        values1.female
+      );
+    }
     setValues1({ ...values1, [e.target.name]: e.target.value });
+  };
+
+  const addMinimumValues = (e) => {
+    if (!e.target.value) {
+      if (e.target.name === "minAge") {
+        if (values1.maxAge > 0)
+          setValues1({ ...values1, minAge: values1.maxAge });
+        else setValues1({ ...values1, minAge: 0 });
+      } else {
+        if (values1.minAge > 0)
+          setValues1({ ...values1, maxAge: values1.minAge });
+        else setValues1({ ...values1, maxAge: 0 });
+      }
+    }
+  };
+
+  const handleOnlyMale = async (e) => {
+    filterAllMembers(
+      values1.minAge,
+      values1.maxAge,
+      e.target.checked,
+      values1.female
+    );
+    setValues1({ ...values1, male: e.target.checked });
+  };
+
+  const handleOnlyFemale = async (e) => {
+    filterAllMembers(
+      values1.minAge,
+      values1.maxAge,
+      values1.male,
+      e.target.checked
+    );
+    setValues1({ ...values1, female: e.target.checked });
+  };
+
+  const handleAdd = (member) => {
+    setLoad(true);
+    let localFiltedMembers = filtedMembers;
+    const i = localFiltedMembers.findIndex(
+      (item) => item.card_id === member.card_id
+    );
+    if (i >= 0) toast.error("Already Added");
+    else localFiltedMembers.push(member);
+    setFiltedMembers(localFiltedMembers);
+    setTimeout(() => {
+      setLoad(false);
+    }, [50]);
+  };
+
+  const handleRemove = (member) => {
+    setLoad(true);
+    let localFiltedMembers = filtedMembers;
+    const i = localFiltedMembers.findIndex(
+      (item) => item.card_id === member.card_id
+    );
+    if (i >= 0) localFiltedMembers.splice(i, 1);
+    setFiltedMembers(localFiltedMembers);
+    setTimeout(() => {
+      setLoad(false);
+    }, [50]);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     handleSubmit(values, values1);
   };
+
+  const filteredItems = allMembers.filter((item) =>
+    item.card_id.toLocaleLowerCase().includes(keyword)
+  );
+
+  const membersToDisplay = keyword ? filteredItems : allMembers;
 
   return (
     <form onSubmit={onSubmit} className="new-event-form">
@@ -122,89 +263,162 @@ const AddEventForm = ({ handleSubmit, editEvent }) => {
         />
       </div>
       <hr />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-        }}
-      >
-        <p>Set Age Range</p>
-        <input
-          className="form-check-input"
-          type="checkbox"
-          id="rangeset"
-          onChange={(e) => setShowRange(e.target.checked)}
-        />
+      <div className="mb-3">
+        <button
+          className="btn btn-primary float-end"
+          onClick={(e) => {
+            e.preventDefault();
+            setShowFilter(true);
+          }}
+        >
+          Filter Members
+        </button>
       </div>
-      {showRange && (
-        <div className="mb-3 row">
-          <div className="col-md-4">
-            <p>Age Range</p>
-          </div>
-          <div className="col-md-4">
-            <input
-              type="Number"
-              name="minAge"
-              min="0"
-              max={values1.maxAge ? values1.maxAge : "60"}
-              value={values1.minAge}
-              className="form-control mb-3"
-              id="minAge"
-              onChange={handleChange1}
-              placeholder="minmum age"
-              required
-            />
-          </div>
-          <div className="col-md-4">
-            <input
-              type="Number"
-              name="maxAge"
-              min={values1.minAge ? values1.minAge : "0"}
-              max="60"
-              value={values1.maxAge}
-              className="form-control mb-3"
-              id="maxAge"
-              onChange={handleChange1}
-              placeholder="maximum age"
-              required
-            />
+      {showFilter && (
+        <div className="filter-div-wrapper">
+          <div className="filter-div">
+            <div className="filter-header">
+              <i className="box arrow fa fa-times" onClick={hideFilterBox} />
+            </div>
+            <div className="filter-body">
+              <div className="filtered-members-div">
+                <h3>Filtered members</h3>
+                {!load ? (
+                  <div className="filtered-members">
+                    {filtedMembers && filtedMembers.length
+                      ? filtedMembers.map((each, i) => (
+                          <div key={i} className="filted-member">
+                            <h6>{each.card_id}</h6>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleRemove(each);
+                              }}
+                              className="btn btn-danger"
+                            >
+                              remove
+                            </button>
+                          </div>
+                        ))
+                      : ""}
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="all-members-filter-options">
+                <h3>All members</h3>
+                <div className="filter-options">
+                  <div className="mb-3 row">
+                    <div className="col-md-4">
+                      <p>Age Range</p>
+                    </div>
+                    <div className="col-md-4">
+                      <input
+                        type="Number"
+                        name="minAge"
+                        min="0"
+                        max={values1.maxAge ? values1.maxAge : "60"}
+                        value={values1.minAge}
+                        className="form-control mb-3"
+                        id="minAge"
+                        onChange={handleChange1}
+                        onBlur={addMinimumValues}
+                        placeholder="minmum age"
+                        required
+                      />
+                    </div>
+                    <div className="col-md-4">
+                      <input
+                        type="Number"
+                        name="maxAge"
+                        min={values1.minAge ? values1.minAge : "0"}
+                        max="60"
+                        value={values1.maxAge}
+                        className="form-control mb-3"
+                        id="maxAge"
+                        onChange={handleChange1}
+                        onBlur={addMinimumValues}
+                        placeholder="maximum age"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-3 row">
+                    <div className="col-md-6">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="male"
+                        id="maleCheckBox"
+                        onChange={handleOnlyMale}
+                        checked={values1.male}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="maleCheckBox"
+                      >
+                        Male
+                      </label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="female"
+                        id="femaleCheckBox"
+                        onChange={handleOnlyFemale}
+                        checked={values1.female}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="femaleCheckBox"
+                      >
+                        Female
+                      </label>
+                    </div>
+                  </div>
+                  <div className="mb-3 row">
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                      placeholder="Enter Card ID"
+                    />
+                  </div>
+                </div>
+                <div className="all-members-div">
+                  {membersToDisplay && membersToDisplay.length
+                    ? membersToDisplay.map((each, i) => (
+                        <div key={i} className="each-member">
+                          <h6>{each.card_id}</h6>
+                          <p>{getAge(each.DOB)}</p>
+                          <p>{each.gender == "male" ? "m" : "f"}</p>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleAdd(each);
+                            }}
+                            className="btn btn-primary"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      ))
+                    : ""}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
-      <div className="mb-3 row">
-        <div className="col-md-6">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            value="male"
-            id="maleCheckBox"
-            onChange={(e) => setValues1({ ...values1, male: e.target.checked })}
-            checked={values1.male}
-          />
-          <label className="form-check-label" htmlFor="maleCheckBox">
-            Male
-          </label>
-        </div>
-        <div className="col-md-6">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            value="female"
-            id="femaleCheckBox"
-            onChange={(e) =>
-              setValues1({ ...values1, female: e.target.checked })
-            }
-            checked={values1.female}
-          />
-          <label className="form-check-label" htmlFor="femaleCheckBox">
-            Female
-          </label>
-        </div>
+
+      <div className="mb-3">
+        <button type="submit" className="btn btn-primary float-end">
+          Submit
+        </button>
       </div>
-      <button type="submit" className="btn btn-primary">
-        Submit
-      </button>
     </form>
   );
 };

@@ -18,6 +18,22 @@ const CalenderOfEvents = () => {
     loadMembers();
   }, []);
 
+  const loadMembers = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllGymMembers(user.token);
+      setMembers(res.data);
+      loadEvents();
+    } catch (error) {
+      toast.error(
+        error.response
+          ? error.response.data
+          : "Some error occured please try later"
+      );
+      console.log(error);
+    }
+  };
+
   const loadEvents = async () => {
     try {
       setLoading(true);
@@ -35,28 +51,12 @@ const CalenderOfEvents = () => {
     }
   };
 
-  const loadMembers = async () => {
-    try {
-      setLoading(true);
-      const res = await getAllGymMembers(user.token);
-      setMembers(res.data);
-      loadEvents();
-    } catch (error) {
-      toast.error(
-        error.response
-          ? error.response.data
-          : "Some error occured please try later"
-      );
-      console.log(error);
-    }
-  };
-
   const displayTime = (date) => `${date.getHours()}:${date.getMinutes()}`;
 
   return (
     <div className="row admin-calender-of-events">
       <div className="col-md-6 calender-div">
-        <Calendar loadEvents={loadEvents} />
+        <Calendar loadEvents={loadEvents} members={members} />
       </div>
       <div style={{ marginLeft: "5%" }} className="col-md-4 events-div">
         {loading ? (
